@@ -1,7 +1,7 @@
 import { AssignmentExpr, BinaryExpr,CallExpr,Identifier, ObjectLiteral } from "../../FrontEnd/ast.ts";
 import Enviroment from "../enviroment.ts";
 import { evaluate } from "../interpreter.ts";
-import { NumberVal,RuntimeVal,MK_NULL, ObjectVal, NativeFunctionVal } from "../values.ts";
+import { NumberVal,RuntimeVal,MK_NULL, ObjectVal, NativeFunctionVal, FunctionVal } from "../values.ts";
 
 function eval_numeric_binary_expr (leftHandSide: NumberVal, rightHandSide: NumberVal, operator: string): NumberVal {
 	let result: number;
@@ -65,10 +65,29 @@ export function eval_call_expr (expr: CallExpr, env: Enviroment): RuntimeVal {
 	const args = expr.args.map((arg) => evaluate(arg, env));
 	const func = evaluate(expr.caller, env);
 
-	if (func.type !== "native-function") {
-		throw new Error("Native functions are not yet implemented");
+	if (func.type == "native-function") {
+		const result  = (func as NativeFunctionVal).call(args, env);
+		return result;
+	} 
+	
+	if (func.type == "function") {
+		const fn = func as FunctionVal;
+		const scope = new Enviroment(fn.declarationsENV);
+
+		// Create the variables for the parameters list
+		for (let i = 0; i < fn.parameters.length; i++) {
+			// TODO: check the bonds here. Verify arity of function
+			scope.declareVar(fn.parameters[i], args[i], false);
+		}
+
+		// Evaluate the function body
+		let result: RuntimeVal = MK_NULL();
+		// Evaluate the function body line by line
+		for (const statement of fn.body) {
+			result = evaluate(statement, scope);
+		}
+		return result;
 	}
 
-	const result  = (func as NativeFunctionVal).call(args, env);
-	return result;
+	throw new Error(`invalid function call ${JSON.stringify(expr)}`);
 } 

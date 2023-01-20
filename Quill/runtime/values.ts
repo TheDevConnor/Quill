@@ -1,5 +1,6 @@
+import { Stmt } from "../frontend/ast.ts";
 import Enviroment from "./enviroment.ts";
-export type ValueType = "null" | "number" | "boolean" | "object" | "native-function";
+export type ValueType = "null" | "number" | "boolean" | "object" | "native-function" | "function";
 
 export interface RuntimeVal {
     type: ValueType;
@@ -46,4 +47,12 @@ export interface NativeFunctionVal extends RuntimeVal {
 
 export function MK_NATIVE_FUNCTION(call: FunctionCall) {
 	return { type: "native-function", call } as NativeFunctionVal;
+}
+
+export interface FunctionVal extends RuntimeVal {
+	type: "function";
+	name: string;
+	parameters: string[];
+	declarationsENV: Enviroment;
+	body: Stmt[];
 }
