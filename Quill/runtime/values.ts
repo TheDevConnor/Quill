@@ -4,6 +4,7 @@ export type ValueType = "null" | "number" | "boolean" | "object" | "native-funct
 
 export interface RuntimeVal {
     type: ValueType;
+	value: any;
 }
 
 export interface NullVal extends RuntimeVal {

@@ -14,6 +14,7 @@ import {
   VarDeclaration,
   FunctionDeclaration,
   ReturnStmt,
+IfStmt,
 } from "./ast.ts";
 
 import { Token, tokenize, TokenType } from "./lexer.ts";
@@ -85,6 +86,9 @@ export default class Parser {
       case TokenType.Var:
       case TokenType.Const:
         return this.parse_var_decl();
+      // The call for the if statement
+      case TokenType.IF:
+        return this.parse_if_stmt();
       case TokenType.Identifier:
         // Add a return type so i can do { return type; }
         if (this.at().value === "return") {
@@ -95,8 +99,6 @@ export default class Parser {
         return this.parse_function_decl();
       case TokenType.RETURN:
         return this.parse_return_stmt();
-      case TokenType.IF:
-        return this.parse_if_stmt();
       default: {
         return this.parse_expr();
       }
@@ -241,7 +243,30 @@ export default class Parser {
   }
 
   private parse_if_stmt(): Stmt {
-    throw new Error("Method not implemented.");
+    this.eat(); // Eat the 'if' keyword
+
+    // this.expect(TokenType.OpenParen, "Expected '(' after 'if' keyword");
+    const condition = this.parse_expr(); // Parse the condition
+    // this.expect(TokenType.CloseParen, "Expected ')' after if condition");
+
+    this.expect(TokenType.OPENBRACKET, "Expected '{' after if condition");
+    const body: Stmt[] = [];
+
+    while (this.at().type !== TokenType.EOF && this.at().type !== TokenType.CLOSEBRACKET) {
+      body.push(this.parse_stmt());
+    }
+
+    this.expect(TokenType.CLOSEBRACKET, "Expected '}' after if condition");
+    this.expect(TokenType.Semicolen, "Expected ';' after if condition");
+
+    console.log("If statement: ", condition);
+    console.log("If statement body: ", body);
+    console.log("If statement parsed successfully.");
+    return {
+      kind: "IfStmt",
+      condition,
+      body,
+    }as unknown as IfStmt;
   }
 
   private parse_assignment_expr(): Expr {

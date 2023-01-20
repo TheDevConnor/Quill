@@ -1,10 +1,9 @@
-func random (min, max) {
-	have result := Random(min, max);
+have x := 45;
 
-	/* TODO: add a return type to the result */
-	return result;
-}
+if (x) {
+	have x := 5;
+	CSPrint(x)
 
-have results := random(10, 20);
+	return x;
+};
 
-CSPrint(results)

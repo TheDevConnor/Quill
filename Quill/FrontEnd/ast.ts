@@ -15,6 +15,7 @@ export type NodeType =
     | "MemberExpr"
     | "CallExpr"
     | "ReturnStmt"
+    | "IfStmt"
 
     // Literals
     | "Property"
@@ -47,6 +48,14 @@ export interface FunctionDeclaration extends Stmt {
     name: string;
     body: Stmt[];
     async: boolean;
+}
+
+export interface IfStmt extends Stmt {
+    kind: "IfStmt";
+    condition: Expr;
+    body: Stmt[];
+    alternative: Stmt | null;
+    consequence: Stmt;
 }
 
 export interface Expr extends Stmt {}
