@@ -16,6 +16,24 @@ function eval_numeric_binary_expr (leftHandSide: NumberVal, rightHandSide: Numbe
 	}
 	else if (operator == "/"){
 		result = leftHandSide.value / rightHandSide.value;
+	} 
+	else if (operator == "<") {
+		result = leftHandSide.value < rightHandSide.value ? 1 : 0;
+	} 
+	else if (operator == ">") {
+		result = leftHandSide.value > rightHandSide.value ? 1 : 0;
+	} 
+	else if (operator == "<=") {
+		result = leftHandSide.value <= rightHandSide.value ? 1 : 0;
+	} 
+	else if (operator == ">=") {
+		result = leftHandSide.value >= rightHandSide.value ? 1 : 0;
+	} 
+	else if (operator == "==") {
+		result = leftHandSide.value == rightHandSide.value ? 1 : 0;
+	} 
+	else if (operator == "!=") {
+		result = leftHandSide.value != rightHandSide.value ? 1 : 0;
 	}
 	else {
 		result = leftHandSide.value % rightHandSide.value;
@@ -32,7 +50,6 @@ export function eval_binary_expr (binop: BinaryExpr, env: Enviroment): RuntimeVa
 		return eval_numeric_binary_expr(leftHandSide as NumberVal, 
 			rightHandSide as NumberVal, binop.operator);
 	}
-
 	// One or both are null
 	return MK_NULL();
 }

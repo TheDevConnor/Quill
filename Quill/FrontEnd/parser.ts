@@ -12,7 +12,8 @@ import {
   Stmt,
   VarDeclaration,
   FunctionDeclaration,
-Return,
+  Return,
+IfStatement,
 } from "./ast.ts";
 
 import { Token, tokenize, TokenType } from "./lexer.ts";
@@ -79,48 +80,31 @@ export default class Parser {
   }
 
   // Handle complex statement types
-  // private parse_stmt(): Stmt {
-  //   switch (this.at().type) {
-  //     case TokenType.Var:
-  //     case TokenType.Const:
-  //       return this.parse_var_decl();
-  //     case TokenType.Identifier:
-  //       return this.parse_expr();
-  //     case TokenType.FUNC:
-  //       return this.parse_function_decl();
-  //     default: {
-  //       return this.parse_expr();
-  //     }
-  //   }
-  // }
-  private parse_stmt(): Stmt {
-    switch (this.at().type) {
-      case TokenType.Var:
-      case TokenType.Const:
-        return this.parse_var_decl();
-      case TokenType.Identifier:
-        if (this.at().value === "return") {
-          this.eat();
-          let returnValue = this.parse_expr();
-          if(this.at().value === ";") {
-            this.eat();
-            return {
-              kind: "Return",
-              value: returnValue,
-              semi_colon: true
-            } as Return;
-          } else {
-              console.error("Return statement should end with ';' ");
-              Deno.exit(1);
+    private parse_stmt(): Stmt {
+      switch (this.at().type) {
+          case TokenType.Var:
+          case TokenType.Const:
+              return this.parse_var_decl();
+          case TokenType.Identifier:
+              if (this.at().value === "return") {
+                  this.eat();
+                  return {
+                      kind: "Return",
+                      value: this.parse_expr()
+                  }
+              } else if (this.at().value === "if") {
+                  return this.parse_if_stmt();
+              } else {
+              return this.parse_expr();
+              }
+          case TokenType.FUNC:
+              return this.parse_function_decl();
+          case TokenType.IF:
+              return this.parse_if_stmt();
+          default: {
+              return this.parse_expr();
           }
-        }
-        return this.parse_expr();
-      case TokenType.FUNC:
-        return this.parse_function_decl();
-      default: {
-        return this.parse_expr();
       }
-    }
   }
 
   // Handles Function Declarations
@@ -151,7 +135,31 @@ export default class Parser {
     } as unknown as FunctionDeclaration;
 
     return func;
+  }
+
+  private parse_if_stmt(): IfStatement {
+    this.eat(); // Eat the 'if' keyword
+    const test = this.parse_expr();
+    this.expect(TokenType.OpenParen, "Expected '(' after if condition");
+    this.expect(TokenType.CloseParen, "Expected ')' after if condition");
+    const consequent = this.parse_stmt();
+    let alternate: Stmt | undefined = undefined;
+    if (this.at().value === "else") {
+      this.eat();
+      alternate = this.parse_stmt();
+    }
+    return { kind: "IfStatement", test, consequent, alternate };
+  }
+
+private parse_block(): Stmt[] {
+    const stmts: Stmt[] = [];
+    while (this.at().type !== TokenType.EOF && this.at().type !== TokenType.CLOSEBRACKET) {
+        stmts.push(this.parse_stmt());
+    }
+    this.expect(TokenType.CLOSEBRACKET, "Expected '}' after block");
+    return stmts;
 }
+
 
   // Handle variable declarations
   // ( var | const ) IDENTIFIER ( = EXPR )? ( ; | \n

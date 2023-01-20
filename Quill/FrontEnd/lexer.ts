@@ -42,6 +42,10 @@ export enum TokenType {
     COMMA, // ,
     DOT, // .
     UNDERSCORE, // _
+    IF, // If
+    ELSE, // Else
+    ELIF, //Else if
+    THEN, // Then
 
     // Special
     EOF, // Signified the end of file
@@ -55,6 +59,10 @@ export enum TokenType {
     const: TokenType.Const,
     func: TokenType.FUNC,
     async: TokenType.ASYNC,
+    if: TokenType.IF,
+    else: TokenType.ELSE,
+    elif: TokenType.ELIF,
+    then: TokenType.THEN,
   };
   // Reoresents a single token from the source-code.
   export interface Token {
