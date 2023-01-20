@@ -1,7 +1,7 @@
 import { RuntimeVal, NumberVal } from "./values.ts";
-import { Stmt, NumericLiteral, Identifier, BinaryExpr, Program, VarDeclaration, AssignmentExpr, ObjectLiteral, CallExpr, FunctionDeclaration } from "../FrontEnd/ast.ts";
+import { Stmt, NumericLiteral, Identifier, BinaryExpr, Program, VarDeclaration, AssignmentExpr, ObjectLiteral, CallExpr, FunctionDeclaration, ReturnStmt } from "../FrontEnd/ast.ts";
 import { enal_identifier,eval_assingment,eval_binary_expr, eval_call_expr, eval_object_expr } from "./eval/expressions.ts";
-import { eval_function_decl, eval_program,eval_var_decl } from "./eval/statements.ts";
+import { eval_function_decl, eval_program,eval_var_decl, eval_return_stmt } from "./eval/statements.ts";
 import Enviroment from "./enviroment.ts";
 
 export function evaluate (astNode: Stmt, env: Enviroment): RuntimeVal {
@@ -36,6 +36,10 @@ export function evaluate (astNode: Stmt, env: Enviroment): RuntimeVal {
 
 		case "FunctionDeclaration":
 			return eval_function_decl(astNode as FunctionDeclaration, env);
+
+		case "ReturnStmt":
+			return eval_return_stmt(astNode as ReturnStmt, env);
+
 		// Handle unimplemented ast nodes
 		default:
 			console.error("This ast node has not yet been set up for inter.", astNode);

@@ -13,6 +13,7 @@ import {
   Stmt,
   VarDeclaration,
   FunctionDeclaration,
+  ReturnStmt,
 } from "./ast.ts";
 
 import { Token, tokenize, TokenType } from "./lexer.ts";
@@ -85,9 +86,15 @@ export default class Parser {
       case TokenType.Const:
         return this.parse_var_decl();
       case TokenType.Identifier:
+        // Add a return type so i can do { return type; }
+        if (this.at().value === "return") {
+          return this.parse_return_stmt();
+        }
         return this.parse_expr();
       case TokenType.FUNC:
         return this.parse_function_decl();
+      case TokenType.RETURN:
+        return this.parse_return_stmt();
       default: {
         return this.parse_expr();
       }
@@ -106,7 +113,6 @@ export default class Parser {
         }
         params.push((arg as Identifier).symbol);
     }
-
     this.expect(TokenType.OPENBRACKET, "Expected '{' after function parameters");
     const body: Stmt[] = [];
     while (this.at().type !== TokenType.EOF && this.at().type !== TokenType.CLOSEBRACKET) {
@@ -122,7 +128,19 @@ export default class Parser {
     } as unknown as FunctionDeclaration;
 
     return func;
-}
+  } 
+
+  // Handles Return Statements
+  // return EXPR ;
+  parse_return_stmt(): Stmt {
+    this.eat(); // Eat the 'return' keyword
+    const expr = this.parse_expr();
+    this.expect(TokenType.Semicolen, "Expected ';' after return statement");
+    return {
+      kind: "ReturnStmt",
+      value: expr,
+    }as ReturnStmt;
+  }
 
   // Handle variable declarations
   // ( var | const ) IDENTIFIER ( = EXPR )? ( ; | \n

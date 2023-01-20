@@ -1,7 +1,7 @@
 import Enviroment from "../enviroment.ts";
 import { evaluate } from "../interpreter.ts";
 import { RuntimeVal,MK_NULL, FunctionVal } from "../values.ts";
-import { FunctionDeclaration, Program, VarDeclaration } from "../../FrontEnd/ast.ts";
+import { FunctionDeclaration, Program, ReturnStmt, VarDeclaration } from "../../FrontEnd/ast.ts";
 
 export function eval_program(program: Program, env: Enviroment): RuntimeVal {
 	let lastEvaluated: RuntimeVal = MK_NULL();
@@ -17,6 +17,14 @@ export function eval_var_decl(
 	): RuntimeVal {
     const value = declaration.value ? evaluate(declaration.value, env) : MK_NULL();
         return env.declareVar(declaration.identifier, value, declaration.constant);
+}
+
+export function eval_return_stmt(
+	stmt: ReturnStmt,
+	env: Enviroment
+	): RuntimeVal {
+	const returnvalue = evaluate(stmt.value, env);
+	return returnvalue;
 }
 
 export function eval_function_decl(

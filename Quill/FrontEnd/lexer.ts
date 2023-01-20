@@ -46,6 +46,7 @@ export enum TokenType {
     ELSE, // Else
     ELIF, //Else if
     THEN, // Then
+    RETURN,// return
 
     // Special
     EOF, // Signified the end of file
@@ -63,6 +64,7 @@ export enum TokenType {
     else: TokenType.ELSE,
     elif: TokenType.ELIF,
     then: TokenType.THEN,
+    return: TokenType.RETURN,
   };
   // Reoresents a single token from the source-code.
   export interface Token {

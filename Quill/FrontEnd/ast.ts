@@ -14,6 +14,7 @@ export type NodeType =
     | "AssignmentExpr"
     | "MemberExpr"
     | "CallExpr"
+    | "ReturnStmt"
 
     // Literals
     | "Property"
@@ -26,21 +27,9 @@ export interface Stmt {
     kind: NodeType;
 }
 
-interface Block extends Stmt {
-    kind: "Block";
-    body: Stmt[];
-}
-
 export interface Program extends Stmt {
     kind: "Program";
     body: Stmt[];
-}
-
-export interface IfStatement extends Stmt {
-    kind: "IfStatement";
-    test: Expr;
-    consequent: Stmt;
-    alternate?: Stmt;
 }
 
 export interface VarDeclaration extends Stmt {
@@ -105,4 +94,9 @@ export interface Property extends Expr {
 export interface ObjectLiteral extends Expr {
     kind: "ObjectLiteral";
     properties: Property[];
+}
+
+export interface ReturnStmt extends Expr {
+    kind: "ReturnStmt";
+    value: Expr;
 }
