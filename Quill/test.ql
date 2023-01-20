@@ -1,13 +1,13 @@
 func random (min, max) {
-	have result := CSRandom(min, max);
+	have result := Random(min, max);
 
-	result
+	return result;
 }
 
 func add_2_numbers (a, b) {
 	have result := a + b;
 
-	result
+	return result;
 }
 
 const add := add_2_numbers(10, 20);

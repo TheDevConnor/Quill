@@ -12,6 +12,7 @@ import {
   Stmt,
   VarDeclaration,
   FunctionDeclaration,
+Return,
 } from "./ast.ts";
 
 import { Token, tokenize, TokenType } from "./lexer.ts";
@@ -78,12 +79,41 @@ export default class Parser {
   }
 
   // Handle complex statement types
+  // private parse_stmt(): Stmt {
+  //   switch (this.at().type) {
+  //     case TokenType.Var:
+  //     case TokenType.Const:
+  //       return this.parse_var_decl();
+  //     case TokenType.Identifier:
+  //       return this.parse_expr();
+  //     case TokenType.FUNC:
+  //       return this.parse_function_decl();
+  //     default: {
+  //       return this.parse_expr();
+  //     }
+  //   }
+  // }
   private parse_stmt(): Stmt {
     switch (this.at().type) {
       case TokenType.Var:
       case TokenType.Const:
         return this.parse_var_decl();
       case TokenType.Identifier:
+        if (this.at().value === "return") {
+          this.eat();
+          let returnValue = this.parse_expr();
+          if(this.at().value === ";") {
+            this.eat();
+            return {
+              kind: "Return",
+              value: returnValue,
+              semi_colon: true
+            } as Return;
+          } else {
+              console.error("Return statement should end with ';' ");
+              Deno.exit(1);
+          }
+        }
         return this.parse_expr();
       case TokenType.FUNC:
         return this.parse_function_decl();
