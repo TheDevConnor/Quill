@@ -1,0 +1,501 @@
+The syntax of Quill:
+
+RTT is not a case sensitive language
+integers will be represented as an i32
+operations will include +,- for addition and subtraction
+assignments will be performed by :=
+RTT will support a type interface, so you don't need to specify
+RTT will use => for type annotation
+have will be used for variable assignment and const for constants
+convention will be that constants should be written in uppercase
+for example the follolwing are valid statements
+```
+have n1 := 10
+have n2 => i32 := 20
+const MAX = 1000
+```
+
+Maybe change the name declaration to This
+```
+/* the type of n1 will be inferred to be i32 */
+/* then the name declaration */
+i32 n1 := 10
+```
+
+also i have decide to add suport for a const declaration
+```
+const obj := {
+       x: 10,
+       y: 20,
+       foo,
+       complex: {
+              bar => true,
+       },
+}
+```
+
+Comments will be represented by /*
+console.print will be the print output mechanism
+for example
+```
+/* This will print the number 10
+console.print(10)
+```
+
+Using the above syntax, the following code will be valid
+    To add 2 numbers together and print the result with
+       type annotations
+```
+/* Declare two variables num1 and num2 of type i32 and initialize 
+them with values 10 and 20 respectively */ 
+have n1 => i32 := 10
+have n2 => i32 := 20
+
+/* Declare a variable sum of type i32 and initialize it with the 
+sum of num1 and num2 */
+have sum => i32 := n1 + n2
+
+/* Print the value of sum to the console */
+console.print(sum)
+```
+
+I have decided to extend RTT to support functions...
+the keyword for function will be func
+the name of the function will be written in snake case by convention but it will be enforced
+() braces will be used for parameters
+{} for will be used for block
+: will be used for return type annotation
+return type annotation not required for returning void
+return will be the keyword to return a value
+an example function will be
+```
+func add_2_numbers (n1 => i32, n2 => i32) => i32 {
+       return n1 + n2
+}
+```
+
+Here is an example of a function that adds 2 numbers
+```
+func add(n1 => i32, n2 => i32) => i32 {
+       return n1 + n2
+}
+
+have result => i32 := add(10, 20)
+console.print(result) /* will print 30 */
+```
+
+Here is an example of a function that squares a number
+```
+func square(n => i32) => i32 {
+       return n * n
+}
+
+have result => i32 := square(10)
+console.print(result) /* will print 100 */
+```
+
+I have decided to extend RTT to support if statements
+the keyword for if will be if
+the keyword for else will be else
+the keyword for else if will be elif
+Here is an example of an if statement
+```
+have n1 => i32 := 10
+have n2 => i32 := 20
+
+if (n1 > n2) {
+       console.print("n1 is greater than n2")
+} elif (n1 < n2) {
+       console.print("n1 is less than n2")
+} else {
+       console.print("n1 is equal to n2")
+}
+```
+or it can also be written as follows
+```
+have n1 := 10
+have n2 := 20
+
+if (n1 > n2) {
+       console.print("n1 is greater than n2")
+} else if (n1 < n2) {
+       console.print("n1 is less than n2")
+} else {
+       console.print("n1 is equal to n2")
+}
+```
+
+I have decided to extend RTT to support while loops
+the keyword for while will be while
+the keyword for break will be break
+the keyword for continue will be continue
+Here is an example of a while loop
+```
+have n := 0
+while (n < 10) {
+       console.print(n)
+       n = n + 1
+       break
+}
+```
+
+I have decided to extend RTT to support for loops
+the keyword for for will be for
+the keyword for break will be break
+the keyword for continue will be continue
+Here is an example of a for loop
+```
+for (n := 0; n < 10; n = n + 1) {
+       console.print(n)
+       break
+}
+
+for (n := 0; n < 10; n = n + 1) {
+       console.print(n)
+       continue
+}
+```
+
+I have decided to extend RTT to support switch statements
+the keyword for switch will be switch
+the keyword for case will be case
+the keyword for default will be default
+Here is an example of a switch statement
+```
+/* Declare a variable n of type i32 and initialize it with value 10 */
+have n := 10
+
+switch (n) {
+       case 10:
+              console.print("n is 10")
+              break
+        case 20:
+                console.print("n is 20")
+                break
+    default:
+            console.print("n is not 10 or 20")
+            break
+}
+```
+
+I have decided to extend RTT to support arrays
+the keyword for array will be array
+the keyword for array length will be leng
+Here is an example of an array
+```
+/* Declare an array of type i32 and initialize it with values 1, 2, 3, 4, 5 */
+have arr => array[i32] := [1, 2, 3, 4, 5]
+
+/* Declare a variable arr_len of type i32 and initialize it with the length of the array arr */
+have arr_len => i32 := leng(arr)
+
+/* Print the value of arr_len to the console */
+console.print(arr_len) /* will print 5 */
+```
+
+I have decided to extend RTT to support structs
+the keyword for struct will be struct
+Here is an example of a struct
+```
+/* Declare a struct of type Person with fields name and age */
+struct Person {
+       name => string
+       age => i32
+}
+
+/* Declare a variable p of type Person and initialize it with values "John" and 20 */
+have p => Person := Person { name: "John", age: 20 }
+
+/* Print the value of p to the console */
+console.print(p) /* will print { name: "John", age: 20 } */
+```
+
+I have decided to extend RTT to support enums
+the keyword for enum will be enum
+Here is an example of an enum
+```
+/* Declare an enum of type Color with variants Red, Green and Blue */
+enum Color {
+       Red
+       Green
+       Blue
+}
+
+/* Declare a variable c of type Color and initialize it with the variant Red */
+have c => Color := Color.Red
+
+/* Print the value of c to the console */
+console.print(c) /* will print Red */
+```
+
+I have decided to extend RTT to support modules
+the keyword for module will be module
+Here is an example of a module
+```
+/* Declare a module of type math */
+module math {
+       /* Declare a function of type add that takes 2 parameters of type i32 and returns a value of type i32 */
+       func add(n1 => i32, n2 => i32) => i32 {
+              return n1 + n2
+       }
+}
+
+/* Declare a variable sum of type i32 and initialize it with the sum of 10 and 20 */
+have sum => i32 := math.add(10, 20)
+
+/* Print the value of sum to the console */
+console.print(sum) /* will print 30 */
+```
+
+I have decided to extend RTT to support classes
+the keyword for class will be class
+Here is an example of a class
+```
+/* Declare a class of type Person with fields name and age */
+class Person {
+       name => string
+       age => i32
+}
+
+/* Declare a variable p of type Person and initialize it with values "John" and 20 */
+have p => Person := Person { name: "John", age: 20 }
+
+/* Print the value of p to the console */
+console.print(p) /* will print { name: "John", age: 20 } */
+```
+
+I have decided to extend RTT to support interfaces
+the keyword for interface will be interf
+Here is an example of an interface
+```
+/* Declare an interface of type Person with fields name and age */
+interf Person {
+       name => string
+       age => i32
+}
+
+/* Declare a variable p of type Person and initialize it with values "John" and 20 */
+have p => Person := Person { name: "John", age: 20 }
+
+/* Print the value of p to the console */
+console.print(p) /* will print { name: "John", age: 20 } */
+```
+
+I have decided to extend RTT to support generics
+the keyword for generic will be gen
+Here is an example of a generic
+```
+/* Declare a generic of type T */
+gen T
+
+/* Declare a variable t of type T and initialize it with value 10 */ 
+have t => T := 10
+
+/* Print the value of t to the console */
+console.print(t) /* will print 10 */
+```
+
+I have decided to extend RTT to support traits
+the keyword for trait will be trait
+Here is an example of a trait
+```
+/* Declare a trait of type Person with fields name and age */
+trait Person {
+       name => string
+       age => i32
+}
+
+/* Declare a variable p of type Person and initialize it with values "John" and 20 */
+have p => Person := Person { name: "John", age: 20}
+
+/* Print the value of p to the console */
+console.print(p) /* will print { name: "John", age: 20 } */
+```
+
+I have decided to extend RTT to support closures
+the keyword for closure will be closure
+Here is an example of a closure
+```
+/* Declare a closure of type add that takes 2 parameters of type i32 and returns a value of type i32 */
+closure add(n1 => i32, n2 => i32) => i32 {
+       return n1 + n2
+}
+
+/* Declare a variable sum of type i32 and initialize it with the sum of 10 and 20 */
+have sum => i32 := add(10, 20)
+
+/* Print the value of sum to the console */
+console.print(sum) /* will print 30 */
+```
+
+Using RTT, lets make a random number generator
+```
+/* Declare a module of type rand */
+module rand {
+    /* Declare a function of type rand that takes 1 parameter of type i32 (i32 is an int) and returns a value of type i32 (i32 is an int) */
+    func rand(max => i32) => i32 {
+            /* Declare a variable of type i32 and initialize it with a random number between 0 and max */
+            /* The % operator is the modulo operator */
+            /* The modulo operator returns the remainder of a division */
+            /* For example, 10 % 3 = 1 */
+            have n := rand() % max
+            return n
+    }
+}
+
+/* Declare a variable of type i32 and initialize it with a random number between 0 and 10 */
+have n := rand.rand(10)
+
+/* Print the value of n to the console */
+console.print(n)
+```
+
+Using RTT, lets make a function that returns the sum of 2 numbers
+```
+/* Declare a module of type math */
+module math {
+    /* Declare a function of type add that takes 2 parameters of type i32 (i32 is an int) and returns a value of type i32 */
+    func add(n1 => i32, n2 => i32) => i32 {
+            /* Declare a variable of type i32 and initialize it with the sum of n1 and n2 */
+            have n := n1 + n2
+            return n
+    }
+
+    /* Declare a function of type sub that takes 2 parameters of type i32 (i32 is an int) and returns a value of type i32 */
+    func sub(n1 => i32, n2 => i32) => i32 {
+            /* Declare a variable of type i32 and initialize it with the difference of n1 and n2 */
+            have n := n1 - n2
+            return n
+    }
+
+    /* Declare a function of type mul that takes 2 parameters of type i32 (i32 is an int) and returns a value of type i32 */
+    func mul(n1 => i32, n2 => i32) => i32 {
+            /* Declare a variable of type i32 and initialize it with the product of n1 and n2 */
+            have n := n1 * n2
+            return n
+    }
+
+    /* Declare a function of type div that takes 2 parameters of type i32 (i32 is an int) and returns a value of type i32 */
+    func div(n1 => i32, n2 => i32) => i32 {
+            /* Declare a variable of type i32 and initialize it with the quotient of n1 and n2 */
+            have n := n1 / n2
+            return n
+    }
+
+    /* Declare a function of type mod that takes 2 parameters of type i32 (i32 is an int) and returns a value of type i32 */
+    func mod(n1 => i32, n2 => i32) => i32 {
+            /* Declare a variable of type i32 and initialize it with the remainder of n1 and n2 */
+            /* The % operator is the modulo operator */
+            /* The modulo operator returns the remainder of a division */
+            /* For example, 10 % 3 = 1 */
+            have n := n1 % n2
+            return n
+    }
+
+    /* Declare a function of type pow that takes 2 parameters of type i32 (i32 is an int) and returns a value of type i32 */
+    func pow(n1 => i32, n2 => i32) => i32 {
+            /* Declare a variable of type i32 and initialize it with the power of n1 and n2 */
+            /* The ** operator is the power operator */
+            /* The power operator returns the power of a number */
+            /* For example, 2 ** 3 = 8 */
+            have n := n1 ** n2
+            return n
+    }
+
+    /* Declare a function of type sqrt that takes 1 parameter of type i32 (i32 is an int) and returns a value of type i32 */
+    func sqrt(n1 => i32) => i32 {
+            /* Declare a variable of type i32 and initialize it with the square root of n1 */
+            /* The sqrt() function is the square root function */
+            /* The square root function returns the square root of a number */
+            /* For example, sqrt(9) = 3 */
+            have n := sqrt(n1)
+            return n
+    }
+
+    /* Declare a function of type cbrt that takes 1 parameter of type i32 (i32 is an int) and returns a value of type i32 */
+    func cbrt(n1 => i32) => i32 {
+            /* Declare a variable of type i32 and initialize it with the cube root of n1 */
+            /* The cbrt() function is the cube root function */
+            /* The cube root function returns the cube root of a number */
+            /* For example, cbrt(27) = 3 */
+            have n := cbrt(n1)
+            return n
+    }
+
+    /* Declare a function of type abs that takes 1 parameter of type i32 (i32 is an int) and returns a value of type i32 */
+    func abs(n1 => i32) => i32 {
+            /* Declare a variable of type i32 and initialize it with the absolute value of n1 */
+            /* The abs() function is the absolute value function */
+            /* The absolute value function returns the absolute value of a number */
+            /* For example, abs(-10) = 10 */
+            have n := abs(n1)
+            return n
+    }
+}
+
+/* Declare a variable of type i32 and initialize it with the sum of 10 and 20 */
+have n := math.add(10, 20)
+
+/* Declare a variable of type i32 and initialize it with the sub of 10 and 20 */
+have n := math.sub(10, 20)
+
+/* Declare a variable of type i32 and initialize it with the mul of 10 and 20 */
+have n := math.mul(10, 20)
+
+/* Declare a variable of type i32 and initialize it with the div of 10 and 20 */
+have n := math.div(10, 20)
+
+/* Declare a variable of type i32 and initialize it with the mod of 10 and 20 */
+have n := math.mod(10, 20)
+
+/* Declare a variable of type i32 and initialize it with the pow of 10 and 20 */
+have n := math.pow(10, 20)
+
+/* Declare a variable of type i32 and initialize it with the sqrt of 10 */
+have n := math.sqrt(10)
+
+/* Print the value of n to the console */
+console.print(n)
+```
+-----------------
+Built in functions
+-----------------
+```
+math
+random
+print
+input
+```
+-----------------
+Built in types
+-----------------
+```
+i32
+i64
+f32
+f64
+bool
+string
+```
+-----------------
+Built in operators
+-----------------
+```
++ - * / % ** sqrt() cbrt() abs()
+```
+-----------------
+Built in keywords
+-----------------
+```
+have
+return
+func
+module
+```
+-----------------
+Built in constants
+-----------------
+```
+true
+false
+```
