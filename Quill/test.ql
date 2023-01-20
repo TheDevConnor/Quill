@@ -5,6 +5,6 @@ func random (min, max) {
 	return result;
 }
 
-const results := random(10, 20);
+have results := random(10, 20);
 
 CSPrint(results)

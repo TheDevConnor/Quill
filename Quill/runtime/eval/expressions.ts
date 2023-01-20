@@ -1,4 +1,4 @@
-import { AssignmentExpr, BinaryExpr,CallExpr,Identifier, ObjectLiteral } from "../../FrontEnd/ast.ts";
+import { AssignmentExpr, BinaryExpr,CallExpr,Identifier, ObjectLiteral, GreaterThanExpr, LessThanExpr } from "../../FrontEnd/ast.ts";
 import Enviroment from "../enviroment.ts";
 import { evaluate } from "../interpreter.ts";
 import { NumberVal,RuntimeVal,MK_NULL, ObjectVal, NativeFunctionVal, FunctionVal, NullVal } from "../values.ts";
@@ -54,7 +54,7 @@ export function eval_binary_expr (binop: BinaryExpr, env: Enviroment): NumberVal
 	return MK_NULL() as NullVal;
 }
 
-export function eval_greater_than_expr (binop: BinaryExpr, env: Enviroment): NumberVal | NullVal {
+export function eval_greater_than_expr (binop: GreaterThanExpr, env: Enviroment): NumberVal | NullVal {
 	const leftHandSide = evaluate(binop.left, env);
 	const rightHandSide = evaluate(binop.right, env);
 
@@ -66,7 +66,7 @@ export function eval_greater_than_expr (binop: BinaryExpr, env: Enviroment): Num
 	return MK_NULL() as NullVal;
 }
 
-export function eval_less_than_expr (binop: BinaryExpr, env: Enviroment): NumberVal | NullVal {
+export function eval_less_than_expr (binop: LessThanExpr, env: Enviroment): NumberVal | NullVal {
 	const leftHandSide = evaluate(binop.left, env);
 	const rightHandSide = evaluate(binop.right, env);
 

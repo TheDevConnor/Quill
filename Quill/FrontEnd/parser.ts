@@ -95,6 +95,8 @@ export default class Parser {
         return this.parse_function_decl();
       case TokenType.RETURN:
         return this.parse_return_stmt();
+      case TokenType.IF:
+        return this.parse_if_stmt();
       default: {
         return this.parse_expr();
       }
@@ -185,9 +187,61 @@ export default class Parser {
     return declaration;
   }
 
+    // Handle Greater Than >
+    private parse_greater_than_expr(left: Expr, operator: Token, right: Expr): Expr {
+      left = this.parse_call_member_expr();
+      
+      while (this.at().type == TokenType.GT) {
+        operator = this.eat();
+        right = this.parse_call_member_expr();
+        left = {
+          kind: "BinaryExpr",
+          left,
+          right,
+          operator: operator.value,
+        }as unknown as BinaryExpr;
+      }
+      return left;
+    }
+  
+    // Handle Less Than <
+    private parse_less_than_expr(left: Expr, operator: Token, right: Expr): Expr {
+      left = this.parse_call_member_expr();
+      operator = this.eat();
+      while (this.at().type == TokenType.LT) {
+        this.eat().value;
+        right = this.parse_call_member_expr();
+        left = {
+          kind: "BinaryExpr",
+          left,
+          right,
+          operator: operator.value,
+        }as unknown as BinaryExpr;
+      }
+      return left;
+    }
+
   // Handle expressions
   private parse_expr(): Expr {
-    return this.parse_assignment_expr();
+    let node = this.parse_assignment_expr();
+
+    while (this.at().type == TokenType.GT) {
+      const operator = this.eat();
+        const right = this.parse_primary_expr();
+        node = this.parse_greater_than_expr(node, operator, right);
+    }
+
+    while (this.at().type == TokenType.LT) {
+      const operator = this.eat();
+        const right = this.parse_primary_expr();
+        node = this.parse_less_than_expr(node, operator, right);
+    }
+
+    return node;
+  }
+
+  private parse_if_stmt(): Stmt {
+    throw new Error("Method not implemented.");
   }
 
   private parse_assignment_expr(): Expr {
@@ -295,40 +349,6 @@ export default class Parser {
       }as unknown as BinaryExpr;
     }
 
-    return left;
-  }
-
-  // Handle Greater Than >
-  private parse_greater_than_expr(): Expr {
-    let left = this.parse_primary_expr();
-    
-    while (this.at().value === ">") {
-      const operator = this.eat().value;
-      const right = this.parse_primary_expr();
-      left = {
-        kind: "BinaryExpr",
-        left,
-        right,
-        operator,
-      }as unknown as BinaryExpr;
-    }
-    return left;
-  }
-
-  // Handle Less Than <
-  private parse_less_than_expr(): Expr {
-    let left = this.parse_primary_expr();
-    
-    while (this.at().value === "<") {
-      const operator = this.eat().value;
-      const right = this.parse_primary_expr();
-      left = {
-        kind: "BinaryExpr",
-        left,
-        right,
-        operator,
-      }as unknown as BinaryExpr;
-    }
     return left;
   }
 
@@ -455,11 +475,6 @@ export default class Parser {
         ); // closing paren
         return value;
       }
-
-      case TokenType.GT:
-        return this.parse_greater_than_expr();
-      case TokenType.LT:
-        return this.parse_less_than_expr();
 
       // Unidentified Tokens and Invalid Code Reached
       default:

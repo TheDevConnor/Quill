@@ -68,11 +68,13 @@ export interface GreaterThanExpr extends Expr {
     kind: "GreaterThanExpr";
     left: Expr;
     right: Expr;
+    operator: string;
 }
 export interface LessThanExpr extends Expr {
     kind: "LessThanExpr";
     left: Expr;
     right:Expr;
+    operator: string;
 }
 
 export interface CallExpr extends Expr {
