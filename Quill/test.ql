@@ -1,13 +1,13 @@
 func random (min, max) {
 	have result := Random(min, max);
 
-	return result;
+	return result
 }
 
 func add_2_numbers (a, b) {
 	have result := a + b;
 
-	return result;
+	return result
 }
 
 const a := 10;
