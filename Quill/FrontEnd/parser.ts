@@ -187,39 +187,39 @@ export default class Parser {
     return declaration;
   }
 
-    // Handle Greater Than >
-    private parse_greater_than_expr(left: Expr, operator: Token, right: Expr): Expr {
-      left = this.parse_call_member_expr();
-      
-      while (this.at().type == TokenType.GT) {
-        operator = this.eat();
-        right = this.parse_call_member_expr();
-        left = {
-          kind: "BinaryExpr",
-          left,
-          right,
-          operator: operator.value,
-        }as unknown as BinaryExpr;
-      }
-      return left;
-    }
-  
-    // Handle Less Than <
-    private parse_less_than_expr(left: Expr, operator: Token, right: Expr): Expr {
-      left = this.parse_call_member_expr();
+  // Handle Greater Than >
+  private parse_greater_than_expr(left: Expr, operator: Token, right: Expr): Expr {
+    left = this.parse_call_member_expr();
+    
+    while (this.at().type == TokenType.GT) {
       operator = this.eat();
-      while (this.at().type == TokenType.LT) {
-        this.eat().value;
-        right = this.parse_call_member_expr();
-        left = {
-          kind: "BinaryExpr",
-          left,
-          right,
-          operator: operator.value,
-        }as unknown as BinaryExpr;
-      }
-      return left;
+      right = this.parse_call_member_expr();
+      left = {
+        kind: "BinaryExpr",
+        left,
+        right,
+        operator: operator.value,
+      }as unknown as BinaryExpr;
     }
+    return left;
+  }
+  
+  // Handle Less Than <
+  private parse_less_than_expr(left: Expr, operator: Token, right: Expr): Expr {
+    left = this.parse_call_member_expr();
+    operator = this.eat();
+    while (this.at().type == TokenType.LT) {
+      this.eat().value;
+      right = this.parse_call_member_expr();
+      left = {
+        kind: "BinaryExpr",
+        left,
+        right,
+        operator: operator.value,
+      }as unknown as BinaryExpr;
+    }
+    return left;
+  }
 
   // Handle expressions
   private parse_expr(): Expr {
