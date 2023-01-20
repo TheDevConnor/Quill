@@ -8,4 +8,3 @@ func random (min, max) {
 const results := random(10, 20);
 
 CSPrint(results)
-

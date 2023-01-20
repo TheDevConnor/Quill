@@ -3,8 +3,6 @@
 //---   Responsible for producing tokens from the source   ---
 //------------------------------------------------------------
 
-import Enviroment from "../runtime/enviroment.ts";
-
 export enum TokenType {
     // Literal Types
     Number,
@@ -22,6 +20,9 @@ export enum TokenType {
     ARROWRIGHT, // >
     ARROWUP, // ^
     DASH, // -
+
+    GT, // >
+    LT, // <
   
     OpenParen, // (
     CloseParen, // )
@@ -128,10 +129,6 @@ export enum TokenType {
         tokens.push(token(src.shift(), TokenType.OpenParen));
       } else if (src[0] == ")") {
         tokens.push(token(src.shift(), TokenType.CloseParen));
-      } else if (src[0] == "<") {
-        tokens.push(token(src.shift(), TokenType.ARROWLEFT));
-      } else if (src[0] == ">") {
-        tokens.push(token(src.shift(), TokenType.ARROWRIGHT));
       } else if (src[0] == "[") {
         tokens.push(token(src.shift(), TokenType.OPENBRACE));
       } else if (src[0] == "]") {
@@ -168,6 +165,12 @@ export enum TokenType {
         if(tokens[tokens.length - 1].type === TokenType.Identifier){
           tokens.push(token(src.shift(), TokenType.COLON));
         }
+      }
+      else if (src[0] == "<"){
+        tokens.push(token(src.shift(), TokenType.LT));
+      }
+      else if (src[0] == ">"){
+        tokens.push(token(src.shift(), TokenType.GT));
       }
       else if (src[0] == ","){
         tokens.push(token(src.shift(), TokenType.COMMA));

@@ -298,6 +298,40 @@ export default class Parser {
     return left;
   }
 
+  // Handle Greater Than >
+  private parse_greater_than_expr(): Expr {
+    let left = this.parse_primary_expr();
+    
+    while (this.at().value === ">") {
+      const operator = this.eat().value;
+      const right = this.parse_primary_expr();
+      left = {
+        kind: "BinaryExpr",
+        left,
+        right,
+        operator,
+      }as unknown as BinaryExpr;
+    }
+    return left;
+  }
+
+  // Handle Less Than <
+  private parse_less_than_expr(): Expr {
+    let left = this.parse_primary_expr();
+    
+    while (this.at().value === "<") {
+      const operator = this.eat().value;
+      const right = this.parse_primary_expr();
+      left = {
+        kind: "BinaryExpr",
+        left,
+        right,
+        operator,
+      }as unknown as BinaryExpr;
+    }
+    return left;
+  }
+
   // foo.x()()
 	private parse_call_member_expr(): Expr {
 		const member = this.parse_member_expr();
@@ -421,6 +455,11 @@ export default class Parser {
         ); // closing paren
         return value;
       }
+
+      case TokenType.GT:
+        return this.parse_greater_than_expr();
+      case TokenType.LT:
+        return this.parse_less_than_expr();
 
       // Unidentified Tokens and Invalid Code Reached
       default:

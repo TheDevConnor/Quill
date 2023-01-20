@@ -22,6 +22,8 @@ export type NodeType =
     | "NumericLiteral"
     | "Identifier" 
     | "BinaryExpr"
+    | "GreaterThanExpr"
+    | "LessThanExpr"
 
 export interface Stmt {
     kind: NodeType;
@@ -60,6 +62,17 @@ export interface BinaryExpr extends Expr {
     left: Expr;
     right: Expr;
     operator: string;
+}
+
+export interface GreaterThanExpr extends Expr {
+    kind: "GreaterThanExpr";
+    left: Expr;
+    right: Expr;
+}
+export interface LessThanExpr extends Expr {
+    kind: "LessThanExpr";
+    left: Expr;
+    right:Expr;
 }
 
 export interface CallExpr extends Expr {

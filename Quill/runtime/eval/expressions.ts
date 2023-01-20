@@ -54,6 +54,30 @@ export function eval_binary_expr (binop: BinaryExpr, env: Enviroment): NumberVal
 	return MK_NULL() as NullVal;
 }
 
+export function eval_greater_than_expr (binop: BinaryExpr, env: Enviroment): NumberVal | NullVal {
+	const leftHandSide = evaluate(binop.left, env);
+	const rightHandSide = evaluate(binop.right, env);
+
+	if (leftHandSide.type == "number" && rightHandSide.type == "number"){
+		return eval_numeric_binary_expr(leftHandSide as NumberVal,
+			rightHandSide as NumberVal, binop.operator);
+	}
+	// One or both are null
+	return MK_NULL() as NullVal;
+}
+
+export function eval_less_than_expr (binop: BinaryExpr, env: Enviroment): NumberVal | NullVal {
+	const leftHandSide = evaluate(binop.left, env);
+	const rightHandSide = evaluate(binop.right, env);
+
+	if (leftHandSide.type == "number" && rightHandSide.type == "number"){
+		return eval_numeric_binary_expr(leftHandSide as NumberVal,
+			rightHandSide as NumberVal, binop.operator);
+	}
+	// One or both are null
+	return MK_NULL() as NullVal;
+}
+
 export function enal_identifier (ident: Identifier, env: Enviroment): RuntimeVal {
 	const val = env.lookupvar(ident.symbol);
 	return val;
