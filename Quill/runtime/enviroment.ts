@@ -13,6 +13,26 @@ export function createGlobalENV () {
 		return MK_NULL();
 	}), true);
 
+	env.declareVar("CSError", MK_NATIVE_FUNCTION((args, scope) => {
+		console.error(...args);
+		return MK_NULL();
+	}), true);
+
+	env.declareVar("CSWarning", MK_NATIVE_FUNCTION((args, scope) => {
+		console.warn(...args);
+		return MK_NULL();
+	}), true);
+
+	env.declareVar("CSInfo", MK_NATIVE_FUNCTION((args, scope) => {
+		console.info(...args);
+		return MK_NULL();
+	}), true);
+
+	env.declareVar("CSDebug", MK_NATIVE_FUNCTION((args, scope) => {
+		console.debug(...args);
+		return MK_NULL();
+	}), true);
+
 	// Time
 	function timeFunction (_args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
 		return MK_NUMBER(Date.now());

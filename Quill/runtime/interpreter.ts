@@ -39,7 +39,7 @@ export function evaluate (astNode: Stmt, env: Enviroment): RuntimeVal {
 
 		case "Return":
 			return eval_return(astNode as Return, env);
-			
+		
 		// Handle unimplemented ast nodes
 		default:
 			console.error("This ast node has not yet been set up for inter.", astNode);
