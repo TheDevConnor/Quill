@@ -17,7 +17,7 @@ export function createGlobalENV () {
 	function timeFunction (_args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
 		return MK_NUMBER(Date.now());
 	}
-	env.declareVar("CSGetTime", MK_NATIVE_FUNCTION(timeFunction), true);
+	env.declareVar("GetTime", MK_NATIVE_FUNCTION(timeFunction), true);
 
 	// Picks a random number between two given numbers
 	function randomFunction (args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
@@ -34,14 +34,7 @@ export function createGlobalENV () {
 		return MK_NUMBER(Math.random() * (max.value - min.value) + min.value);
 
 	}
-	env.declareVar("CSRandom", MK_NATIVE_FUNCTION(randomFunction), true);
-
-	// will get the current date in a string format
-	function dateStringFunction (_args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
-		const date = new Date();
-		return MK_NUMBER(date.getTime());
-	}
-	env.declareVar("CSGetDate", MK_NATIVE_FUNCTION(dateStringFunction), true);
+	env.declareVar("Random", MK_NATIVE_FUNCTION(randomFunction), true);
 
 	return env;
 }

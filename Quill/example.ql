@@ -20,7 +20,7 @@ f := f / 4 + 5
 CSPrint(f, 45)
 --------------------------------------------------------------------------------------------------------------------------------
 func random (min, max) {
-	have result := CSRandom(min, max);
+	have result := Random(min, max);
 
 	result
 }
