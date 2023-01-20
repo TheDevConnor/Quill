@@ -14,9 +14,12 @@ export type NodeType =
     | "AssignmentExpr"
     | "MemberExpr"
     | "CallExpr"
+<<<<<<< HEAD
     | "Return"
     | "IfStatement"
     | "Block"
+=======
+>>>>>>> parent of 4d4bf41 (added a return type!)
 
     // Literals
     | "Property"
@@ -51,12 +54,6 @@ export interface VarDeclaration extends Stmt {
     constant: boolean,
     identifier: string,
     value?: Expr,
-}
-
-export interface Return extends Stmt {
-    kind: "Return";
-    value: Expr;
-    semi_colon: boolean;
 }
 
 export interface FunctionDeclaration extends Stmt {

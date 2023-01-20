@@ -12,8 +12,11 @@ import {
   Stmt,
   VarDeclaration,
   FunctionDeclaration,
+<<<<<<< HEAD
   Return,
 IfStatement,
+=======
+>>>>>>> parent of 4d4bf41 (added a return type!)
 } from "./ast.ts";
 
 import { Token, tokenize, TokenType } from "./lexer.ts";
@@ -80,6 +83,7 @@ export default class Parser {
   }
 
   // Handle complex statement types
+<<<<<<< HEAD
     private parse_stmt(): Stmt {
       switch (this.at().type) {
           case TokenType.Var:
@@ -104,6 +108,19 @@ export default class Parser {
           default: {
               return this.parse_expr();
           }
+=======
+  private parse_stmt(): Stmt {
+    switch (this.at().type) {
+      case TokenType.Var:
+      case TokenType.Const:
+        return this.parse_var_decl();
+      case TokenType.Identifier:
+        return this.parse_expr();
+      case TokenType.FUNC:
+        return this.parse_function_decl();
+      default: {
+        return this.parse_expr();
+>>>>>>> parent of 4d4bf41 (added a return type!)
       }
   }
 
