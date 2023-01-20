@@ -14,12 +14,6 @@ export type NodeType =
     | "AssignmentExpr"
     | "MemberExpr"
     | "CallExpr"
-<<<<<<< HEAD
-    | "Return"
-    | "IfStatement"
-    | "Block"
-=======
->>>>>>> parent of 4d4bf41 (added a return type!)
 
     // Literals
     | "Property"
