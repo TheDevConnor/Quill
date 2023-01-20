@@ -39,6 +39,7 @@ export function evaluate (astNode: Stmt, env: Enviroment): RuntimeVal {
 
 		case "Return":
 			return eval_return(astNode as Return, env);
+<<<<<<< HEAD
 
 		case "IfStatement": {
 			const { test, consequent, alternate } = astNode as IfStatement;
@@ -51,6 +52,9 @@ export function evaluate (astNode: Stmt, env: Enviroment): RuntimeVal {
 			break;
 		}
 
+=======
+			
+>>>>>>> parent of 7105b5f (Added in different typs of print statements)
 		// Handle unimplemented ast nodes
 		default:
 			console.error("This ast node has not yet been set up for inter.", astNode);

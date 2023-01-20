@@ -499,30 +499,3 @@ Built in constants
 true
 false
 ```
-
-Add in diffent type of print statement
-CSPrint(message, ERROR)
-CSPrint(message, WARNING)
-CSPrint(message, DEBUG)
-CSPrint(message, INFO)
-
-CSInput(message)
-
-Add in a graphic and sound engine and Input
-
-Look into a typescipt bundlers
-
-add support for structs, enumirations, and classes, and interfaces, and templitings
-
-add if while for and switch statements
-
-add a way to make functions private or public as well as asynic
-
-Maybe add intergration for other languages
-
------------------
-BUILT IN LIBRARIES
------------------
-```
-Image Processing library
-A way to make your own librays

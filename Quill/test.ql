@@ -1,18 +1,19 @@
-/*
-have a := 10;
+func random (min, max) {
+	have result := Random(min, max);
 
-if (a < 1) {
-	CSPrint(a is less than 1)
-} else {
-	CSPrint(a is greater than 5)
-} */
+	return result;
+}
 
-func main (a) {
-	have a := Random(1, 10);
+func add_2_numbers (a, b) {
+	have result := a + b;
 
-	return a
-};
+	return result;
+}
 
-have result := main(10);
+const a := 10;
 
-CSPrint(result)
+const add := add_2_numbers(10, 20);
+CSPrint(add)
+
+const results := random(10, 20);
+CSPrint(results)
