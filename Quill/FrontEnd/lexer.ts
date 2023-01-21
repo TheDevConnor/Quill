@@ -23,6 +23,8 @@ export enum TokenType {
 
     GT, // >
     LT, // <
+
+    COMPARASENTYPES, // ==, !=, <=, >=, <, >
   
     OpenParen, // (
     CloseParen, // )
@@ -166,18 +168,11 @@ export enum TokenType {
           tokens.push(token(src.shift(), TokenType.COLON));
         }
       }
-      else if (src[0] == "<"){
-        tokens.push(token(src.shift(), TokenType.LT));
-      }
-      else if (src[0] == ">"){
-        tokens.push(token(src.shift(), TokenType.GT));
-      }
-      else if (src[0] == ","){
-        tokens.push(token(src.shift(), TokenType.COMMA));
-      }
-      else if (src[0] == "^"){
-        tokens.push(token(src.shift(), TokenType.ARROWUP));
-      }
+      // Handle Comparison Operators
+      else if (src[0] == "<" || src[0] == ">" || src[0] == "!" || src[0] == "?" ||
+        src[0] == "&" || src[0] == "|" || src[0] == "^" || src[0] == "~") {
+        tokens.push(token(src.shift(), TokenType.COMPARASENTYPES));
+      } // Handle Logical Operators
 
       else {
         // Handle numeric literals -> Integers

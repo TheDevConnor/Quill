@@ -1,4 +1,4 @@
-import { Stmt } from "../frontend/ast.ts";
+import { Stmt } from "../Frontend/ast.ts";
 import Enviroment from "./enviroment.ts";
 export type ValueType = "null" | "number" | "boolean" | "object" | "native-function" | "function";
 

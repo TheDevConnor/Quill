@@ -1,7 +1,8 @@
-import { AssignmentExpr, BinaryExpr,CallExpr,Identifier, ObjectLiteral, GreaterThanExpr, LessThanExpr } from "../../FrontEnd/ast.ts";
+import { AssignmentExpr, BinaryExpr,CallExpr,Identifier, ObjectLiteral } from "../../FrontEnd/ast.ts";
+import { TokenType } from "../../FrontEnd/lexer.ts";
 import Enviroment from "../enviroment.ts";
 import { evaluate } from "../interpreter.ts";
-import { NumberVal,RuntimeVal,MK_NULL, ObjectVal, NativeFunctionVal, FunctionVal, NullVal } from "../values.ts";
+import { NumberVal,RuntimeVal,MK_NULL, ObjectVal, NativeFunctionVal, FunctionVal, NullVal, MK_BOOL, BoolVal } from "../values.ts";
 
 function eval_numeric_binary_expr (leftHandSide: NumberVal, rightHandSide: NumberVal, operator: string): NumberVal {
 	let result: number;
@@ -42,41 +43,31 @@ function eval_numeric_binary_expr (leftHandSide: NumberVal, rightHandSide: Numbe
 	return { value: result, type: "number" };
 }
 
-export function eval_binary_expr (binop: BinaryExpr, env: Enviroment): NumberVal | NullVal {
-	const leftHandSide = evaluate(binop.left, env);
-	const rightHandSide = evaluate(binop.right, env);
-	
-	if (leftHandSide.type == "number" && rightHandSide.type == "number"){
-		return eval_numeric_binary_expr(leftHandSide as NumberVal, 
-			rightHandSide as NumberVal, binop.operator);
+export function eval_binary_expr (binop: BinaryExpr, env: Enviroment): BoolVal | NullVal | NumberVal {
+    const leftHandSide = evaluate(binop.left, env);
+    const rightHandSide = evaluate(binop.right, env);
+
+    if (leftHandSide.type === "number" && rightHandSide.type === "number") {
+        switch (binop.operator.type) {
+            case TokenType.COMPARASENTYPES:
+                if (binop.operator.value === ">") {
+                    return MK_BOOL(Boolean(leftHandSide.value > rightHandSide.value));
+                } else if (binop.operator.value === "<") {
+                    return MK_BOOL(Boolean(leftHandSide.value < rightHandSide.value));
+                }
+                break;
+            default:
+                return eval_numeric_binary_expr(leftHandSide as NumberVal, 
+                    rightHandSide as NumberVal, binop.operator);
+        }
+    } else {
+		// One or both are null
+		return MK_NULL() as NullVal;
 	}
-	// One or both are null
-	return MK_NULL() as NullVal;
+
+	throw new Error(`invalid binary expression ${JSON.stringify(binop)}`);
 }
 
-export function eval_greater_than_expr (binop: GreaterThanExpr, env: Enviroment): NumberVal | NullVal {
-	const leftHandSide = evaluate(binop.left, env);
-	const rightHandSide = evaluate(binop.right, env);
-
-	if (leftHandSide.type == "number" && rightHandSide.type == "number"){
-		return eval_numeric_binary_expr(leftHandSide as NumberVal,
-			rightHandSide as NumberVal, binop.operator);
-	}
-	// One or both are null
-	return MK_NULL() as NullVal;
-}
-
-export function eval_less_than_expr (binop: LessThanExpr, env: Enviroment): NumberVal | NullVal {
-	const leftHandSide = evaluate(binop.left, env);
-	const rightHandSide = evaluate(binop.right, env);
-
-	if (leftHandSide.type == "number" && rightHandSide.type == "number"){
-		return eval_numeric_binary_expr(leftHandSide as NumberVal,
-			rightHandSide as NumberVal, binop.operator);
-	}
-	// One or both are null
-	return MK_NULL() as NullVal;
-}
 
 export function enal_identifier (ident: Identifier, env: Enviroment): RuntimeVal {
 	const val = env.lookupvar(ident.symbol);

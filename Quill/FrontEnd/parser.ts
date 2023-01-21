@@ -189,68 +189,70 @@ export default class Parser {
     return declaration;
   }
 
-  // Handle Greater Than >
-  private parse_greater_than_expr(left: Expr, operator: Token, right: Expr): Expr {
-    left = this.parse_call_member_expr();
-    
-    while (this.at().type == TokenType.GT) {
-      operator = this.eat();
-      right = this.parse_call_member_expr();
-      left = {
-        kind: "BinaryExpr",
-        left,
-        right,
-        operator: operator.value,
-      }as unknown as BinaryExpr;
-    }
-    return left;
-  }
-  
-  // Handle Less Than <
-  private parse_less_than_expr(left: Expr, operator: Token, right: Expr): Expr {
-    left = this.parse_call_member_expr();
-    operator = this.eat();
-    while (this.at().type == TokenType.LT) {
-      this.eat().value;
-      right = this.parse_call_member_expr();
-      left = {
-        kind: "BinaryExpr",
-        left,
-        right,
-        operator: operator.value,
-      }as unknown as BinaryExpr;
-    }
-    return left;
-  }
-
   // Handle expressions
+  // private parse_expr(): Expr {
+  //   let left = this.parse_assignment_expr();
+  //   while (this.next().type === TokenType.COMPARASENTYPES) {
+  //       const operator = this.eat();
+  //       const right = this.parse_assignment_expr();
+  //       left = {
+  //           kind: "BinaryExpr",
+  //           left,
+  //           operator: operator.value,
+  //           right,
+  //       } as BinaryExpr;
+  //   }
+  //   return left;
+  // }
+
   private parse_expr(): Expr {
     let node = this.parse_assignment_expr();
 
-    while (this.at().type == TokenType.GT) {
-      const operator = this.eat();
-        const right = this.parse_primary_expr();
-        node = this.parse_greater_than_expr(node, operator, right);
-    }
-
-    while (this.at().type == TokenType.LT) {
-      const operator = this.eat();
-        const right = this.parse_primary_expr();
-        node = this.parse_less_than_expr(node, operator, right);
+    while (this.at().type === TokenType.BinaryOperator || this.at().type === TokenType.COMPARASENTYPES) {
+        const operator = this.eat();
+        const right = this.parse_assignment_expr();
+        node = {
+            kind: "BinaryExpr",
+            left: node,
+            operator: operator.value,
+            right,
+            comparisonType: operator.type === TokenType.COMPARASENTYPES ? operator.value : undefined
+        } as unknown as BinaryExpr;
     }
 
     return node;
+}
+
+  private parse_condition(): Expr {
+    const left = this.parse_expr();
+    const comparison = this.eat();
+    const right = this.parse_expr();
+    return {
+        kind: "IfStmt",
+        condition: left,
+        comparisonType: comparison.type,
+        right
+    } as unknown as IfStmt;
   }
 
   private parse_if_stmt(): Stmt {
     this.eat(); // Eat the 'if' keyword
 
-    // this.expect(TokenType.OpenParen, "Expected '(' after 'if' keyword");
-    const condition = this.parse_expr(); // Parse the condition
-    // this.expect(TokenType.CloseParen, "Expected ')' after if condition");
+    this.expect(TokenType.OpenParen, "Expected '(' after 'if' keyword");
+    this.eat(); // advance to the next token
+    const condition = this.parse_condition(); // Parse the condition, 
+    //this can now be any type of expression including comparisons
+    this.expect(TokenType.CloseParen, "Expected ')' after if condition");
 
-    this.expect(TokenType.OPENBRACKET, "Expected '{' after if condition");
-    const body: Stmt[] = [];
+    
+    //Check for '{' character before consuming it
+    if (this.at().type !== TokenType.OPENBRACKET) {
+      console.error("Expected '{' before if statement body.");
+      Deno.exit(1);
+    }
+    this.eat(); // advance to the next token
+
+    const body: Stmt[] = []; // Parse the body of the if statement
 
     while (this.at().type !== TokenType.EOF && this.at().type !== TokenType.CLOSEBRACKET) {
       body.push(this.parse_stmt());
@@ -266,6 +268,7 @@ export default class Parser {
       kind: "IfStmt",
       condition,
       body,
+      alternative: null,
     }as unknown as IfStmt;
   }
 

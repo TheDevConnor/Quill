@@ -1,6 +1,7 @@
 have x := 45;
 
-if (x) {
+if (x > 10) {
 	CSPrint(x)
-};
 
+	return x;
+};
