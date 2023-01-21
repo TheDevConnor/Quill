@@ -16,13 +16,13 @@ export function MK_NULL() {
 	return { value: null, type: "null" } as NullVal;
 }
 
-export interface BoolVal extends RuntimeVal {
+export interface BooleanVal extends RuntimeVal {
 	type: "boolean";
 	value: boolean;
 }
 
 export function MK_BOOL(b = false) {
-	return { value: b, type: "boolean" } as BoolVal;
+	return { value: b, type: "boolean" } as BooleanVal;
 }
 
 export interface NumberVal extends RuntimeVal {

@@ -17,6 +17,10 @@ export type NodeType =
     | "ReturnStmt"
     | "IfStmt"
 
+    // Comaparison
+    | "GreaterThanExpr"
+    | "LessThanExpr"
+
     // Literals
     | "Property"
     | "ObjectLiteral"
@@ -77,13 +81,13 @@ export interface GreaterThanExpr extends Expr {
     kind: "GreaterThanExpr";
     left: Expr;
     right: Expr;
-    operator: string;
+    operator: ">";
 }
 export interface LessThanExpr extends Expr {
     kind: "LessThanExpr";
     left: Expr;
     right:Expr;
-    operator: string;
+    operator: "<";
 }
 
 export interface CallExpr extends Expr {

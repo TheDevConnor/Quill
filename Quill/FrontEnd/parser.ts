@@ -13,7 +13,9 @@ import {
   VarDeclaration,
   FunctionDeclaration,
   ReturnStmt,
-IfStmt,
+  IfStmt,
+  GreaterThanExpr,
+  LessThanExpr,
 } from "./ast.ts";
 
 import { Token, tokenize, TokenType } from "./lexer.ts";
@@ -188,57 +190,22 @@ export default class Parser {
     return declaration;
   }
 
-  // Handle Greater Than >
-  private parse_greater_than_expr(left: Expr, operator: Token, right: Expr): Expr {
-    left = this.parse_call_member_expr();
-    
-    while (this.at().type == TokenType.GT) {
-      operator = this.eat();
-      right = this.parse_call_member_expr();
-      left = {
-        kind: "BinaryExpr",
-        left,
-        right,
-        operator: operator.value,
-      }as unknown as BinaryExpr;
-    }
-    return left;
-  }
-  
-  // Handle Less Than <
-  private parse_less_than_expr(left: Expr, operator: Token, right: Expr): Expr {
-    left = this.parse_call_member_expr();
-    operator = this.eat();
-    while (this.at().type == TokenType.LT) {
-      this.eat().value;
-      right = this.parse_call_member_expr();
-      left = {
-        kind: "BinaryExpr",
-        left,
-        right,
-        operator: operator.value,
-      }as unknown as BinaryExpr;
-    }
-    return left;
-  }
-
   // Handle expressions
   private parse_expr(): Expr {
-    let node = this.parse_assignment_expr();
+    let expr = this.parse_assignment_expr();
 
-    while (this.at().type == TokenType.GT) {
-      const operator = this.eat();
-        const right = this.parse_primary_expr();
-        node = this.parse_greater_than_expr(node, operator, right);
+    while (this.at().type == TokenType.GT || this.at().type == TokenType.LT) {
+      const opertation = this.eat();
+      const right = this.parse_assignment_expr();
+      expr = {
+        kind: opertation.type === TokenType.GT ? "GreaterThanExpr" : "LessThanExpr",
+        left: expr,
+        right,
+        operation: opertation.value,
+      } as unknown as GreaterThanExpr | LessThanExpr;
     }
 
-    while (this.at().type == TokenType.LT) {
-      const operator = this.eat();
-        const right = this.parse_primary_expr();
-        node = this.parse_less_than_expr(node, operator, right);
-    }
-
-    return node;
+    return expr;
   }
 
   private parse_if_stmt(): Stmt {
@@ -258,9 +225,9 @@ export default class Parser {
     this.expect(TokenType.CLOSEBRACKET, "Expected '}' after if condition");
     this.expect(TokenType.Semicolen, "Expected ';' after if condition");
 
-    console.log("If statement: ", condition);
-    console.log("If statement body: ", body);
-    console.log("If statement parsed successfully.");
+    // console.log("If statement: ", condition);
+    // console.log("If statement body: ", body);
+    // console.log("If statement parsed successfully.");
     return {
       kind: "IfStmt",
       condition,

@@ -1,7 +1,7 @@
 import { AssignmentExpr, BinaryExpr,CallExpr,Identifier, ObjectLiteral, GreaterThanExpr, LessThanExpr, MemberExpr } from "../../FrontEnd/ast.ts";
 import Enviroment from "../enviroment.ts";
 import { evaluate } from "../interpreter.ts";
-import { NumberVal,RuntimeVal,MK_NULL, ObjectVal, NativeFunctionVal, FunctionVal, NullVal } from "../values.ts";
+import { NumberVal,RuntimeVal,MK_NULL, ObjectVal, NativeFunctionVal, FunctionVal, NullVal, BooleanVal } from "../values.ts";
 
 function eval_numeric_binary_expr (leftHandSide: NumberVal, rightHandSide: NumberVal, operator: string): NumberVal {
 	let result: number;
@@ -54,25 +54,25 @@ export function eval_binary_expr (binop: BinaryExpr, env: Enviroment): NumberVal
 	return MK_NULL() as NullVal;
 }
 
-export function eval_greater_than_expr (binop: GreaterThanExpr, env: Enviroment): NumberVal | NullVal {
+export function eval_greater_than_expr (binop: GreaterThanExpr, env: Enviroment): BooleanVal | NullVal {
 	const leftHandSide = evaluate(binop.left, env);
 	const rightHandSide = evaluate(binop.right, env);
 
 	if (leftHandSide.type == "number" && rightHandSide.type == "number"){
-		return eval_numeric_binary_expr(leftHandSide as NumberVal,
-			rightHandSide as NumberVal, binop.operator);
+		const result = leftHandSide.value > rightHandSide.value;
+		return { value: result, type: "boolean" } as BooleanVal;
 	}
 	// One or both are null
 	return MK_NULL() as NullVal;
 }
 
-export function eval_less_than_expr (binop: LessThanExpr, env: Enviroment): NumberVal | NullVal {
+export function eval_less_than_expr (binop: LessThanExpr, env: Enviroment): BooleanVal | NullVal {
 	const leftHandSide = evaluate(binop.left, env);
 	const rightHandSide = evaluate(binop.right, env);
 
 	if (leftHandSide.type == "number" && rightHandSide.type == "number"){
-		return eval_numeric_binary_expr(leftHandSide as NumberVal,
-			rightHandSide as NumberVal, binop.operator);
+		const result = leftHandSide.value < rightHandSide.value;
+		return { value: result, type: "boolean" } as BooleanVal;
 	}
 	// One or both are null
 	return MK_NULL() as NullVal;
