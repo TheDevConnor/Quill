@@ -4,8 +4,6 @@
 //--- Define the types of the AST nodes and the AST itself ---
 //------------------------------------------------------------
 
-import { TokenType } from "./lexer.ts";
-
 export type NodeType = 
     // Statements
     | "Program"
@@ -55,9 +53,8 @@ export interface FunctionDeclaration extends Stmt {
 export interface IfStmt extends Stmt {
     kind: "IfStmt";
     condition: Expr;
-    comparisonType: TokenType.COMPARASENTYPES;
     body: Stmt[];
-    alternative: Stmt[] | null;
+    alternative: Stmt | null;
     consequence: Stmt;
 }
 
@@ -73,8 +70,20 @@ export interface BinaryExpr extends Expr {
     kind: "BinaryExpr";
     left: Expr;
     right: Expr;
-    operator: string | Expr | any;
-    comparasinType: TokenType.COMPARASENTYPES;
+    operator: string;
+}
+
+export interface GreaterThanExpr extends Expr {
+    kind: "GreaterThanExpr";
+    left: Expr;
+    right: Expr;
+    operator: string;
+}
+export interface LessThanExpr extends Expr {
+    kind: "LessThanExpr";
+    left: Expr;
+    right:Expr;
+    operator: string;
 }
 
 export interface CallExpr extends Expr {
