@@ -1,7 +1,7 @@
 import Enviroment from "../enviroment.ts";
 import { evaluate } from "../interpreter.ts";
 import { RuntimeVal,MK_NULL, FunctionVal } from "../values.ts";
-import { FunctionDeclaration, Program, ReturnStmt, VarDeclaration } from "../../FrontEnd/ast.ts";
+import { FunctionDeclaration, IfStmt, Program, ReturnStmt, VarDeclaration } from "../../FrontEnd/ast.ts";
 
 export function eval_program(program: Program, env: Enviroment): RuntimeVal {
 	let lastEvaluated: RuntimeVal = MK_NULL();
@@ -26,6 +26,17 @@ export function eval_return_stmt(
 	const returnvalue = evaluate(stmt.value, env);
 	return returnvalue;
 }
+
+export function eval_if_stmt(ifStmt: IfStmt, env: Enviroment): RuntimeVal {
+	const condition = evaluate(ifStmt.condition, env);
+	if (condition.type === "boolean" && condition.value === true) {
+	  return evaluate(ifStmt.consequence, env);
+	} else if (ifStmt.alternative) {
+	  return evaluate(ifStmt.alternative, env);
+	} else {
+	  return MK_NULL();
+	}
+  }
 
 export function eval_function_decl(
 	declaration: FunctionDeclaration,
