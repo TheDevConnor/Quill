@@ -1,6 +1,6 @@
 import { Stmt } from "../frontend/ast.ts";
 import Enviroment from "./enviroment.ts";
-export type ValueType = "null" | "number" | "boolean" | "object" | "native-function" | "function";
+export type ValueType = "null" | "number" | "boolean" | "object" | "native-function" | "function"  | "string";
 
 export interface RuntimeVal {
     type: ValueType;

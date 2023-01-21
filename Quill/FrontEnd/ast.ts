@@ -57,9 +57,8 @@ export interface FunctionDeclaration extends Stmt {
 export interface IfStmt extends Stmt {
     kind: "IfStmt";
     condition: Expr;
-    body: Stmt[];
-    alternative: Stmt | null;
-    consequence: Stmt;
+    thenBranch: Stmt[];
+    elseBranch: Stmt[] | null;
 }
 
 export interface Expr extends Stmt {}

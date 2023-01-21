@@ -210,28 +210,33 @@ export default class Parser {
 
   private parse_if_stmt(): Stmt {
     this.eat(); // Eat the 'if' keyword
-
+  
     // this.expect(TokenType.OpenParen, "Expected '(' after 'if' keyword");
     const condition = this.parse_expr(); // Parse the condition
     // this.expect(TokenType.CloseParen, "Expected ')' after if condition");
-
+  
     this.expect(TokenType.OPENBRACKET, "Expected '{' after if condition");
-    const body: Stmt[] = [];
-
+    const thenBranch: Stmt[] = [];
+  
     while (this.at().type !== TokenType.EOF && this.at().type !== TokenType.CLOSEBRACKET) {
-      body.push(this.parse_stmt());
+      thenBranch.push(this.parse_stmt());
     }
-
+  
     this.expect(TokenType.CLOSEBRACKET, "Expected '}' after if condition");
     this.expect(TokenType.Semicolen, "Expected ';' after if condition");
-
+  
+    const elseBranch: Stmt[] | null = null;
+  
     // console.log("If statement: ", condition);
-    // console.log("If statement body: ", body);
+    // console.log("If statement then branch: ", thenBranch);
+    // console.log("If statement else branch: ", elseBranch);
     // console.log("If statement parsed successfully.");
+  
     return {
       kind: "IfStmt",
       condition,
-      body,
+      thenBranch,
+      elseBranch
     }as unknown as IfStmt;
   }
 

@@ -60,7 +60,7 @@ export function evaluate (astNode: Stmt, env: Enviroment): RuntimeVal {
 		case "IfStmt":
 			const condition = evaluate((astNode as IfStmt).condition, env);
 			if (condition.value) {
-				const body = (astNode as IfStmt).body;
+				const body = (astNode as IfStmt).thenBranch;
 				for (const statement of body) {
 					evaluate(statement, env);
 				}

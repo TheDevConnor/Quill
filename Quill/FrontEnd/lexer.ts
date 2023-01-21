@@ -16,8 +16,6 @@ export enum TokenType {
   ASYNC, // Async Function
 
   // Operators
-  ARROWLEFT, // <
-  ARROWRIGHT, // >
   ARROWUP, // ^
   DASH, // -
 
@@ -178,6 +176,10 @@ export function tokenize(sourceCode: string): Token[] {
     else if (src[0] == "^"){
       tokens.push(token(src.shift(), TokenType.ARROWUP));
     }
+
+    // TODO:: HANDLE STRING LITERALS
+    
+    // TODO:: HANDLE CHAR LITERALS
 
     else {
       // Handle numeric literals -> Integers
