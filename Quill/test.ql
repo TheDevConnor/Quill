@@ -1,10 +1,17 @@
-have x := 45;
+/* have x := 1;
 
-if (x) {
-	const x := false;
-	CSPrint(x)
-
-	return x;
+const math := {
+	add: {
+		y: x + 1,
+	},
+	sub: {
+		z: x - 1,
+	},
 };
 
+have number := math[add.y];
+CSPrint(number)
+*/
+
+have x := 1;
 CSPrint(x)

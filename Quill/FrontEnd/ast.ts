@@ -94,6 +94,8 @@ export interface CallExpr extends Expr {
 
 export interface MemberExpr extends Expr {
     kind: "MemberExpr";
+    left: Expr;
+    right: Expr;
     object: Expr;
     property: Expr;
     computed: boolean;

@@ -1,4 +1,4 @@
-import { AssignmentExpr, BinaryExpr,CallExpr,Identifier, ObjectLiteral, GreaterThanExpr, LessThanExpr } from "../../FrontEnd/ast.ts";
+import { AssignmentExpr, BinaryExpr,CallExpr,Identifier, ObjectLiteral, GreaterThanExpr, LessThanExpr, MemberExpr } from "../../FrontEnd/ast.ts";
 import Enviroment from "../enviroment.ts";
 import { evaluate } from "../interpreter.ts";
 import { NumberVal,RuntimeVal,MK_NULL, ObjectVal, NativeFunctionVal, FunctionVal, NullVal } from "../values.ts";
@@ -73,6 +73,18 @@ export function eval_less_than_expr (binop: LessThanExpr, env: Enviroment): Numb
 	if (leftHandSide.type == "number" && rightHandSide.type == "number"){
 		return eval_numeric_binary_expr(leftHandSide as NumberVal,
 			rightHandSide as NumberVal, binop.operator);
+	}
+	// One or both are null
+	return MK_NULL() as NullVal;
+}
+
+export function eval_member_expr (binop: MemberExpr, env: Enviroment): RuntimeVal {
+	const leftHandSide = evaluate(binop.left, env);
+	const rightHandSide = evaluate(binop.right, env);
+
+	if (leftHandSide.type == "object"){
+		const obj = leftHandSide as ObjectVal;
+		return obj.properties.get(rightHandSide.value) as RuntimeVal;
 	}
 	// One or both are null
 	return MK_NULL() as NullVal;
