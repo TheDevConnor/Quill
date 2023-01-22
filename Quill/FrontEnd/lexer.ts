@@ -3,6 +3,8 @@
 //---   Responsible for producing tokens from the source   ---
 //------------------------------------------------------------
 
+import { trace } from "./tracing.ts";
+
 export enum TokenType {
   // Literal Types
   Number,
@@ -24,6 +26,8 @@ export enum TokenType {
 
   GT, // >
   LT, // <
+  NOT, // !
+  AND, // &&
 
   OpenParen, // (
   CloseParen, // )
@@ -109,7 +113,6 @@ function isint(str: string) {
 export function tokenize(sourceCode: string): Token[] {
   const tokens = new Array<Token>();
   const src = sourceCode.split("");
-
   while (src.length > 0) {
 
     // Skip over any comments in the source code
@@ -172,6 +175,13 @@ export function tokenize(sourceCode: string): Token[] {
     }
     else if (src[0] == ",") {
       tokens.push(token(src.shift(), TokenType.COMMA));
+    }
+    else if (src[0] == "!" && src[1] == "=") {
+      tokens.push(token(src.shift(), TokenType.NOT));
+      src.shift();
+    }
+    else if (src[0] == "&") {
+      tokens.push(token(src.shift(), TokenType.AND));
     }
     else if (src[0] == "^") {
       tokens.push(token(src.shift(), TokenType.ARROWUP));

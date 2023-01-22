@@ -1,8 +1,10 @@
-have x := Random(1, 9);
+have x := Random(1, 10);
+have z := 10;
 have y := 7;
 
-if (x > 10) {
-	CSInfo (x)
+if (z != 10) {
+	CSInfo (z)
 } else {
 	CSInfo (y)
 }
+

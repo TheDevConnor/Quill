@@ -1,11 +1,11 @@
 The syntax of Quill:
 
-RTT is not a case sensitive language
+Quill is not a case sensitive language
 integers will be represented as an i32
 operations will include +,- for addition and subtraction
 assignments will be performed by :=
-RTT will support a type interface, so you don't need to specify
-RTT will use => for type annotation
+Quill will support a type interface, so you don't need to specify
+Quill will use => for type annotation
 have will be used for variable assignment and const for constants
 convention will be that constants should be written in uppercase
 for example the follolwing are valid statements
@@ -59,7 +59,7 @@ have sum => i32 := n1 + n2
 console.print(sum)
 ```
 
-I have decided to extend RTT to support functions...
+I have decided to extend Quill to support functions...
 the keyword for function will be func
 the name of the function will be written in snake case by convention but it will be enforced
 () braces will be used for parameters
@@ -94,7 +94,7 @@ have result => i32 := square(10)
 console.print(result) /* will print 100 */
 ```
 
-I have decided to extend RTT to support if statements
+I have decided to extend Quill to support if statements
 the keyword for if will be if
 the keyword for else will be else
 the keyword for else if will be elif
@@ -125,7 +125,7 @@ if (n1 > n2) {
 }
 ```
 
-I have decided to extend RTT to support while loops
+I have decided to extend Quill to support while loops
 the keyword for while will be while
 the keyword for break will be break
 the keyword for continue will be continue
@@ -139,7 +139,7 @@ while (n < 10) {
 }
 ```
 
-I have decided to extend RTT to support for loops
+I have decided to extend Quill to support for loops
 the keyword for for will be for
 the keyword for break will be break
 the keyword for continue will be continue
@@ -156,7 +156,7 @@ for (n := 0; n < 10; n = n + 1) {
 }
 ```
 
-I have decided to extend RTT to support switch statements
+I have decided to extend Quill to support switch statements
 the keyword for switch will be switch
 the keyword for case will be case
 the keyword for default will be default
@@ -178,7 +178,7 @@ switch (n) {
 }
 ```
 
-I have decided to extend RTT to support arrays
+I have decided to extend Quill to support arrays
 the keyword for array will be array
 the keyword for array length will be leng
 Here is an example of an array
@@ -193,7 +193,7 @@ have arr_len => i32 := leng(arr)
 console.print(arr_len) /* will print 5 */
 ```
 
-I have decided to extend RTT to support structs
+I have decided to extend Quill to support structs
 the keyword for struct will be struct
 Here is an example of a struct
 ```
@@ -210,7 +210,7 @@ have p => Person := Person { name: "John", age: 20 }
 console.print(p) /* will print { name: "John", age: 20 } */
 ```
 
-I have decided to extend RTT to support enums
+I have decided to extend Quill to support enums
 the keyword for enum will be enum
 Here is an example of an enum
 ```
@@ -228,7 +228,7 @@ have c => Color := Color.Red
 console.print(c) /* will print Red */
 ```
 
-I have decided to extend RTT to support modules
+I have decided to extend Quill to support modules
 the keyword for module will be module
 Here is an example of a module
 ```
@@ -247,7 +247,7 @@ have sum => i32 := math.add(10, 20)
 console.print(sum) /* will print 30 */
 ```
 
-I have decided to extend RTT to support classes
+I have decided to extend Quill to support classes
 the keyword for class will be class
 Here is an example of a class
 ```
@@ -264,7 +264,7 @@ have p => Person := Person { name: "John", age: 20 }
 console.print(p) /* will print { name: "John", age: 20 } */
 ```
 
-I have decided to extend RTT to support interfaces
+I have decided to extend Quill to support interfaces
 the keyword for interface will be interf
 Here is an example of an interface
 ```
@@ -281,7 +281,7 @@ have p => Person := Person { name: "John", age: 20 }
 console.print(p) /* will print { name: "John", age: 20 } */
 ```
 
-I have decided to extend RTT to support generics
+I have decided to extend Quill to support generics
 the keyword for generic will be gen
 Here is an example of a generic
 ```
@@ -295,7 +295,7 @@ have t => T := 10
 console.print(t) /* will print 10 */
 ```
 
-I have decided to extend RTT to support traits
+I have decided to extend Quill to support traits
 the keyword for trait will be trait
 Here is an example of a trait
 ```
@@ -312,7 +312,7 @@ have p => Person := Person { name: "John", age: 20}
 console.print(p) /* will print { name: "John", age: 20 } */
 ```
 
-I have decided to extend RTT to support closures
+I have decided to extend Quill to support closures
 the keyword for closure will be closure
 Here is an example of a closure
 ```
@@ -328,7 +328,7 @@ have sum => i32 := add(10, 20)
 console.print(sum) /* will print 30 */
 ```
 
-Using RTT, lets make a random number generator
+Using Quill, lets make a random number generator
 ```
 /* Declare a module of type rand */
 module rand {
@@ -350,7 +350,7 @@ have n := rand.rand(10)
 console.print(n)
 ```
 
-Using RTT, lets make a function that returns the sum of 2 numbers
+Using Quill, lets make a function that returns the sum of 2 numbers
 ```
 /* Declare a module of type math */
 module math {

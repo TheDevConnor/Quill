@@ -4,19 +4,22 @@ import { Stmt, NumericLiteral, Identifier,
 		BinaryExpr, Program, VarDeclaration, 
 		AssignmentExpr, ObjectLiteral, CallExpr, 
 		FunctionDeclaration, ReturnStmt, GreaterThanExpr, 
-		LessThanExpr, IfStmt, MemberExpr } from "../FrontEnd/ast.ts";
+		LessThanExpr, IfStmt, MemberExpr, EqualsExpr, SequenceExpr, NotEqualsExpr } from "../FrontEnd/ast.ts";
 
 import { enal_identifier,eval_assingment,eval_binary_expr, 
-		 eval_call_expr, eval_greater_than_expr, eval_less_than_expr, 
-		 eval_member_expr, eval_object_expr } from "./eval/expressions.ts";
+		 eval_call_expr, eval_equal_expr, eval_greater_than_expr, eval_less_than_expr, 
+		 eval_member_expr, eval_not_equal_expr, eval_object_expr } from "./eval/expressions.ts";
 	
 import { eval_function_decl, eval_program,eval_var_decl, eval_return_stmt, 
 		 eval_if_stmt } from "./eval/statements.ts";
 
 import Enviroment from "./enviroment.ts";
+import * as tracer from "../FrontEnd/tracing.ts";
 
 export function evaluate (astNode: Stmt, env: Enviroment): RuntimeVal {
-	switch (astNode.kind) {
+	// tracer.trace("Evaluating ast node: " + tracer.format(astNode.kind));
+	// tracer.trace("Enviroment: "  + tracer.format(env));
+	switch(astNode.kind) {
 		case "NumericLiteral":
 			return { 
 				value: ((astNode as NumericLiteral).value),
@@ -46,6 +49,12 @@ export function evaluate (astNode: Stmt, env: Enviroment): RuntimeVal {
 
 		case "LessThanExpr":
 			return eval_less_than_expr(astNode as LessThanExpr, env);
+
+		case "EqualsExpr":
+			return eval_equal_expr(astNode as EqualsExpr, env);
+
+		case "NotEqualsExpr":
+			return eval_not_equal_expr(astNode as NotEqualsExpr, env);
 
 		case "Program":
 			return eval_program(astNode as Program, env);

@@ -14,12 +14,15 @@ export type NodeType =
     | "AssignmentExpr"
     | "MemberExpr"
     | "CallExpr"
+    | "SequenceExpr"
     | "ReturnStmt"
     | "IfStmt"
 
     // Comaparison
     | "GreaterThanExpr"
     | "LessThanExpr"
+    | "EqualsExpr"
+    | "NotEqualsExpr"
 
     // Literals
     | "Property"
@@ -76,6 +79,13 @@ export interface BinaryExpr extends Expr {
     operator: string;
 }
 
+export interface SequenceExpr extends Expr {
+    expressions: any;
+    kind: "SequenceExpr";
+    left: Expr;
+    right: Expr;
+}
+
 export interface GreaterThanExpr extends Expr {
     kind: "GreaterThanExpr";
     left: Expr;
@@ -87,6 +97,20 @@ export interface LessThanExpr extends Expr {
     left: Expr;
     right:Expr;
     operator: "<";
+}
+
+export interface EqualsExpr extends Expr {
+    kind: "EqualsExpr";
+    left: Expr;
+    right: Expr;
+    operator: "=";
+}
+
+export interface NotEqualsExpr extends Expr {
+    kind: "NotEqualsExpr";
+    left: Expr;
+    right: Expr;
+    operator: "!=";
 }
 
 export interface CallExpr extends Expr {

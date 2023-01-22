@@ -1,6 +1,6 @@
 import { AssignmentExpr, BinaryExpr,CallExpr, Identifier, 
 	     ObjectLiteral, GreaterThanExpr, LessThanExpr, 
-		 MemberExpr } from "../../FrontEnd/ast.ts";
+		 MemberExpr,EqualsExpr, NotEqualsExpr} from "../../FrontEnd/ast.ts";
 
 import { NumberVal, RuntimeVal,MK_NULL, ObjectVal,
 		 NativeFunctionVal, FunctionVal, NullVal, 
@@ -84,6 +84,30 @@ export function eval_less_than_expr (binop: LessThanExpr, env: Enviroment): Bool
 	return MK_NULL() as NullVal;
 }
 
+export function eval_equal_expr (binop: EqualsExpr, env: Enviroment): BooleanVal | NullVal {
+	const leftHandSide = evaluate(binop.left, env);
+	const rightHandSide = evaluate(binop.right, env);
+
+	if (leftHandSide.type == "number" && rightHandSide.type == "number"){
+		const result = leftHandSide.value == rightHandSide.value;
+		return { value: result, type: "boolean" } as BooleanVal;
+	}
+	// One or both are null
+	return MK_NULL() as NullVal;
+}
+
+export function eval_not_equal_expr (binop: NotEqualsExpr, env: Enviroment): BooleanVal | NullVal {
+	const leftHandSide = evaluate(binop.left, env);
+	const rightHandSide = evaluate(binop.right, env);
+
+	if (leftHandSide.type == "number" && rightHandSide.type == "number"){
+		const result = leftHandSide.value != rightHandSide.value;
+		return { value: result, type: "boolean" } as BooleanVal;
+	}
+	// One or both are null
+	return MK_NULL() as NullVal;
+}
+
 export function eval_member_expr (binop: MemberExpr, env: Enviroment): RuntimeVal {
 	const leftHandSide = evaluate(binop.left, env);
 	const rightHandSide = evaluate(binop.right, env);
@@ -110,7 +134,7 @@ export function eval_object_expr (obj: ObjectLiteral, env: Enviroment): RuntimeV
 		object.properties.set(key, runtimeVal);
 	}
 	return object;
-} 
+}
 
 export function eval_assingment (node: AssignmentExpr, env: Enviroment): RuntimeVal {
 	if (node.assingee.kind !== "Identifier") {

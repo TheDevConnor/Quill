@@ -1,5 +1,5 @@
 import { MK_BOOL, MK_NATIVE_FUNCTION, MK_NULL, MK_NUMBER, RuntimeVal } from "./values.ts";
-
+import * as tracer from "../FrontEnd/tracing.ts";
 export function createGlobalENV () {
 	const env = new Enviroment();
 	// Create Default Global Enviroment
@@ -8,23 +8,28 @@ export function createGlobalENV () {
     env.declareVar("null", MK_NULL(), true);
 
 	// Define a native built in function
-	env.declareVar("CSPrint", MK_NATIVE_FUNCTION((args, scope) => {
-		console.log(...args);
+	env.declareVar("CSInfo", MK_NATIVE_FUNCTION((args, _scope) => {
+		tracer.info(tracer.format(args));
 		return MK_NULL();
 	}), true);
 
-	env.declareVar("CSError", MK_NATIVE_FUNCTION((args, scope) => {
-		console.error(...args);
+	env.declareVar("CSError", MK_NATIVE_FUNCTION((args, _scope) => {
+		tracer.error(tracer.format(args));
 		return MK_NULL();
 	}), true);
 
-	env.declareVar("CSWarn", MK_NATIVE_FUNCTION((args, scope) => {
-		console.warn(...args);
+	env.declareVar("CSWarn", MK_NATIVE_FUNCTION((args, _scope) => {
+		tracer.warn(tracer.format(args));
 		return MK_NULL();
 	}), true);
 
-	env.declareVar("CSInfo", MK_NATIVE_FUNCTION((args, scope) => {
-		console.info(...args);
+	env.declareVar("CSTrace", MK_NATIVE_FUNCTION((args, _scope) => {
+		tracer.trace(tracer.format(args));
+		return MK_NULL();
+	}), true);
+
+	env.declareVar("CSDebug", MK_NATIVE_FUNCTION((args, _scope) => {
+		tracer.debug(tracer.format(args));
 		return MK_NULL();
 	}), true);
 

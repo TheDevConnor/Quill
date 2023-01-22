@@ -16,9 +16,13 @@ import {
   IfStmt,
   GreaterThanExpr,
   LessThanExpr,
+  EqualsExpr,
+  NotEqualsExpr,
+  SequenceExpr,
 } from "./ast.ts";
 
 import { Token, tokenize, TokenType } from "./lexer.ts";
+import { error } from "./tracing.ts";
 
 /**
  * Frontend for producing a valid AST from sourcode
@@ -59,7 +63,9 @@ export default class Parser {
   private expect(type: TokenType, err: any) {
     const prev = this.tokens.shift() as Token;
     if (!prev || prev.type != type) {
-      console.error("Parser Error:\n", err, prev, " - Expecting: ", type);
+      // error("[Parser] Error: " + err + " token: " + prev.type + " - Expecting: " + type);
+      error("[Parser] Error on line " + (prev.type - 1) + ", Expected: " + TokenType[type]);
+      // console.error("Parser Error:\n", err, prev, " - Expecting: ", type);
       Deno.exit(1);
     }
 
@@ -144,7 +150,7 @@ export default class Parser {
     return {
       kind: "ReturnStmt",
       value: expr,
-    }as ReturnStmt;
+     } as ReturnStmt;
   }
 
   // Handle variable declarations
@@ -203,6 +209,17 @@ export default class Parser {
         right,
         operation: opertation.value,
       } as unknown as GreaterThanExpr | LessThanExpr;
+    }
+
+    while (this.at().type == TokenType.Equals || this.at().type == TokenType.NOT) {
+      const opertation = this.eat(); // Eat the operator
+      const right = this.parse_assignment_expr();
+      expr = {
+        kind: opertation.type === TokenType.Equals ? "EqualsExpr" : "NotEqualsExpr",
+        left: expr,
+        right,
+        operation: opertation.value,
+      } as unknown as EqualsExpr | NotEqualsExpr;
     }
 
     return expr;
