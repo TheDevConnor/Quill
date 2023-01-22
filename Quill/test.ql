@@ -1,4 +1,4 @@
-/*
+
 have x := Random(1, 10);
 have z := 10;
 have y := 7;
@@ -7,10 +7,10 @@ if (z != 10) && (y > 10) {
 	CSInfo (z)
 } else {
 	CSInfo (x)
-} */
+}
 
 
-have Info := 69;
+/* have Info := 69;
 
 func aorigtxhmfbauigtua ( bqnytrhaixgatbhzixudgf, cnufixashgbigfgiuzyvdbgziuybdfv, dmawohgfiadsoubogadfuisf ) {
 	if ( bqnytrhaixgatbhzixudgf = Info ) {
@@ -39,4 +39,4 @@ aorigtxhmfbauigtua(?,?,?)
 have x := 1;
 have y := 2;
 
-Info( x + y )
+Info( x + y ) */
