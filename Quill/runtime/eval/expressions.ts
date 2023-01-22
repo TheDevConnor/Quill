@@ -1,6 +1,6 @@
 import { AssignmentExpr, BinaryExpr,CallExpr, Identifier, 
 	     ObjectLiteral, GreaterThanExpr, LessThanExpr, 
-		 MemberExpr,EqualsExpr, NotEqualsExpr} from "../../FrontEnd/ast.ts";
+		 MemberExpr,EqualsExpr, NotEqualsExpr, AndExpr, OrExpr, NullExpr} from "../../FrontEnd/ast.ts";
 
 import { NumberVal, RuntimeVal,MK_NULL, ObjectVal,
 		 NativeFunctionVal, FunctionVal, NullVal, 
@@ -104,6 +104,35 @@ export function eval_not_equal_expr (binop: NotEqualsExpr, env: Enviroment): Boo
 		const result = leftHandSide.value != rightHandSide.value;
 		return { value: result, type: "boolean" } as BooleanVal;
 	}
+	// One or both are null
+	return MK_NULL() as NullVal;
+}
+
+export function eval_and_expr (binop: AndExpr, env: Enviroment): BooleanVal | NullVal {
+	const leftHandSide = evaluate(binop.left, env);
+	const rightHandSide = evaluate(binop.right, env);
+
+	if (leftHandSide.type == "boolean" && rightHandSide.type == "boolean"){
+		const result = leftHandSide.value && rightHandSide.value;
+		return { value: result, type: "boolean" } as BooleanVal;
+	}
+	// One or both are null
+	return MK_NULL() as NullVal;
+}
+
+export function eval_or_expr (binop: OrExpr, env: Enviroment): BooleanVal | NullVal {
+	const leftHandSide = evaluate(binop.left, env);
+	const rightHandSide = evaluate(binop.right, env);
+
+	if(leftHandSide.type == "boolean" && rightHandSide.type == "boolean"){
+		const result = leftHandSide.value || rightHandSide.value;
+		return { value: result, type: "boolean" } as BooleanVal;
+	}
+	// One or both are null
+	return MK_NULL() as NullVal;
+}
+
+export function eval_null_expr (): NullVal {
 	// One or both are null
 	return MK_NULL() as NullVal;
 }

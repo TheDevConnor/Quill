@@ -28,6 +28,8 @@ export enum TokenType {
   LT, // <
   NOT, // !
   AND, // &&
+  OR, // ||
+  NULL, // ?
 
   OpenParen, // (
   CloseParen, // )
@@ -144,6 +146,8 @@ export function tokenize(sourceCode: string): Token[] {
       tokens.push(token(src.shift(), TokenType.UNDERSCORE));
     } else if (src[0] == ".") {
       tokens.push(token(src.shift(), TokenType.DOT));
+    } else if (src[0] == "?") {
+      tokens.push(token(src.shift(), TokenType.NULL));
     }
     // HANDLE WHITESPACE
     else if (isskippable(src[0])) {
@@ -180,8 +184,13 @@ export function tokenize(sourceCode: string): Token[] {
       tokens.push(token(src.shift(), TokenType.NOT));
       src.shift();
     }
-    else if (src[0] == "&") {
+    else if (src[0] == "&" && src[1] == "&") {
       tokens.push(token(src.shift(), TokenType.AND));
+      src.shift();
+    }
+    else if (src[0] == "|" && src[1] == "|") {
+      tokens.push(token(src.shift(), TokenType.OR));
+      src.shift();
     }
     else if (src[0] == "^") {
       tokens.push(token(src.shift(), TokenType.ARROWUP));

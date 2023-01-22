@@ -37,10 +37,7 @@ export function eval_if_stmt(stmt: IfStmt, env: Enviroment): RuntimeVal {
 	return MK_NULL();
 }
 
-export function eval_function_decl(
-	declaration: FunctionDeclaration,
-	env: Enviroment
-	): RuntimeVal {
+export function eval_function_decl(declaration: FunctionDeclaration, env: Enviroment): RuntimeVal {
 	// Create new function scope
 
 	const func = {

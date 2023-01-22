@@ -14,15 +14,17 @@ export type NodeType =
     | "AssignmentExpr"
     | "MemberExpr"
     | "CallExpr"
-    | "SequenceExpr"
     | "ReturnStmt"
     | "IfStmt"
+    | "NullExpr"
 
     // Comaparison
     | "GreaterThanExpr"
     | "LessThanExpr"
     | "EqualsExpr"
     | "NotEqualsExpr"
+    | "AndExpr"
+    | "OrExpr"
 
     // Literals
     | "Property"
@@ -53,7 +55,7 @@ export interface FunctionDeclaration extends Stmt {
     kind: "FunctionDeclaration";
     parameters: string[];
     name: string;
-    body: Stmt[];
+    body: Stmt[] | null;
     async: boolean;
 }
 
@@ -79,11 +81,8 @@ export interface BinaryExpr extends Expr {
     operator: string;
 }
 
-export interface SequenceExpr extends Expr {
-    expressions: any;
-    kind: "SequenceExpr";
-    left: Expr;
-    right: Expr;
+export interface NullExpr extends Expr {
+    kind: "NullExpr";
 }
 
 export interface GreaterThanExpr extends Expr {
@@ -111,6 +110,20 @@ export interface NotEqualsExpr extends Expr {
     left: Expr;
     right: Expr;
     operator: "!=";
+}
+
+export interface AndExpr extends Expr {
+    kind: "AndExpr";
+    left: Expr;
+    right: Expr;
+    operator: "&&";
+}
+
+export interface OrExpr extends Expr {
+    kind: "OrExpr";
+    left: Expr;
+    right: Expr;
+    operator: "||";
 }
 
 export interface CallExpr extends Expr {

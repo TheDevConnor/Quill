@@ -18,7 +18,9 @@ import {
   LessThanExpr,
   EqualsExpr,
   NotEqualsExpr,
-  SequenceExpr,
+  AndExpr,
+  OrExpr,
+  NullExpr,
 } from "./ast.ts";
 
 import { Token, tokenize, TokenType } from "./lexer.ts";
@@ -200,6 +202,13 @@ export default class Parser {
   private parse_expr(): Expr {
     let expr = this.parse_assignment_expr();
 
+    while (this.at().type == TokenType.NULL) {
+      this.eat();
+      expr = {
+        kind: "NullExpr",
+      } as unknown as NullExpr;
+    }
+
     while (this.at().type == TokenType.GT || this.at().type == TokenType.LT) {
       const opertation = this.eat();
       const right = this.parse_assignment_expr();
@@ -220,6 +229,17 @@ export default class Parser {
         right,
         operation: opertation.value,
       } as unknown as EqualsExpr | NotEqualsExpr;
+    }
+
+    while (this.at().type == TokenType.AND || this.at().type == TokenType.OR) {
+      const opertation = this.eat(); // Eat the operator
+      const right = this.parse_assignment_expr();
+      expr = {
+        kind: opertation.type === TokenType.AND ? "AndExpr" : "OrExpr",
+        left: expr,
+        right,
+        operation: opertation.value,
+      } as unknown as AndExpr | OrExpr;
     }
 
     return expr;
