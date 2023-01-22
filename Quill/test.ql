@@ -1,7 +1,8 @@
-have x := Random(1, 100);
+have x := Random(1, 9);
+have y := 7;
 
-if (x < 10) {
+if (x > 10) {
 	CSInfo (x)
-};
-
-CSPrint(x)
+} else {
+	CSInfo (y)
+}

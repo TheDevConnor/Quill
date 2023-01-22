@@ -223,9 +223,22 @@ export default class Parser {
     }
   
     this.expect(TokenType.CLOSEBRACKET, "Expected '}' after if condition");
-    this.expect(TokenType.Semicolen, "Expected ';' after if condition");
+    // this.expect(TokenType.Semicolen, "Expected ';' after if condition");
+
+    // Parse the else branch as well check to see if it exists
+    let elseBranch: Stmt[] | undefined; // undefined means no else branch
+    if (this.at().type == TokenType.ELSE) {
+      this.eat(); // Eat the 'else' keyword
+      this.expect(TokenType.OPENBRACKET, "Expected '{' after 'else' keyword");
+      elseBranch = [];
   
-    const elseBranch: Stmt[] | null = null;
+      while (this.at().type !== TokenType.EOF && this.at().type !== TokenType.CLOSEBRACKET) {
+        elseBranch.push(this.parse_stmt());
+      }
+  
+      this.expect(TokenType.CLOSEBRACKET, "Expected '}' after 'else' keyword");
+      // this.expect(TokenType.Semicolen, "Expected ';' after 'else' keyword");
+    }
   
     // console.log("If statement: ", condition);
     // console.log("If statement then branch: ", thenBranch);

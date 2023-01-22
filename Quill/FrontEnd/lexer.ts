@@ -14,6 +14,9 @@ export enum TokenType {
   Const, // Constant
   FUNC, // Function
   ASYNC, // Async Function
+  IF, // If
+  ELSE, // Else
+  ELIF, //Else if
 
   // Operators
   ARROWUP, // ^
@@ -41,9 +44,6 @@ export enum TokenType {
   COMMA, // ,
   DOT, // .
   UNDERSCORE, // _
-  IF, // If
-  ELSE, // Else
-  ELIF, //Else if
   THEN, // Then
   RETURN,// return
 
@@ -115,7 +115,7 @@ export function tokenize(sourceCode: string): Token[] {
     // Skip over any comments in the source code
     if (src[0] === "/" && src[1] === "*") {
       while (src.length > 0 && (src[0] !== "*" || src[1] !== "/")) {
-          src.shift();
+        src.shift();
       }
       src.shift();
       src.shift();
@@ -156,29 +156,28 @@ export function tokenize(sourceCode: string): Token[] {
     else if (src[0] == "=") {
       tokens.push(token(src.shift(), TokenType.Equals));
     } // HANDLE MULTICHARACTER KEYWORDS, TOKENS, IDENTIFIERS ETC...
-    else if (src[0] == ";"){
+    else if (src[0] == ";") {
       tokens.push(token(src.shift(), TokenType.Semicolen));
     }
-    else if (src[0] == ":"){
-      if(tokens[tokens.length - 1].type === TokenType.Identifier){
+    else if (src[0] == ":") {
+      if (tokens[tokens.length - 1].type === TokenType.Identifier) {
         tokens.push(token(src.shift(), TokenType.COLON));
       }
     }
-    else if (src[0] == "<"){
+    else if (src[0] == "<") {
       tokens.push(token(src.shift(), TokenType.LT));
     }
-    else if (src[0] == ">"){
+    else if (src[0] == ">") {
       tokens.push(token(src.shift(), TokenType.GT));
     }
-    else if (src[0] == ","){
+    else if (src[0] == ",") {
       tokens.push(token(src.shift(), TokenType.COMMA));
     }
-    else if (src[0] == "^"){
+    else if (src[0] == "^") {
       tokens.push(token(src.shift(), TokenType.ARROWUP));
     }
-
     // TODO:: HANDLE STRING LITERALS
-    
+
     // TODO:: HANDLE CHAR LITERALS
 
     else {

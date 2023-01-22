@@ -58,7 +58,7 @@ export interface IfStmt extends Stmt {
     kind: "IfStmt";
     condition: Expr;
     thenBranch: Stmt[];
-    elseBranch: Stmt[] | null;
+    elseBranch: Stmt[] | never;
 }
 
 export interface Expr extends Stmt {}
