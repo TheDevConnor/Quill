@@ -21,22 +21,29 @@ export function eval_return_stmt(stmt: ReturnStmt, env: Enviroment): RuntimeVal 
 }
 
 export function eval_if_stmt(stmt: IfStmt, env: Enviroment): RuntimeVal {
-	const condition = evaluate((stmt as IfStmt).condition, env);
-	if (condition.value) {
-		const body = (stmt as IfStmt).thenBranch;
-		for (const statement of body) {
-			evaluate(statement, env);
-		}
-	} else {
-		if ((stmt as IfStmt).elseBranch !== undefined){
-			for (const statement of (stmt as IfStmt).elseBranch) {
-				evaluate(statement, env);
-			}
-		}
-	}
-	return MK_NULL();
+    const condition = evaluate((stmt as IfStmt).condition, env);
+    if (condition.value) {
+        const body = (stmt as IfStmt).thenBranch;
+            for (const statement of body) {
+                evaluate(statement, env);
+            }
+        } else if((stmt as IfStmt).elifBranch !== undefined) {
+        const elifCondition = evaluate((stmt as IfStmt).elifCondition, env);
+        if(elifCondition.value) {
+            const elifBody = (stmt as IfStmt).elifBranch;
+            for (const statement of elifBody) {
+            evaluate(statement, env);
+            }
+        } else {
+            if ((stmt as IfStmt).elseBranch !== undefined){
+                for (const statement of (stmt as IfStmt).elseBranch) {
+                    evaluate(statement, env);
+                }
+            }
+        }
+    }
+    return MK_NULL();
 }
-
 export function eval_function_decl(declaration: FunctionDeclaration, env: Enviroment): RuntimeVal {
 	// Create new function scope
 

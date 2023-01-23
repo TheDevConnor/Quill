@@ -20,6 +20,10 @@ import Enviroment from "./enviroment.ts";
 export function evaluate (astNode: Stmt, env: Enviroment): RuntimeVal {
 	// tracer.trace("Evaluating ast node: " + tracer.format(astNode.kind));
 	// tracer.trace("Enviroment: "  + tracer.format(env));
+	if(!astNode){
+		throw Error("Invalid AST node: " + astNode);
+	}
+
 	switch(astNode.kind) {
 		case "NumericLiteral":
 			return { 

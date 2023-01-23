@@ -2,13 +2,13 @@ func test_1 (x ,y) {
     if (x = y) {
         return x;
 		CSError(x)
-    } else {
+    } elif (x > y) {
         return y;
 		CSError(y)
     }
 }
 
-have x_ := test_1(2, 3);
+have x_ := test_1(3, 3);
 have y_ := test_1(2, 1);
 
 

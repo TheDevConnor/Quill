@@ -62,7 +62,9 @@ export interface FunctionDeclaration extends Stmt {
 export interface IfStmt extends Stmt {
     kind: "IfStmt";
     condition: Expr;
+    elifCondition: Expr;
     thenBranch: Stmt[];
+    elifBranch: Stmt[];
     elseBranch: Stmt[] | never;
 }
 
