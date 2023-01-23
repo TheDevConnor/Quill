@@ -3,8 +3,6 @@
 //---   Responsible for producing tokens from the source   ---
 //------------------------------------------------------------
 
-import { trace } from "./tracing.ts";
-
 export enum TokenType {
   // Literal Types
   Number,

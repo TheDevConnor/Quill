@@ -1,42 +1,12 @@
-
-have x := Random(1, 10);
-have z := 10;
-have y := 7;
-
-if (z != 10) && (y > 10) {
-	CSInfo (z)
-} else {
-	CSInfo (x)
+func test_1 (x ,y) {
+    if (x > y) {
+        x
+		CSError(x)
+    } else {
+        y
+		CSError(y)
+    }
 }
 
-
-/* have Info := 69;
-
-func aorigtxhmfbauigtua ( bqnytrhaixgatbhzixudgf, cnufixashgbigfgiuzyvdbgziuybdfv, dmawohgfiadsoubogadfuisf ) {
-	if ( bqnytrhaixgatbhzixudgf = Info ) {
-		if ( cnufixashgbigfgiuzyvdbgziuybdfv != dmawohgfiadsoubogadfuisf ) {
-			dmawohgfiadsoubogadfuisf := bqnytrhaixgatbhzixudgf
-			dmawohgfiadsoubogadfuisf := cnufixashgbigfgiuzyvdbgziuybdfv
-			aorigtxhmfbauigtua ( Info, cnufixashgbigfgiuzyvdbgziuybdfv, cnufixashgbigfgiuzyvdbgziuybdfv )
-		} else {
-			dmawohgfiadsoubogadfuisf := cnufixashgbigfgiuzyvdbgziuybdfv
-			dmawohgfiadsoubogadfuisf := bqnytrhaixgatbhzixudgf
-			func eangxsiuhdfasifgasgfahsd ( fajjxhgioahgoniogxa ) {
-				Info := fajjxhgioahgoniogxa
-			}
-			func gaiuxhaionghaiuhgdioafhgian ( fajjxhgioahgoniogxa ) {
-				CSInfo ( fajjxhgioahgoniogxa )
-			}
-			cnufixashgbigfgiuzyvdbgziuybdfv := gaiuxhaionghaiuhgdioafhgian
-			eangxsiuhdfasifgasgfahsd ( cnufixashgbigfgiuzyvdbgziuybdfv )
-		}
-	} else {
-		aorigtxhmfbauigtua ( Info, cnufixashgbigfgiuzyvdbgziuybdfv, dmawohgfiadsoubogadfuisf )
-	}
-}
-aorigtxhmfbauigtua(?,?,?)
-
-have x := 1;
-have y := 2;
-
-Info( x + y ) */
+const x_ := test_1(2, 3);
+const y_ := test_1(2, 1);

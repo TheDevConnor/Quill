@@ -1,6 +1,6 @@
 import { AssignmentExpr, BinaryExpr,CallExpr, Identifier, 
 	     ObjectLiteral, GreaterThanExpr, LessThanExpr, 
-		 MemberExpr,EqualsExpr, NotEqualsExpr, AndExpr, OrExpr, NullExpr} from "../../FrontEnd/ast.ts";
+		 MemberExpr,EqualsExpr, NotEqualsExpr, AndExpr, OrExpr} from "../../FrontEnd/ast.ts";
 
 import { NumberVal, RuntimeVal,MK_NULL, ObjectVal,
 		 NativeFunctionVal, FunctionVal, NullVal, 
@@ -128,11 +128,6 @@ export function eval_or_expr (binop: OrExpr, env: Enviroment): BooleanVal | Null
 		const result = leftHandSide.value || rightHandSide.value;
 		return { value: result, type: "boolean" } as BooleanVal;
 	}
-	// One or both are null
-	return MK_NULL() as NullVal;
-}
-
-export function eval_null_expr (): NullVal {
 	// One or both are null
 	return MK_NULL() as NullVal;
 }

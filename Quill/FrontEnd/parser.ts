@@ -62,7 +62,7 @@ export default class Parser {
    * Returns the previous token and then advances the tokens array to the next value.
    *  Also checks the type of expected token and throws if the values dnot match.
    */
-  private expect(type: TokenType, err: any) {
+  private expect(type: TokenType, _err: any) {
     const prev = this.tokens.shift() as Token;
     if (!prev || prev.type != type) {
       // error("[Parser] Error: " + err + " token: " + prev.type + " - Expecting: " + type);
@@ -260,7 +260,6 @@ export default class Parser {
     }
   
     this.expect(TokenType.CLOSEBRACKET, "Expected '}' after if condition");
-    // this.expect(TokenType.Semicolen, "Expected ';' after if condition");
 
     // Parse the else branch as well check to see if it exists
     let elseBranch: Stmt[] | undefined; // undefined means no else branch
@@ -286,7 +285,7 @@ export default class Parser {
       kind: "IfStmt",
       condition,
       thenBranch,
-      elseBranch
+      elseBranch,
     }as unknown as IfStmt;
   }
 
