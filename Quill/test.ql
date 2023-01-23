@@ -1,12 +1,21 @@
 func test_1 (x ,y) {
-    if (x > y) {
-        x
+    if (x = y) {
+        return x;
 		CSError(x)
     } else {
-        y
+        return y;
 		CSError(y)
     }
 }
 
-const x_ := test_1(2, 3);
-const y_ := test_1(2, 1);
+have x_ := test_1(2, 3);
+have y_ := test_1(2, 1);
+
+
+/* What I need to add to Quill
+Strings
+Arrays
+Elif
+For loop
+While loop
+*/
