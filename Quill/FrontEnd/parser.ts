@@ -21,6 +21,7 @@ import {
   AndExpr,
   OrExpr,
   NullExpr,
+ElifStmt,
 } from "./ast.ts";
 
 import { Token, tokenize, TokenType } from "./lexer.ts";
@@ -148,7 +149,6 @@ export default class Parser {
   parse_return_stmt(): Stmt {
     this.eat(); // Eat the 'return' keyword
     const expr = this.parse_expr();
-    this.expect(TokenType.Semicolen, "Expected ';' after return statement");
     return {
       kind: "ReturnStmt",
       value: expr,
@@ -192,8 +192,6 @@ export default class Parser {
       value: this.parse_expr(),
       const: isConstant,
     } as unknown as VarDeclaration;
-
-    this.expect(TokenType.Semicolen, "Expected ';' after variable declaration.");
 
     return declaration;
   }
@@ -247,60 +245,55 @@ export default class Parser {
 
   private parse_if_stmt(): Stmt {
     this.eat(); // Eat the 'if' keyword
-  
-    // this.expect(TokenType.OpenParen, "Expected '(' after 'if' keyword");
     const condition = this.parse_expr(); // Parse the condition
-    // this.expect(TokenType.CloseParen, "Expected ')' after if condition");
-  
     this.expect(TokenType.OPENBRACKET, "Expected '{' after if condition");
     const thenBranch: Stmt[] = [];
-  
     while (this.at().type !== TokenType.EOF && this.at().type !== TokenType.CLOSEBRACKET) {
       thenBranch.push(this.parse_stmt());
     }
-  
     this.expect(TokenType.CLOSEBRACKET, "Expected '}' after if condition");
 
-    // Parse the else branch as well check to see if it exists
     let elseBranch: Stmt[] | undefined; // undefined means no else branch
-    if (this.at().type == TokenType.ELSE) {
-      this.eat(); // Eat the 'else' keyword
-      this.expect(TokenType.OPENBRACKET, "Expected '{' after 'else' keyword");
-      elseBranch = [];
-  
-      while (this.at().type !== TokenType.EOF && this.at().type !== TokenType.CLOSEBRACKET) {
-        elseBranch.push(this.parse_stmt());
-      }
-  
-      this.expect(TokenType.CLOSEBRACKET, "Expected '}' after 'else' keyword");
-      // this.expect(TokenType.Semicolen, "Expected ';' after 'else' keyword");
-    }
+    let elifBranches: ElifStmt[] | undefined;
 
-    // Add elif statement
-    let elifBranch: Stmt[] | undefined;
-    if (this.at().type == TokenType.ELIF) {
-      this.eat(); // Eat the 'elif' keyword
-      const elifCondition = this.parse_expr(); // Parse the condition
-      this.expect(TokenType.OPENBRACKET, "Expected '{' after elif condition");
-      elifBranch = [];
-
-      while (this.at().type !== TokenType.EOF && this.at().type !== TokenType.CLOSEBRACKET) {
-        elifBranch.push(this.parse_stmt());
+    while (this.at().type === TokenType.ELSE || this.at().type === TokenType.ELIF) {
+      if (this.at().type === TokenType.ELSE) {
+        this.eat(); // Eat the 'else' keyword
+        this.expect(TokenType.OPENBRACKET, "Expected '{' after 'else' keyword");
+        elseBranch = [];
+        while (this.at().type !== TokenType.EOF && this.at().type !== TokenType.CLOSEBRACKET) {
+          elseBranch.push(this.parse_stmt());
+        }
+        this.expect(TokenType.CLOSEBRACKET, "Expected '}' after 'else' keyword");
+      } 
+      
+      else if (this.at().type === TokenType.ELIF) {
+        this.eat(); // Eat the 'elif' keyword
+        const elifCondition = this.parse_expr();
+        this.expect(TokenType.OPENBRACKET, "Expected '{' after 'elif' keyword");
+        const elifBody: Stmt[] = [];
+        while (this.at().type !== TokenType.EOF && this.at().type !== TokenType.CLOSEBRACKET) {
+          elifBody.push(this.parse_stmt());
+        }
+        this.expect(TokenType.CLOSEBRACKET, "Expected '}' after 'elif' keyword");
+        elifBranches = {
+          kind: "ElifStmt",
+          condition: elifCondition,
+          body: elifBody,
+        } as unknown as ElifStmt[];
       }
-      this.expect(TokenType.CLOSEBRACKET, "Expected '}' after elif condition");
     }
-  
     console.log("If statement: ", condition);
-    // console.log("If statement then branch: ", thenBranch);
-    console.log("If statement then branch: ", elifBranch);
+    console.log("If statement then branch: ", thenBranch);
+    console.log("If statement then branch: ", elifBranches);
     // console.log("If statement else branch: ", elseBranch);
     // console.log("If statement parsed successfully.");
   
     return {
-      kind: "IfStmt",
-      condition,
+      kind: "IfStmt", 
+      condition ,
       thenBranch,
-      elifBranch,
+      elifBranches,
       elseBranch,
     }as unknown as IfStmt;
   }

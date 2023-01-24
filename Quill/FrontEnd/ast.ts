@@ -16,6 +16,7 @@ export type NodeType =
     | "CallExpr"
     | "ReturnStmt"
     | "IfStmt"
+    | "ElifStmt"
     | "NullExpr"
 
     // Comaparison
@@ -62,10 +63,15 @@ export interface FunctionDeclaration extends Stmt {
 export interface IfStmt extends Stmt {
     kind: "IfStmt";
     condition: Expr;
-    elifCondition: Expr;
     thenBranch: Stmt[];
-    elifBranch: Stmt[];
+    elifBranch: ElifStmt[] | undefined;
     elseBranch: Stmt[] | never;
+}
+
+export interface ElifStmt extends Stmt {
+    kind: "ElifStmt";
+    condition: Expr;
+    body: Stmt[];
 }
 
 export interface Expr extends Stmt {}

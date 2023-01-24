@@ -1,21 +1,18 @@
 func test_1 (x ,y) {
     if (x = y) {
-        return x;
+        return x
 		CSError(x)
-    } elif (x > y) {
-        return y;
-		CSError(y)
+    } elif (x < y) {
+        return x
+		CSInfo(x)
     }
 }
-
-have x_ := test_1(3, 3);
-have y_ := test_1(2, 1);
-
+test_1(1, 2)
 
 /* What I need to add to Quill
-Strings
-Arrays
-Elif
+Elif // Working on now
 For loop
 While loop
+Strings
+Arrays
 */

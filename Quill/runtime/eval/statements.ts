@@ -1,4 +1,4 @@
-import { FunctionDeclaration, Program, ReturnStmt, VarDeclaration, IfStmt } from "../../FrontEnd/ast.ts";
+import { FunctionDeclaration, Program, ReturnStmt, VarDeclaration, IfStmt, ElifStmt } from "../../FrontEnd/ast.ts";
 import { RuntimeVal,MK_NULL, FunctionVal } from "../values.ts";
 import { evaluate } from "../interpreter.ts";
 import Enviroment from "../enviroment.ts";
@@ -21,29 +21,36 @@ export function eval_return_stmt(stmt: ReturnStmt, env: Enviroment): RuntimeVal 
 }
 
 export function eval_if_stmt(stmt: IfStmt, env: Enviroment): RuntimeVal {
-    const condition = evaluate((stmt as IfStmt).condition, env);
+    const condition = evaluate(stmt.condition, env);
     if (condition.value) {
-        const body = (stmt as IfStmt).thenBranch;
-            for (const statement of body) {
-                evaluate(statement, env);
-            }
-        } else if((stmt as IfStmt).elifBranch !== undefined) {
-        const elifCondition = evaluate((stmt as IfStmt).elifCondition, env);
-        if(elifCondition.value) {
-            const elifBody = (stmt as IfStmt).elifBranch;
-            for (const statement of elifBody) {
+        for (const statement of stmt.thenBranch) {
             evaluate(statement, env);
-            }
-        } else {
-            if ((stmt as IfStmt).elseBranch !== undefined){
-                for (const statement of (stmt as IfStmt).elseBranch) {
-                    evaluate(statement, env);
-                }
+        }
+    } else if (stmt.elifBranch) {
+        for (const elif of stmt.elifBranch) {
+            eval_elif_stmt(elif, env);
+        }
+    } else {
+        if (stmt.elseBranch) {
+            for (const statement of stmt.elseBranch) {
+                evaluate(statement, env);
             }
         }
     }
     return MK_NULL();
 }
+
+
+export function eval_elif_stmt(stmt: ElifStmt, env: Enviroment): RuntimeVal {
+    const condition = evaluate(stmt.condition, env);
+    if (condition.value) {
+        for (const statement of stmt.body) {
+            evaluate(statement, env);
+        }
+    }
+    return MK_NULL();
+}
+
 export function eval_function_decl(declaration: FunctionDeclaration, env: Enviroment): RuntimeVal {
 	// Create new function scope
 
