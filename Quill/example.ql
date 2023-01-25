@@ -57,3 +57,17 @@ const results := random(10, 20)
 
 CSInfo(results)
 --------------------------------------------------------------------------------------------------------------------------------
+func async test (min, max) {
+	have random := Random(min, max)
+
+	if min < max {
+		have result := 0
+		CSError(result)
+	} else {
+		have result := min + (max - min)
+		CSError(result)
+	}
+}
+
+test(0, 5)
+--------------------------------------------------------------------------------------------------------------------------------
