@@ -66,9 +66,7 @@ export default class Parser {
   private expect(type: TokenType, _err: any) {
     const prev = this.tokens.shift() as Token;
     if (!prev || prev.type != type) {
-      // error("[Parser] Error: " + err + " token: " + prev.type + " - Expecting: " + type);
-      error("[Parser] Error on line " + (prev.type - 1) + ", Expected: " + TokenType[type]);
-      // console.error("Parser Error:\n", err, prev, " - Expecting: ", type);
+      error("[Parser] Error: \n" + _err + " line: " + `\x1b[31m${this.at().line - 1}\x1b[0m` + " - Expecting: " + `\x1b[31m${type}\x1b`);
       Deno.exit(1);
     }
 

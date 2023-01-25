@@ -138,7 +138,7 @@ export function tokenize(sourceCode: string): Token[] {
     } else if (src[0] == ")") {
       tokens.push(token(src.shift(), TokenType.CloseParen, Line));
     } else if (src[0] == "[") {
-      tokens.push(token(src.shift(), TokenType.OPENBRACE, 0));
+      tokens.push(token(src.shift(), TokenType.OPENBRACE, Line));
     } else if (src[0] == "]") {
       tokens.push(token(src.shift(), TokenType.CLOSEBRACE, Line));
     } else if (src[0] == "{") {
