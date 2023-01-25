@@ -18,7 +18,6 @@ CSInfo(min_1, max_1)
 test(min_1, max_1)
 
 /* What I need to add to Quill
-Elif // Somewhat working needs improvement
 For loop // Woking on now
 While loop
 Strings
