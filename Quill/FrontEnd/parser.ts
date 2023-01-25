@@ -289,13 +289,8 @@ export default class Parser {
           condition: elifCondition,
           body: elifBody,
         }];
-        // console.log("If statement elif branch: ", elifCondition);
       }
     }
-    // console.log("If statement: ", condition);
-    // console.log("If statement then branch: ", thenBranch);
-    // console.log("If statement else branch: ", elseBranch);
-    // console.log("If statement parsed successfully.");
   
     return {
       kind: "IfStmt", 
