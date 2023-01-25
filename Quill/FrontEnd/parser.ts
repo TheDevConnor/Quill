@@ -540,7 +540,7 @@ export default class Parser {
 
       // Unidentified Tokens and Invalid Code Reached
       default:
-        console.error("Unexpected token found during parsing!", this.at());
+        error(`\x1b[31m[Parser Error]\x1b[0m Unexpected token found during parsing! On line: '` + `\x1b[31m${this.at().line}\x1b[0m` + "' Of type: '" + `\x1b[31m${this.at().value}\x1b[0m` + "'");
         Deno.exit(1);
     }
   }
