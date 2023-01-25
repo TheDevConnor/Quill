@@ -262,7 +262,7 @@ export default class Parser {
     this.expect(TokenType.CLOSEBRACKET, "Expected '}' after if condition");
 
     let elseBranch: Stmt[] | undefined; // undefined means no else branch
-    let elifBranch: ElifStmt[];
+    let elifBranch: ElifStmt[] | undefined;
 
     while (this.at().type === TokenType.ELSE || this.at().type === TokenType.ELIF) {
       if (this.at().type === TokenType.ELSE) {
@@ -289,11 +289,11 @@ export default class Parser {
           condition: elifCondition,
           body: elifBody,
         }];
-        console.log("If statement elif branch: ", elifCondition);
+        // console.log("If statement elif branch: ", elifCondition);
       }
     }
-    console.log("If statement: ", condition);
-    console.log("If statement then branch: ", thenBranch);
+    // console.log("If statement: ", condition);
+    // console.log("If statement then branch: ", thenBranch);
     // console.log("If statement else branch: ", elseBranch);
     // console.log("If statement parsed successfully.");
   
@@ -301,6 +301,7 @@ export default class Parser {
       kind: "IfStmt", 
       condition ,
       thenBranch,
+      elifBranch,
       elseBranch,
     }as unknown as IfStmt;
   }

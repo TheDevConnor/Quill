@@ -1,16 +1,21 @@
-func async test (min, max) {
-	have random := Random(min, max)
+have min_1 := Random(0, 10)
+have max_1 := Random(0, 10)
 
-	if min < max {
+func async test (min, max) {
+	if min > max {
 		have result := 0
-		CSError(result)
+		CSDebug(result)
+	} elif min < max {
+		have result := max - min
+		CSWarn(result)
 	} else {
 		have result := min + (max - min)
-		CSError(result)
+		CSDebug(result)
 	}
 }
 
-test(0, 5)
+CSInfo(min_1, max_1)
+test(min_1, max_1)
 
 /* What I need to add to Quill
 Elif // Somewhat working needs improvement
