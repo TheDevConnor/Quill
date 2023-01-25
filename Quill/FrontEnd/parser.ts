@@ -118,6 +118,13 @@ export default class Parser {
   // Handles Function Declarations
   parse_function_decl(): Stmt {
     this.eat(); // Eat the 'func' keyword
+
+    let isAsync = false;
+    if (this.at().type == TokenType.ASYNC) {
+      isAsync = true;
+      this.eat(); // Eat the 'async' keyword
+    }
+
     const name = this.expect(TokenType.Identifier, "Expected function name").value;
     const args = this.parse_args();
     const params: string[] = [];
@@ -138,6 +145,7 @@ export default class Parser {
         body,
         name,
         parameters: params,
+        async: isAsync,
         kind: "FunctionDeclaration",
     } as unknown as FunctionDeclaration;
 

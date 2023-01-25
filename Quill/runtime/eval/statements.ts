@@ -59,8 +59,9 @@ export function eval_function_decl(declaration: FunctionDeclaration, env: Enviro
 		name: declaration.name,
 		parameters: declaration.parameters,
 		declarationsENV: env,
+        async: declaration.async,
 		body: declaration.body,
-	} as FunctionVal;
+	} as unknown as FunctionVal;
 
 	return env.declareVar(declaration.name, func, true);
 }
