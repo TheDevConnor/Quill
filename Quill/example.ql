@@ -71,3 +71,21 @@ func async test (min, max) {
 
 test(0, 5)
 --------------------------------------------------------------------------------------------------------------------------------
+In Quill, you can define an array using the .. operator to specify the range of values. Here is an example of how you can define an array with values from 0 to 5:
+
+Copy code
+let myArray = [0, 1, 2, 3, 4, 5];
+Alternatively, you can use the range operator and the map function to create an array with the desired values like so:
+
+Copy code
+let myArray = (0..5).map(i => i);
+You can also use this syntax to define an array with a specific number of elements like this
+
+Copy code
+let myArray = [0; 6] //This will create an array of 6 elements, all with the value of 0
+You can also use the range operator to create an array with a range of values and then use the map function to transform the array values like this
+
+Copy code
+let myArray = (0..5).map(i => i * 2); // This will create an array of [0, 2, 4, 6, 8, 10]
+Please note that the way you define an array might differ depending on the version of Quill you are using and the context in which you are using it.
+--------------------------------------------------------------------------------------------------------------------------------

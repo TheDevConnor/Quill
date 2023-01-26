@@ -1,3 +1,4 @@
+/*
 have min_1 := Random(0, 10)
 have max_1 := Random(0, 10)
 
@@ -15,7 +16,7 @@ func async test (min, max) {
 }
 
 CSInfo(min_1, max_1)
-test(min_1, max_1)
+test(min_1, max_1) */
 
 /* What I need to add to Quill
 For loop // Woking on now
@@ -24,17 +25,24 @@ Strings
 Arrays
 */
 
+/* This is how you will assign an array in quill
+
+have array := (0..5).map(i -> 1)
+
 /* Can do the same thing for a for loop */
-/* 0..5 is the same as saying for i in range(0, 5) */
+
 /*
+have i := 0
+have max := 5
+
 for i in 0..5 {
-    CSInfo("Hello Quill User");
+    CSInfo(max);
 } */
 
 /* Can do the same thing for a while loop */
 /*
-let counter = 0
+have counter := 0
 while counter < 5 {
 	CSInfo("Hello Quill User");
-	counter = counter + 1
+	counter := counter + 1
 } */

@@ -21,7 +21,7 @@ import {
   AndExpr,
   OrExpr,
   NullExpr,
-ElifStmt,
+  ElifStmt,
 } from "./ast.ts";
 
 import { Token, tokenize, TokenType } from "./lexer.ts";
@@ -66,7 +66,7 @@ export default class Parser {
   private expect(type: TokenType, _err: any) {
     const prev = this.tokens.shift() as Token;
     if (!prev || prev.type != type) {
-      error("[Parser] Error: \n" + _err + " line: " + `\x1b[31m${this.at().line - 1}\x1b[0m` + " - Expecting: " + `\x1b[31m${type}\x1b`);
+      error("[Parser] Error: \n" + _err + " line: " + `\x1b[31m${this.at().line - 1}\x1b[0m` + " - Expecting: " + `\x1b[31m${this.at().value}\x1b`);
       Deno.exit(1);
     }
 
