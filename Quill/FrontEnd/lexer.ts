@@ -14,6 +14,7 @@ export enum TokenType {
   Const, // Constant
   FUNC, // Function
   ASYNC, // Async Function
+  ARRAY, // Array
   IF, // If
   ELSE, // Else
   ELIF, //Else if

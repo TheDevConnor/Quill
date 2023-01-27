@@ -22,6 +22,8 @@ import {
   OrExpr,
   NullExpr,
   ElifStmt,
+  ArrayLiteral,
+  ArrayAccess,
 } from "./ast.ts";
 
 import { Token, tokenize, TokenType } from "./lexer.ts";
@@ -107,6 +109,8 @@ export default class Parser {
         return this.parse_function_decl();
       case TokenType.RETURN:
         return this.parse_return_stmt();
+      case TokenType.OPENBRACE:
+        return this.parse_array_literal();
       default: {
         return this.parse_expr();
       }
@@ -246,6 +250,17 @@ export default class Parser {
       } as unknown as AndExpr | OrExpr;
     }
 
+    while (this.at().type == TokenType.OPENBRACE) {
+      this.eat(); // Eat the '['
+      const index = this.parse_expr();
+      this.eat(); // Eat the ']'
+      expr = {
+        kind: "ArrayAccess",
+        array: expr,
+        index,
+      } as unknown as ArrayAccess;
+    }
+
     return expr;
   }
 
@@ -297,6 +312,29 @@ export default class Parser {
       elifBranch,
       elseBranch,
     }as unknown as IfStmt;
+  }
+
+  private parse_array_literal(): ArrayLiteral {
+    const arrayLiteral: Expr[] | undefined = [];
+    this.expect(TokenType.OPENBRACE, "Expected '[' after 'let' keyword");
+    this.eat(); // advance to the next token
+  
+    // Parse the expressions inside the array
+    while (this.at().type !== TokenType.CLOSEBRACE) {
+      arrayLiteral.push(this.parse_expr());
+  
+      if (this.at().type === TokenType.COMMA) {
+        this.eat();
+      }
+    }
+  
+    // Consume the ']' token
+    this.eat();
+  
+    return {
+      kind: "ArrayLiteral",
+      values: arrayLiteral
+    }
   }
 
   private parse_assignment_expr(): Expr {

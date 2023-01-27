@@ -15,10 +15,13 @@ export interface NullVal extends RuntimeVal {
 export function MK_NULL() {
 	return { value: null, type: "null" } as NullVal;
 }
-
 export interface BooleanVal extends RuntimeVal {
 	type: "boolean";
 	value: boolean;
+}
+
+export interface ArrayVal extends RuntimeVal {
+	values: RuntimeVal[];
 }
 
 export function MK_BOOL(b = false) {

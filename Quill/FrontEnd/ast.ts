@@ -24,6 +24,8 @@ export type NodeType =
     | "LessThanExpr"
     | "EqualsExpr"
     | "NotEqualsExpr"
+    | "ArrayLiteral"
+    | "ArrayAccess"
     | "AndExpr"
     | "OrExpr"
 
@@ -58,6 +60,17 @@ export interface FunctionDeclaration extends Stmt {
     name: string;
     body: Stmt[] | null;
     async: boolean;
+}
+
+export interface ArrayLiteral extends Stmt {
+    kind: "ArrayLiteral";
+    values: Expr[];
+}
+
+export interface ArrayAccess extends Stmt {
+    kind: "ArrayAccess";
+    array: Expr;
+    index: Expr;
 }
 
 export interface IfStmt extends Stmt {

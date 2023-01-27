@@ -1,5 +1,5 @@
-import { FunctionDeclaration, Program, ReturnStmt, VarDeclaration, IfStmt, ElifStmt } from "../../FrontEnd/ast.ts";
-import { RuntimeVal,MK_NULL, FunctionVal } from "../values.ts";
+import { FunctionDeclaration, Program, ReturnStmt, VarDeclaration, IfStmt, ElifStmt, ArrayLiteral } from "../../FrontEnd/ast.ts";
+import { RuntimeVal,MK_NULL, FunctionVal, ArrayVal } from "../values.ts";
 import { evaluate } from "../interpreter.ts";
 import Enviroment from "../enviroment.ts";
 
@@ -9,6 +9,13 @@ export function eval_program(program: Program, env: Enviroment): RuntimeVal {
 		lastEvaluated = evaluate(statement, env);
 	}
 	return lastEvaluated;
+}
+
+export function eval_array_literal(array: ArrayLiteral, env: Enviroment): ArrayVal {
+	const values = array.values.map((val) => evaluate(val, env));
+	return {
+		values,
+	} as ArrayVal;
 }
 
 export function eval_var_decl(declaration: VarDeclaration, env: Enviroment): RuntimeVal {

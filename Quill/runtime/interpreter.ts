@@ -5,14 +5,14 @@ import { Stmt, NumericLiteral, Identifier,
 		AssignmentExpr, ObjectLiteral, CallExpr, 
 		FunctionDeclaration, ReturnStmt, GreaterThanExpr, 
 		LessThanExpr, IfStmt, MemberExpr, EqualsExpr, 
-		NotEqualsExpr, OrExpr, AndExpr, ElifStmt } from "../FrontEnd/ast.ts";
+		NotEqualsExpr, OrExpr, AndExpr, ElifStmt, ArrayLiteral } from "../FrontEnd/ast.ts";
 
 import { enal_identifier,eval_and_expr,eval_assingment,eval_binary_expr, 
 		 eval_call_expr, eval_equal_expr, eval_greater_than_expr, eval_less_than_expr, 
 		 eval_member_expr, eval_not_equal_expr, eval_object_expr, eval_or_expr } from "./eval/expressions.ts";
 	
 import { eval_function_decl, eval_program,eval_var_decl, eval_return_stmt, 
-		 eval_if_stmt, eval_elif_stmt} from "./eval/statements.ts";
+		 eval_if_stmt, eval_elif_stmt, eval_array_literal} from "./eval/statements.ts";
 
 import Enviroment from "./enviroment.ts";
 // import * as tracer from "../FrontEnd/tracing.ts";
@@ -69,6 +69,9 @@ export function evaluate (astNode: Stmt, env: Enviroment): RuntimeVal {
 
 		case "Program":
 			return eval_program(astNode as Program, env);
+
+		case "ArrayLiteral":
+			return eval_array_literal(astNode as ArrayLiteral, env);
 		
 		// Handle statements
 		case "VarDeclaration":
