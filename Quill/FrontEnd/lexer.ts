@@ -131,6 +131,11 @@ export function tokenize(sourceCode: string): Token[] {
       src.shift();
       src.shift();
       continue;
+    } else if (src[0] === "#") {
+      while (src.length > 0 && src[0] !== "\n") {
+        src.shift();
+      }
+      continue;
     }
 
     // BEGIN PARSING ONE CHARACTER TOKENS
