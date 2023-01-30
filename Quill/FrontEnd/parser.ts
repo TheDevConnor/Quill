@@ -23,7 +23,6 @@ import {
   NullExpr,
   ElifStmt,
   ArrayLiteral,
-  ArrayAccess,
 } from "./ast.ts";
 
 import { Token, tokenize, TokenType } from "./lexer.ts";
@@ -92,28 +91,27 @@ export default class Parser {
 
   // Handle complex statement types
   private parse_stmt(): Stmt {
+    console.log(`Current token: ${this.at().value}, Token type: ${this.at().type}`);
     switch (this.at().type) {
       case TokenType.Var:
       case TokenType.Const:
         return this.parse_var_decl();
-      // The call for the if statement
       case TokenType.IF:
         return this.parse_if_stmt();
       case TokenType.Identifier:
-        // Add a return type so i can do { return type; }
         if (this.at().value === "return") {
           return this.parse_return_stmt();
         }
+  
         return this.parse_expr();
       case TokenType.FUNC:
         return this.parse_function_decl();
       case TokenType.RETURN:
         return this.parse_return_stmt();
-      case TokenType.OPENBRACE:
+      case TokenType.ARRAY:
         return this.parse_array_literal();
-      default: {
+      default:
         return this.parse_expr();
-      }
     }
   }
 
@@ -250,17 +248,6 @@ export default class Parser {
       } as unknown as AndExpr | OrExpr;
     }
 
-    while (this.at().type == TokenType.OPENBRACE) {
-      this.eat(); // Eat the '['
-      const index = this.parse_expr();
-      this.eat(); // Eat the ']'
-      expr = {
-        kind: "ArrayAccess",
-        array: expr,
-        index,
-      } as unknown as ArrayAccess;
-    }
-
     return expr;
   }
 
@@ -314,28 +301,25 @@ export default class Parser {
     }as unknown as IfStmt;
   }
 
-  private parse_array_literal(): ArrayLiteral {
-    const arrayLiteral: Expr[] | undefined = [];
-    this.expect(TokenType.OPENBRACE, "Expected '[' after 'let' keyword");
-    this.eat(); // advance to the next token
+  private parse_array_literal(): Expr {
+    this.expect(TokenType.ARRAY, "Expected 'array' keyword");
+    this.eat(); // Eat the 'array' keyword
   
-    // Parse the expressions inside the array
+    this.expect(TokenType.OPENBRACE, "Expected '[' after 'array' keyword");
+    this.eat(); // Eat the '[' token
+  
+    const elements: Expr[] = [];
     while (this.at().type !== TokenType.CLOSEBRACE) {
-      arrayLiteral.push(this.parse_expr());
-  
-      if (this.at().type === TokenType.COMMA) {
-        this.eat();
-      }
+      elements.push(this.parse_expr());
+      if (this.at().type === TokenType.COMMA) this.eat();
     }
   
-    // Consume the ']' token
+    this.expect(TokenType.CLOSEBRACE, "Expected ']' to close the array literal");
     this.eat();
   
-    return {
-      kind: "ArrayLiteral",
-      values: arrayLiteral
-    }
+    return { kind: "ArrayLiteral", elements: elements } as ArrayLiteral;
   }
+  
 
   private parse_assignment_expr(): Expr {
       const left = this.parse_object_expr();

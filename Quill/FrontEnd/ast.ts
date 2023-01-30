@@ -18,14 +18,13 @@ export type NodeType =
     | "IfStmt"
     | "ElifStmt"
     | "NullExpr"
+    | "ArrayLiteral"
 
     // Comaparison
     | "GreaterThanExpr"
     | "LessThanExpr"
     | "EqualsExpr"
     | "NotEqualsExpr"
-    | "ArrayLiteral"
-    | "ArrayAccess"
     | "AndExpr"
     | "OrExpr"
 
@@ -64,13 +63,7 @@ export interface FunctionDeclaration extends Stmt {
 
 export interface ArrayLiteral extends Stmt {
     kind: "ArrayLiteral";
-    values: Expr[];
-}
-
-export interface ArrayAccess extends Stmt {
-    kind: "ArrayAccess";
-    array: Expr;
-    index: Expr;
+    elements: Stmt[] | undefined;
 }
 
 export interface IfStmt extends Stmt {

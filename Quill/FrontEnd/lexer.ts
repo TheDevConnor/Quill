@@ -69,6 +69,7 @@ const KEYWORDS: Record<string, TokenType> = {
   elif: TokenType.ELIF,
   then: TokenType.THEN,
   return: TokenType.RETURN,
+  array: TokenType.ARRAY,
 };
 // Reoresents a single token from the source-code.
 export interface Token {
@@ -159,7 +160,45 @@ export function tokenize(sourceCode: string): Token[] {
       tokens.push(token(src.shift(), TokenType.DOT, Line));
     } else if (src[0] == "?") {
       tokens.push(token(src.shift(), TokenType.NULL, Line));
+    } else if (src[0] == "=") {
+      tokens.push(token(src.shift(), TokenType.Equals, Line));
+    } // HANDLE MULTICHARACTER KEYWORDS, TOKENS, IDENTIFIERS ETC...
+    else if (src[0] == ";") {
+      tokens.push(token(src.shift(), TokenType.Semicolen, Line));
+    } else if (src[0] == ":") {
+      if (tokens[tokens.length - 1].type === TokenType.Identifier) {
+        tokens.push(token(src.shift(), TokenType.COLON, Line));
+      }
+    } else if (src[0] == "<") {
+      tokens.push(token(src.shift(), TokenType.LT, Line));
+    } else if (src[0] == ">") {
+      tokens.push(token(src.shift(), TokenType.GT, Line));
+    } else if (src[0] == ",") {
+      tokens.push(token(src.shift(), TokenType.COMMA, Line));
+    } else if (src[0] == "!" && src[1] == "=") {
+      tokens.push(token(src.shift(), TokenType.NOT, Line));
+      src.shift();
+    } else if (src[0] == "&" && src[1] == "&") {
+      tokens.push(token(src.shift(), TokenType.AND, Line));
+      src.shift();
+    } else if (src[0] == "|" && src[1] == "|") {
+      tokens.push(token(src.shift(), TokenType.OR, Line));
+      src.shift();
+    } else if (src[0] == "^") {
+      tokens.push(token(src.shift(), TokenType.ARROWUP, Line));
     }
+
+    // TODO:: HANDLE STRING LITERALS
+    else if (src[0] == '"') {
+      let str = '';
+      src.shift();
+      while (src[0] != '"') {
+        str += src.shift();
+      }
+      src.shift();
+      tokens.push(token(str, TokenType.String, Line));
+    }
+
     // HANDLE WHITESPACE
     else if (isskippable(src[0])) {
       src.shift();
@@ -171,42 +210,6 @@ export function tokenize(sourceCode: string): Token[] {
     ) {
       tokens.push(token(src.shift(), TokenType.BinaryOperator, Line));
     } // Handle Conditional & Assignment Tokens
-    else if (src[0] == "=") {
-      tokens.push(token(src.shift(), TokenType.Equals, Line));
-    } // HANDLE MULTICHARACTER KEYWORDS, TOKENS, IDENTIFIERS ETC...
-    else if (src[0] == ";") {
-      tokens.push(token(src.shift(), TokenType.Semicolen, Line));
-    }
-    else if (src[0] == ":") {
-      if (tokens[tokens.length - 1].type === TokenType.Identifier) {
-        tokens.push(token(src.shift(), TokenType.COLON, Line));
-      }
-    }
-    else if (src[0] == "<") {
-      tokens.push(token(src.shift(), TokenType.LT, Line));
-    }
-    else if (src[0] == ">") {
-      tokens.push(token(src.shift(), TokenType.GT, Line));
-    }
-    else if (src[0] == ",") {
-      tokens.push(token(src.shift(), TokenType.COMMA, Line));
-    }
-    else if (src[0] == "!" && src[1] == "=") {
-      tokens.push(token(src.shift(), TokenType.NOT, Line));
-      src.shift();
-    }
-    else if (src[0] == "&" && src[1] == "&") {
-      tokens.push(token(src.shift(), TokenType.AND, Line));
-      src.shift();
-    }
-    else if (src[0] == "|" && src[1] == "|") {
-      tokens.push(token(src.shift(), TokenType.OR, Line));
-      src.shift();
-    }
-    else if (src[0] == "^") {
-      tokens.push(token(src.shift(), TokenType.ARROWUP, Line));
-    }
-    // TODO:: HANDLE STRING LITERALS
 
     // TODO:: HANDLE CHAR LITERALS
 

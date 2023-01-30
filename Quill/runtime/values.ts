@@ -20,10 +20,6 @@ export interface BooleanVal extends RuntimeVal {
 	value: boolean;
 }
 
-export interface ArrayVal extends RuntimeVal {
-	values: RuntimeVal[];
-}
-
 export function MK_BOOL(b = false) {
 	return { value: b, type: "boolean" } as BooleanVal;
 }

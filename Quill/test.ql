@@ -2,8 +2,6 @@
 have min_1 := Random(0, 10)
 have max_1 := Random(0, 10)
 
-# have my_array[] := [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-
 func async test (min, max) {
 	if min > max {
 		have result := 0
@@ -13,11 +11,11 @@ func async test (min, max) {
 		CSWarn(result)
 	} else {
 		have result := min + (max - min)
-		CSDebug(result)
+		CSInfo(result)
 	}
 }
 
-CSInfo(min_1, max_1)
+# CSInfo(min_1, max_1)
 test(min_1, max_1)
 
 /* What I need to add to Quill
@@ -29,11 +27,12 @@ Arrays
 
 /* This is how you will assign an array in quill
 
-have array := (0..5).map(i -> 1)
+have myArray := array[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
-/* Can do the same thing for a for loop */
+*/
 
-/*
+/* Can do the same thing for a for loop
+
 have i := 0
 have max := 5
 
