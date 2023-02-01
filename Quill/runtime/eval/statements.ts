@@ -1,4 +1,8 @@
-import { FunctionDeclaration, Program, ReturnStmt, VarDeclaration, IfStmt, ElifStmt } from "../../FrontEnd/ast.ts";
+import { FunctionDeclaration, 
+        Program, ReturnStmt, 
+        VarDeclaration, IfStmt, 
+        ElifStmt, ArrayLiteral } from "../../FrontEnd/ast.ts";
+
 import { RuntimeVal,MK_NULL, FunctionVal } from "../values.ts";
 import { evaluate } from "../interpreter.ts";
 import Enviroment from "../enviroment.ts";
@@ -64,4 +68,11 @@ export function eval_function_decl(declaration: FunctionDeclaration, env: Enviro
 	} as unknown as FunctionVal;
 
 	return env.declareVar(declaration.name, func, true);
+}
+
+export function eval_array_literal(stmt: ArrayLiteral, env: Enviroment): RuntimeVal {
+    if (!stmt.elements || !stmt.elements.length) return { type: "array", value: [] };
+
+    const elements = stmt.elements.map(element => evaluate(element, env));
+    return { type: "array", value: elements };
 }

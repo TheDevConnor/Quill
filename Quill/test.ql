@@ -2,6 +2,8 @@
 have min_1 := Random(0, 10)
 have max_1 := Random(0, 10)
 
+have my_array := array[]
+
 func async test (min, max) {
 	if min > max {
 		have result := 0
@@ -15,7 +17,6 @@ func async test (min, max) {
 	}
 }
 
-# CSInfo(min_1, max_1)
 test(min_1, max_1)
 
 /* What I need to add to Quill

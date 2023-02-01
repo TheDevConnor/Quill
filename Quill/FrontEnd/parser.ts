@@ -315,11 +315,13 @@ export default class Parser {
     }
   
     this.expect(TokenType.CLOSEBRACE, "Expected ']' to close the array literal");
-    this.eat();
+    this.eat(); // Eat the ']' token
   
-    return { kind: "ArrayLiteral", elements: elements } as ArrayLiteral;
+    return { 
+      kind: "ArrayLiteral", 
+      elements: elements 
+    } as unknown as ArrayLiteral;
   }
-  
 
   private parse_assignment_expr(): Expr {
       const left = this.parse_object_expr();

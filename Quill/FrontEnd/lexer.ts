@@ -189,15 +189,6 @@ export function tokenize(sourceCode: string): Token[] {
     }
 
     // TODO:: HANDLE STRING LITERALS
-    else if (src[0] == '"') {
-      let str = '';
-      src.shift();
-      while (src[0] != '"') {
-        str += src.shift();
-      }
-      src.shift();
-      tokens.push(token(str, TokenType.String, Line));
-    }
 
     // HANDLE WHITESPACE
     else if (isskippable(src[0])) {

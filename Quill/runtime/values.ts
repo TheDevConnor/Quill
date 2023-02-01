@@ -1,6 +1,8 @@
-import { Stmt } from "../frontend/ast.ts";
+import { Stmt } from "../Frontend/ast.ts";
 import Enviroment from "./enviroment.ts";
-export type ValueType = "null" | "number" | "boolean" | "object" | "native-function" | "function"  | "string";
+export type ValueType = "null" | "number" | "boolean" | 
+					  "object" | "native-function" | "function"  | 
+					  "string" | "array";
 
 export interface RuntimeVal {
     type: ValueType;
@@ -55,4 +57,9 @@ export interface FunctionVal extends RuntimeVal {
 	parameters: string[];
 	declarationsENV: Enviroment;
 	body: Stmt[];
+}
+
+export interface ArrayVal extends RuntimeVal {
+	type: "array";
+	value: RuntimeVal[];
 }
