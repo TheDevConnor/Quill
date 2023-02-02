@@ -215,6 +215,14 @@ export default class Parser {
       } as unknown as NullExpr;
     }
 
+    while (this.at().type === TokenType.ARRAY) {
+      const operation = this.eat();
+      expr = {
+        kind: operation.type === TokenType.ARRAY ? "ArrayLiteral" : "ArrayLiteral",
+        value: expr,
+      } as unknown as ArrayLiteral;
+    }
+
     while (this.at().type == TokenType.GT || this.at().type == TokenType.LT) {
       const opertation = this.eat();
       const right = this.parse_assignment_expr();
@@ -228,7 +236,7 @@ export default class Parser {
 
     while (this.at().type == TokenType.Equals || this.at().type == TokenType.NOT) {
       const opertation = this.eat(); // Eat the operator
-      const right = this.parse_assignment_expr();
+      const right = this.parse_expr();
       expr = {
         kind: opertation.type === TokenType.Equals ? "EqualsExpr" : "NotEqualsExpr",
         left: expr,
@@ -247,7 +255,6 @@ export default class Parser {
         operation: opertation.value,
       } as unknown as AndExpr | OrExpr;
     }
-
     return expr;
   }
 
@@ -311,11 +318,16 @@ export default class Parser {
     const elements: Expr[] = [];
     while (this.at().type !== TokenType.CLOSEBRACE) {
       elements.push(this.parse_expr());
-      if (this.at().type === TokenType.COMMA) this.eat();
+      if (this.at().type === TokenType.COMMA) {
+        this.eat(); // Eat the ',' token
+      }
     }
   
     this.expect(TokenType.CLOSEBRACE, "Expected ']' to close the array literal");
     this.eat(); // Eat the ']' token
+
+    this.expect(TokenType.Semicolen, "Expected ';' after array literal");
+    this.eat(); // Eat the ';' token
   
     return { 
       kind: "ArrayLiteral", 

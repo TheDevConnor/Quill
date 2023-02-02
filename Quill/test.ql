@@ -2,7 +2,7 @@
 have min_1 := Random(0, 10)
 have max_1 := Random(0, 10)
 
-have my_array := array[]
+have my_array := array [1, 2]; # This is how you create an array in Quill
 
 func async test (min, max) {
 	if min > max {
