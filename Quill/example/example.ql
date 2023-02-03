@@ -80,3 +80,31 @@ You can also define an array and initialize it with zero value like this
 Copy code
 have myArray[5] := {0; 5};
 --------------------------------------------------------------------------------------------------------------------------------
+/* What I need to add to Quill
+For loop // Woking on now
+While loop
+Strings
+Arrays */
+
+/* This is how you will assign an array in quill
+
+have myArray := array[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+*/
+
+/* Can do the same thing for a for loop
+
+have i := 0
+have max := 5
+
+for i in 0..5 {
+    CSInfo(max);
+} */
+
+/* Can do the same thing for a while loop */
+/*
+have counter := 0
+while counter < 5 {
+	CSInfo("Hello Quill User");
+	counter := counter + 1
+} */

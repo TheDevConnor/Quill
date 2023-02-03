@@ -50,7 +50,7 @@ export enum TokenType {
   DOT, // .
   UNDERSCORE, // _
   THEN, // Then
-  RETURN,// return
+  RETURN, // return
 
   // Special
   EOF, // Signified the end of file
@@ -118,7 +118,6 @@ export function tokenize(sourceCode: string): Token[] {
   const tokens = new Array<Token>();
   const src = sourceCode.split("");
   while (src.length > 0) {
-
     // Check if the new line character is present
     if (src[0] == "\n") {
       Line++;
@@ -196,14 +195,16 @@ export function tokenize(sourceCode: string): Token[] {
     }
     // HANDLE BINARY OPERATORS
     else if (
-      src[0] == "+" || src[0] == "-" || src[0] == "*" || src[0] == "/" ||
+      src[0] == "+" ||
+      src[0] == "-" ||
+      src[0] == "*" ||
+      src[0] == "/" ||
       src[0] == "%"
     ) {
       tokens.push(token(src.shift(), TokenType.BinaryOperator, Line));
     } // Handle Conditional & Assignment Tokens
 
     // TODO:: HANDLE CHAR LITERALS
-
     else {
       // Handle numeric literals -> Integers
       if (isint(src[0])) {
@@ -243,7 +244,7 @@ export function tokenize(sourceCode: string): Token[] {
         console.error(
           "Unreconized character found in source: ",
           src[0].charCodeAt(0),
-          src[0],
+          src[0]
         );
         Deno.exit(1);
       }
