@@ -46,7 +46,6 @@ import {
   eval_return_stmt,
   eval_if_stmt,
   eval_elif_stmt,
-  eval_array_literal,
 } from "./eval/statements.ts";
 
 import Enviroment from "./enviroment.ts";
@@ -122,7 +121,7 @@ export function evaluate(astNode: Stmt, env: Enviroment): RuntimeVal {
       return eval_elif_stmt(astNode as ElifStmt, env);
 
     case "ArrayLiteral":
-      return eval_array_literal(astNode as ArrayLiteral, env);
+      throw tracer.error("Array are not yet implemented");
 
     // Handle unimplemented ast nodes
     default:

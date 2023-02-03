@@ -26,7 +26,7 @@ import {
 } from "./ast.ts";
 
 import { Token, tokenize, TokenType } from "./lexer.ts";
-import { error, trace } from "./tracing.ts";
+import { error } from "./tracing.ts";
 
 /**
  * Frontend for producing a valid AST from sourcode
@@ -91,7 +91,7 @@ export default class Parser {
 
   // Handle complex statement types
   private parse_stmt(): Stmt {
-    console.log(`Current token: ${this.at().value}, Token type: ${this.at().type}`);
+    // console.log(`Current token: ${this.at().value}, Token type: ${this.at().type}`);
     switch (this.at().type) {
       case TokenType.Var:
       case TokenType.Const:
@@ -102,19 +102,46 @@ export default class Parser {
         if (this.at().value === "return") {
           return this.parse_return_stmt();
         }
-
-        if (this.at().value === "array") {
-          return this.parse_array_literal();
-        }
-
         return this.parse_expr();
       case TokenType.FUNC:
         return this.parse_function_decl();
+      case TokenType.ARRAY:
+        return this.parse_array_literal();
       case TokenType.RETURN:
         return this.parse_return_stmt();
       default:
         return this.parse_expr();
     }
+  }
+
+  private parse_array_literal(): Expr {
+    this.eat(); // Eat the 'array' keyword
+
+    const name = this.expect(TokenType.Identifier, "Expected function name").value;
+    this.expect(TokenType.OPENBRACE, "Expected '{' after function parameters");
+    const body: Stmt[] = [];
+    while (this.at().type !== TokenType.EOF && this.at().type !== TokenType.CLOSEBRACE) {
+        body.push(this.parse_stmt());
+
+        if (this.at().type === TokenType.RETURN) {
+            this.eat();
+        }
+
+        if (this.at().type === TokenType.COMMA) {
+            this.eat();
+        }
+    }
+
+    // console.log("Body: ", body);
+
+    this.expect(TokenType.CLOSEBRACE, "Expected '}' after function body");
+    const array = {
+        body,
+        name,
+        kind: "ArrayLiteral",
+    } as unknown as ArrayLiteral;
+
+    return array;
   }
 
   // Handles Function Declarations
@@ -302,19 +329,6 @@ export default class Parser {
     }as unknown as IfStmt;
   }
 
-  private parse_array_literal(): Stmt {
-    this.eat(); // Eat the 'array' keyword
-    this.expect(TokenType.OPENBRACKET, "Expected '[' after 'array' keyword");
-    const elements: Expr[] = [];
-    while (this.at().type !== TokenType.EOF && this.at().type !== TokenType.CLOSEBRACKET) {
-      elements.push(this.parse_expr());
-    }
-    this.expect(TokenType.CLOSEBRACKET, "Expected ']' after array literal");
-    return {
-      kind: "ArrayLiteral",
-      elements,
-    }as ArrayLiteral;
-  }
 
   private parse_assignment_expr(): Expr {
       const left = this.parse_object_expr();

@@ -58,8 +58,3 @@ export interface FunctionVal extends RuntimeVal {
 	declarationsENV: Enviroment;
 	body: Stmt[];
 }
-
-export interface ArrayVal extends RuntimeVal {
-	type: "array";
-	value: RuntimeVal[];
-}

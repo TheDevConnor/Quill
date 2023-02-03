@@ -63,7 +63,9 @@ export interface FunctionDeclaration extends Stmt {
 
 export interface ArrayLiteral extends Stmt {
   kind: "ArrayLiteral";
-  elements: Expr[] | null;
+  constant: boolean;
+  name: string;
+  body: Stmt;
 }
 
 export interface IfStmt extends Stmt {
