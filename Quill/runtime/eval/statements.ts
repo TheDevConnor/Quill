@@ -8,6 +8,7 @@ import {
   ArrayLiteral,
   WhileStmt,
   ForStmt,
+  ElseStmt,
 } from "../../FrontEnd/ast.ts";
 
 import { RuntimeVal, MK_NULL, FunctionVal } from "../values.ts";
@@ -53,7 +54,7 @@ export function eval_if_stmt(stmt: IfStmt, env: Enviroment): RuntimeVal {
   } else {
     if (stmt.elseBranch) {
       for (const statement of stmt.elseBranch) {
-        evaluate(statement, env);
+        eval_else_stmt(statement, env);
       }
     }
   }
@@ -66,9 +67,23 @@ export function eval_elif_stmt(stmt: ElifStmt, env: Enviroment): RuntimeVal {
     for (const statement of stmt.body) {
       evaluate(statement, env);
     }
+  } else {
+    if (stmt.elseBranch) {
+      for (const statement of stmt.elseBranch) {
+        eval_else_stmt(statement, env);
+      }
+    }
   }
   return MK_NULL();
 }
+
+export function eval_else_stmt(stmt: ElseStmt, env: Enviroment): RuntimeVal {
+  for (const statement of stmt.body) {
+    evaluate(statement, env);
+  }
+  return MK_NULL();
+}
+
 
 export function eval_function_decl(
   declaration: FunctionDeclaration,

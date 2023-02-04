@@ -15,6 +15,7 @@ import {
   MinusEqualsExpr,
   GreaterThanOrEqualsExpr,
   LessThanOrEqualsExpr,
+  StringLiteral,
 } from "../../FrontEnd/ast.ts";
 
 import {
@@ -26,6 +27,7 @@ import {
   FunctionVal,
   NullVal,
   BooleanVal,
+StringVal,
 } from "../values.ts";
 
 import Enviroment from "../enviroment.ts";

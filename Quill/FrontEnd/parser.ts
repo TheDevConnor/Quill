@@ -29,6 +29,8 @@ import {
   GreaterThanOrEqualsExpr,
   LessThanOrEqualsExpr,
   ForStmt,
+  ElseStmt,
+  StringLiteral,
 } from "./ast.ts";
 
 import { Token, tokenize, TokenType } from "./lexer.ts";
@@ -115,6 +117,11 @@ export default class Parser {
         if (this.at().value === "return") {
           return this.parse_return_stmt();
         }
+
+        if (this.next().type === TokenType.STRING) {
+          return this.parse_string_decl();
+        }
+
         return this.parse_expr();
       case TokenType.FUNC:
         return this.parse_function_decl();
@@ -129,6 +136,17 @@ export default class Parser {
       default:
         return this.parse_expr();
     }
+  }
+
+  private parse_string_decl(): StringLiteral {
+    this.eat(); // Eat the 'return' keyword
+
+    const value = this.eat().value;
+
+    return {
+      kind: "StringLiteral",
+      value,
+    } as unknown as StringLiteral;
   }
 
   private parse_while_stmt(): WhileStmt {
@@ -251,9 +269,6 @@ export default class Parser {
 
     this.expect(TokenType.CLOSEBRACKET, "Expected '}' after function body");
 
-    console.log("Function body: ", body);
-    console.log("Function name: ", name);
-
     const func = {
       body,
       name,
@@ -374,7 +389,8 @@ export default class Parser {
     // Check if the current token is either of type Equals or NOT
     // If it is, eat the token, parse the next expression, and update the expr variable with an EqualsExpr or NotEqualsExpr object
     while (
-      this.at().type == TokenType.Equals ||
+      this.at().type == TokenType.EQUALTO ||
+      this.at().type == TokenType.Equals  ||
       this.at().type == TokenType.NOT
     ) {
       const opertation = this.eat(); // Eat the operator
@@ -421,15 +437,6 @@ export default class Parser {
     }
     return expr;
   }
-    
-  private parse_identifier() {
-    const token = this.eat();
-    return {
-      type: "Identifier",
-      value: token.value
-    };
-  }
-  
 
   private parse_if_stmt(): Stmt {
     this.eat(); // Eat the 'if' keyword
@@ -444,8 +451,8 @@ export default class Parser {
     }
     this.expect(TokenType.CLOSEBRACKET, "Expected '}' after if condition");
 
-    let elseBranch: Stmt[] | undefined; // undefined means no else branch
-    let elifBranch: ElifStmt[] | undefined;
+    let elifBranch: ElifStmt[] | undefined; // undefined means no else branch
+    let elseBranch: ElseStmt[] | undefined; // undefined means no else branch
 
     while (
       this.at().type === TokenType.ELSE ||
@@ -454,18 +461,25 @@ export default class Parser {
       if (this.at().type === TokenType.ELSE) {
         this.eat(); // Eat the 'else' keyword
         this.expect(TokenType.OPENBRACKET, "Expected '{' after 'else' keyword");
-        elseBranch = [];
+        const elseBody: Stmt[] = [];
         while (
           this.at().type !== TokenType.EOF &&
           this.at().type !== TokenType.CLOSEBRACKET
         ) {
-          elseBranch.push(this.parse_stmt());
+          elseBody.push(this.parse_stmt());
         }
         this.expect(
           TokenType.CLOSEBRACKET,
           "Expected '}' after 'else' keyword"
         );
-      } else if (this.at().type === TokenType.ELIF) {
+        elseBranch = [
+          {
+            kind: "ElseStmt",
+            body: elseBody,
+          },
+        ]
+      } 
+      else if (this.at().type === TokenType.ELIF) {
         this.eat(); // Eat the 'elif' keyword
         const elifCondition = this.parse_expr();
         this.expect(TokenType.OPENBRACKET, "Expected '{' after 'elif' keyword");
@@ -480,11 +494,32 @@ export default class Parser {
           TokenType.CLOSEBRACKET,
           "Expected '}' after 'elif' keyword"
         );
+
+        // Check if there is an else branch after the elif branch
+        if (this.at().type === TokenType.ELSE) {
+          this.eat(); // Eat the 'else' keyword
+          this.expect(TokenType.OPENBRACKET, "Expected '{' after 'else' keyword");
+          const elseBody: Stmt[] = [];
+          while (
+            this.at().type !== TokenType.EOF &&
+            this.at().type !== TokenType.CLOSEBRACKET
+          ) {
+            elseBody.push(this.parse_stmt());
+          }
+          this.expect(TokenType.CLOSEBRACKET, "Expected '}' after 'else' keyword");
+          elseBranch = [
+            {
+              kind: "ElseStmt",
+              body: elseBody,
+            },
+          ];
+        }
         elifBranch = [
           {
             kind: "ElifStmt",
             condition: elifCondition,
             body: elifBody,
+            elseBranch,
           },
         ];
       }

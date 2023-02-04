@@ -20,6 +20,8 @@ export enum TokenType {
   ELIF, //Else if
   WHILE, // While
   FOR, // For
+  STRING, // String
+  CHAR, // Char
 
   // Operators
   ARROWUP, // ^
@@ -27,6 +29,7 @@ export enum TokenType {
 
   GT, // >
   GTE, // >=
+  EQUALTO, // ==
   LT, // <
   LTE, // <=
   NOT, // !
@@ -123,6 +126,8 @@ function isint(str: string) {
  */
 export function tokenize(sourceCode: string): Token[] {
   let Line = 1;
+  let inString = false;
+  let currentString = "";
   const tokens = new Array<Token>();
   const src = sourceCode.split("");
   while (src.length > 0) {
@@ -146,6 +151,22 @@ export function tokenize(sourceCode: string): Token[] {
       continue;
     }
 
+    if (src[0] === "\"") {
+      if (inString) {
+        inString = false;
+        tokens.push(token(src.shift(), TokenType.String, Line));
+        currentString = "";
+      } else {
+        inString = true;
+        tokens.push(token(src.shift(), TokenType.String, Line));
+      }
+      src.shift();
+      continue;
+    } else if (inString) {
+      currentString += src.shift();
+      continue;
+    }
+
     // BEGIN PARSING ONE CHARACTER TOKENS
     if (src[0] == "(") {
       tokens.push(token(src.shift(), TokenType.OpenParen, Line));
@@ -165,9 +186,8 @@ export function tokenize(sourceCode: string): Token[] {
       tokens.push(token(src.shift(), TokenType.DOT, Line));
     } else if (src[0] == "?") {
       tokens.push(token(src.shift(), TokenType.NULL, Line));
-    } else if (src[0] == "=") {
-      tokens.push(token(src.shift(), TokenType.Equals, Line));
-    } // HANDLE MULTICHARACTER KEYWORDS, TOKENS, IDENTIFIERS ETC...
+    } 
+     // HANDLE MULTICHARACTER KEYWORDS, TOKENS, IDENTIFIERS ETC...
     else if (src[0] == ";") {
       tokens.push(token(src.shift(), TokenType.Semicolen, Line));
     } else if (src[0] == ":") {
@@ -188,7 +208,16 @@ export function tokenize(sourceCode: string): Token[] {
       } else {
         tokens.push(token(src.shift(), TokenType.GT, Line));
       }
-    } else if (src[0] == ",") {
+    } else if (src[0] == "=") {
+      if (src[1] == "=") {
+        tokens.push(token(src.shift(), TokenType.EQUALTO, Line));
+        src.shift();
+      } else {
+        tokens.push(token(src.shift(), TokenType.Equals, Line));
+      }
+    } 
+    
+    else if (src[0] == ",") {
       tokens.push(token(src.shift(), TokenType.COMMA, Line));
     } else if (src[0] == "!" && src[1] == "=") {
       tokens.push(token(src.shift(), TokenType.NOT, Line));
@@ -208,6 +237,25 @@ export function tokenize(sourceCode: string): Token[] {
     }
 
     // TODO:: HANDLE STRING LITERALS
+    else if (src[0] == '"') {
+      let str = "";
+      src.shift();
+      while (src.length > 0 && src[0] !== '"') {
+        str += src.shift();
+      }
+      src.shift();
+      tokens.push(token(str, TokenType.STRING, Line));
+    }
+
+    else if (src[0] == "'") {
+      let str = "";
+      src.shift();
+      while (src.length > 0 && src[0] !== "'") {
+        str += src.shift();
+      }
+      src.shift();
+      tokens.push(token(str, TokenType.CHAR, Line));
+    }
 
     // HANDLE WHITESPACE
     else if (isskippable(src[0])) {

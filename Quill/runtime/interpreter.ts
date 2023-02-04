@@ -28,6 +28,8 @@ import {
   GreaterThanOrEqualsExpr,
   LessThanOrEqualsExpr,
   ForStmt,
+  ElseStmt,
+StringLiteral,
 } from "../FrontEnd/ast.ts";
 
 import {
@@ -58,6 +60,7 @@ import {
   eval_elif_stmt,
   eval_while_stmt,
   eval_for_stmt,
+  eval_else_stmt,
 } from "./eval/statements.ts";
 
 import Enviroment from "./enviroment.ts";
@@ -151,6 +154,9 @@ export function evaluate(astNode: Stmt, env: Enviroment): RuntimeVal {
     case "ElifStmt":
       return eval_elif_stmt(astNode as ElifStmt, env);
 
+    case "ElseStmt":
+      return eval_else_stmt(astNode as ElseStmt, env);
+
     case "WhileStmt":
       return eval_while_stmt(astNode as WhileStmt, env);
 
@@ -158,7 +164,10 @@ export function evaluate(astNode: Stmt, env: Enviroment): RuntimeVal {
       return eval_for_stmt(astNode as ForStmt, env);
 
     case "ArrayLiteral":
-      throw tracer.error("Arrays are not implemented yet");
+      return { value: (astNode as ArrayLiteral).elements, type: "array" };
+
+    case "StringLiteral":
+      return { value: (astNode as StringLiteral).value, type: "string" };
 
     // Handle unimplemented ast nodes
     default:

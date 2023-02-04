@@ -21,6 +21,7 @@ export type NodeType =
   | "ArrayLiteral"
   | "WhileStmt"
   | "ForStmt"
+  | "ElseStmt"
 
   // Comaparison
   | "GreaterThanExpr"
@@ -43,7 +44,9 @@ export type NodeType =
   | "GreaterThanExpr"
   | "LessThanExpr"
   | "PlusEqualsExpr"
-  | "MinusEqualsExpr";
+  | "MinusEqualsExpr"
+  | "StringLiteral"
+  | "CharLiteral";
 
 export interface Stmt {
   kind: NodeType;
@@ -95,12 +98,18 @@ export interface IfStmt extends Stmt {
   condition: Expr;
   thenBranch: Stmt[];
   elifBranch: ElifStmt[] | undefined;
-  elseBranch: Stmt[] | never;
+  elseBranch: ElseStmt[] | undefined;
 }
 
 export interface ElifStmt extends Stmt {
   kind: "ElifStmt";
   condition: Expr;
+  body: Stmt[];
+  elseBranch: ElseStmt[] | undefined;
+}
+
+export interface ElseStmt extends Stmt {
+  kind: "ElseStmt";
   body: Stmt[];
 }
 
@@ -205,6 +214,11 @@ export interface MemberExpr extends Expr {
   object: Expr;
   property: Expr;
   computed: boolean;
+}
+
+export interface StringLiteral extends Expr {
+  kind: "StringLiteral";
+  value: string;
 }
 
 export interface Identifier extends Expr {

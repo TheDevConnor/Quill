@@ -2,7 +2,7 @@ import { Stmt } from "../Frontend/ast.ts";
 import Enviroment from "./enviroment.ts";
 export type ValueType = "null" | "number" | "boolean" | 
 					  "object" | "native-function" | "function"  | 
-					  "string" | "array";
+					  "string" | "array" | "char";
 
 export interface RuntimeVal {
     type: ValueType;
@@ -49,6 +49,15 @@ export interface NativeFunctionVal extends RuntimeVal {
 
 export function MK_NATIVE_FUNCTION(call: FunctionCall) {
 	return { type: "native-function", call } as NativeFunctionVal;
+}
+
+export interface StringVal extends RuntimeVal {
+    type: "string";
+    value: string;
+}
+
+export function MK_STRING(s: string) {
+    return { value: s, type: "string" } as StringVal;
 }
 
 export interface FunctionVal extends RuntimeVal {
