@@ -4,7 +4,7 @@ have max_1 := 10
 
 while min_1 <= max_1 {
 	CSInfo(min_1)
-	 have min_1 := min_1 + 1
+	min_1 := min_1 + 1
 }
 
 # array test [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
