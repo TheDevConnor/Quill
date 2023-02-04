@@ -19,6 +19,7 @@ export enum TokenType {
   ELSE, // Else
   ELIF, //Else if
   WHILE, // While
+  FOR, // For
 
   // Operators
   ARROWUP, // ^
@@ -76,6 +77,7 @@ const KEYWORDS: Record<string, TokenType> = {
   return: TokenType.RETURN,
   array: TokenType.ARRAY,
   while: TokenType.WHILE,
+  for: TokenType.FOR,
 };
 // Reoresents a single token from the source-code.
 export interface Token {

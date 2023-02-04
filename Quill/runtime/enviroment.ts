@@ -110,4 +110,12 @@ export default class Enviroment {
 		
 		return this.parent.resolve(varname);
 	}
+
+	public get (varname: string): RuntimeVal {
+		return this.variables.get(varname) as RuntimeVal;
+	}
+
+	public set (varname: string, value: RuntimeVal): void {
+		this.variables.set(varname, value);
+	}
 }

@@ -20,6 +20,7 @@ export type NodeType =
   | "NullExpr"
   | "ArrayLiteral"
   | "WhileStmt"
+  | "ForStmt"
 
   // Comaparison
   | "GreaterThanExpr"
@@ -30,6 +31,8 @@ export type NodeType =
   | "NotEqualsExpr"
   | "AndExpr"
   | "OrExpr"
+  | "IncrementExpr"
+  | "DecrementExpr"
 
   // Literals
   | "Property"
@@ -76,6 +79,14 @@ export interface ArrayLiteral extends Stmt {
 export interface WhileStmt extends Stmt {
   kind: "WhileStmt";
   condition: Expr;
+  body: Stmt[];
+}
+
+export interface ForStmt extends Stmt {
+  kind: "ForStmt";
+  init: Expr;
+  condition: Expr;
+  increment: Expr;
   body: Stmt[];
 }
 

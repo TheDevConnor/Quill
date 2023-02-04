@@ -27,6 +27,7 @@ import {
   WhileStmt,
   GreaterThanOrEqualsExpr,
   LessThanOrEqualsExpr,
+  ForStmt,
 } from "../FrontEnd/ast.ts";
 
 import {
@@ -56,6 +57,7 @@ import {
   eval_if_stmt,
   eval_elif_stmt,
   eval_while_stmt,
+  eval_for_stmt,
 } from "./eval/statements.ts";
 
 import Enviroment from "./enviroment.ts";
@@ -129,6 +131,7 @@ export function evaluate(astNode: Stmt, env: Enviroment): RuntimeVal {
     case "OrExpr":
       return eval_or_expr(astNode as OrExpr, env);
 
+    // Handle programs
     case "Program":
       return eval_program(astNode as Program, env);
 
@@ -151,8 +154,11 @@ export function evaluate(astNode: Stmt, env: Enviroment): RuntimeVal {
     case "WhileStmt":
       return eval_while_stmt(astNode as WhileStmt, env);
 
+    case "ForStmt":
+      return eval_for_stmt(astNode as ForStmt, env);
+
     case "ArrayLiteral":
-      throw tracer.format("Arrays are not implemented yet");
+      throw tracer.error("Arrays are not implemented yet");
 
     // Handle unimplemented ast nodes
     default:
