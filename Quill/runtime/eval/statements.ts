@@ -8,10 +8,10 @@ import {
   ArrayLiteral,
 } from "../../FrontEnd/ast.ts";
 
-import { RuntimeVal, MK_NULL, FunctionVal, ArrayVal } from "../values.ts";
+import { RuntimeVal, MK_NULL, FunctionVal } from "../values.ts";
 import { evaluate } from "../interpreter.ts";
 import Enviroment from "../enviroment.ts";
-import { trace } from '../../FrontEnd/tracing.ts';
+import { debug } from "../../FrontEnd/tracing.ts";
 
 export function eval_program(program: Program, env: Enviroment): RuntimeVal {
   let lastEvaluated: RuntimeVal = MK_NULL();
@@ -85,3 +85,4 @@ export function eval_function_decl(
 
   return env.declareVar(declaration.name, func, true);
 }
+

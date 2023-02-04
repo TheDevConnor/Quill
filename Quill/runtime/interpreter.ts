@@ -121,7 +121,7 @@ export function evaluate(astNode: Stmt, env: Enviroment): RuntimeVal {
       return eval_elif_stmt(astNode as ElifStmt, env);
 
     case "ArrayLiteral":
-      throw tracer.error("Array are not yet implemented");
+		throw tracer.format("Arrays are not implemented yet");
 
     // Handle unimplemented ast nodes
     default:

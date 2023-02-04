@@ -114,35 +114,30 @@ export default class Parser {
     }
   }
 
-  private parse_array_literal(): Expr {
+  private parse_array_literal(): ArrayLiteral {
     this.eat(); // Eat the 'array' keyword
-
-    const name = this.expect(TokenType.Identifier, "Expected function name").value;
-    this.expect(TokenType.OPENBRACE, "Expected '{' after function parameters");
-    const body: Stmt[] = [];
+  
+    const name = this.expect(TokenType.Identifier, "Expected array name").value;
+    this.expect(TokenType.OPENBRACE, "Expected '[' after array name");
+  
+    const elements: Expr[] = [];
     while (this.at().type !== TokenType.EOF && this.at().type !== TokenType.CLOSEBRACE) {
-        body.push(this.parse_stmt());
-
-        if (this.at().type === TokenType.RETURN) {
-            this.eat();
-        }
-
-        if (this.at().type === TokenType.COMMA) {
-            this.eat();
-        }
+      elements.push(this.parse_expr());
+  
+      if (this.at().type === TokenType.COMMA) {
+        this.eat();
+      }
     }
-
-    // console.log("Body: ", body);
-
-    this.expect(TokenType.CLOSEBRACE, "Expected '}' after function body");
-    const array = {
-        body,
-        name,
-        kind: "ArrayLiteral",
-    } as unknown as ArrayLiteral;
-
-    return array;
+  
+    this.expect(TokenType.CLOSEBRACE, "Expected ']' after array elements");
+  
+    return {
+      name,
+      elements,
+      kind: "ArrayLiteral"
+    };
   }
+  
 
   // Handles Function Declarations
   parse_function_decl(): Stmt {
