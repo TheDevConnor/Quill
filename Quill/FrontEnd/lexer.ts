@@ -18,17 +18,22 @@ export enum TokenType {
   IF, // If
   ELSE, // Else
   ELIF, //Else if
+  WHILE, // While
 
   // Operators
   ARROWUP, // ^
   DASH, // -
 
   GT, // >
+  GTE, // >=
   LT, // <
+  LTE, // <=
   NOT, // !
   AND, // &&
   OR, // ||
   NULL, // ?
+  PLUSEQUAL, // +=
+  MINUSEQUAL, // -=
 
   OpenParen, // (
   CloseParen, // )
@@ -70,6 +75,7 @@ const KEYWORDS: Record<string, TokenType> = {
   then: TokenType.THEN,
   return: TokenType.RETURN,
   array: TokenType.ARRAY,
+  while: TokenType.WHILE,
 };
 // Reoresents a single token from the source-code.
 export interface Token {
@@ -151,8 +157,6 @@ export function tokenize(sourceCode: string): Token[] {
       tokens.push(token(src.shift(), TokenType.OPENBRACKET, Line));
     } else if (src[0] == "}") {
       tokens.push(token(src.shift(), TokenType.CLOSEBRACKET, Line));
-    } else if (src[0] == "-") {
-      tokens.push(token(src.shift(), TokenType.DASH, Line));
     } else if (src[0] == "_") {
       tokens.push(token(src.shift(), TokenType.UNDERSCORE, Line));
     } else if (src[0] == ".") {
@@ -169,9 +173,19 @@ export function tokenize(sourceCode: string): Token[] {
         tokens.push(token(src.shift(), TokenType.COLON, Line));
       }
     } else if (src[0] == "<") {
-      tokens.push(token(src.shift(), TokenType.LT, Line));
+      if (src[1] == "=") {
+        tokens.push(token(src.shift(), TokenType.LTE, Line));
+        src.shift();
+      } else {
+        tokens.push(token(src.shift(), TokenType.LT, Line));
+      }
     } else if (src[0] == ">") {
-      tokens.push(token(src.shift(), TokenType.GT, Line));
+      if (src[1] == "=") {
+        tokens.push(token(src.shift(), TokenType.GTE, Line));
+        src.shift();
+      } else {
+        tokens.push(token(src.shift(), TokenType.GT, Line));
+      }
     } else if (src[0] == ",") {
       tokens.push(token(src.shift(), TokenType.COMMA, Line));
     } else if (src[0] == "!" && src[1] == "=") {
@@ -183,8 +197,12 @@ export function tokenize(sourceCode: string): Token[] {
     } else if (src[0] == "|" && src[1] == "|") {
       tokens.push(token(src.shift(), TokenType.OR, Line));
       src.shift();
-    } else if (src[0] == "^") {
-      tokens.push(token(src.shift(), TokenType.ARROWUP, Line));
+    } else if (src[0] == "+" && src[1] == "=") {
+      tokens.push(token(src.shift(), TokenType.PLUSEQUAL, Line));
+      src.shift();
+    } else if (src[0] == "-" && src[1] == "=") {
+      tokens.push(token(src.shift(), TokenType.MINUSEQUAL, Line));
+      src.shift();
     }
 
     // TODO:: HANDLE STRING LITERALS

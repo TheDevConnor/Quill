@@ -19,10 +19,13 @@ export type NodeType =
   | "ElifStmt"
   | "NullExpr"
   | "ArrayLiteral"
+  | "WhileStmt"
 
   // Comaparison
   | "GreaterThanExpr"
+  | "GreaterThanOrEqualsExpr"
   | "LessThanExpr"
+  | "LessThanOrEqualsExpr"
   | "EqualsExpr"
   | "NotEqualsExpr"
   | "AndExpr"
@@ -35,7 +38,9 @@ export type NodeType =
   | "Identifier"
   | "BinaryExpr"
   | "GreaterThanExpr"
-  | "LessThanExpr";
+  | "LessThanExpr"
+  | "PlusEqualsExpr"
+  | "MinusEqualsExpr";
 
 export interface Stmt {
   kind: NodeType;
@@ -62,12 +67,17 @@ export interface FunctionDeclaration extends Stmt {
 }
 
 export interface ArrayLiteral extends Stmt {
-    kind: "ArrayLiteral";
-    name?: string;
-    body: any[];
-    elements: Expr[];
+  kind: "ArrayLiteral";
+  name?: string;
+  body: any[];
+  elements: Expr[];
 }
-  
+
+export interface WhileStmt extends Stmt {
+  kind: "WhileStmt";
+  condition: Expr;
+  body: Stmt[];
+}
 
 export interface IfStmt extends Stmt {
   kind: "IfStmt";
@@ -115,6 +125,20 @@ export interface LessThanExpr extends Expr {
   operator: "<";
 }
 
+export interface GreaterThanOrEqualsExpr extends Expr {
+    kind: "GreaterThanOrEqualsExpr";
+    left: Expr;
+    right: Expr;
+    operator: ">=";
+}
+
+export interface LessThanOrEqualsExpr extends Expr {
+    kind: "LessThanOrEqualsExpr";
+    left: Expr;
+    right: Expr;
+    operation: "<=";
+}
+
 export interface EqualsExpr extends Expr {
   kind: "EqualsExpr";
   left: Expr;
@@ -141,6 +165,20 @@ export interface OrExpr extends Expr {
   left: Expr;
   right: Expr;
   operator: "||";
+}
+
+export interface PlusEqualsExpr extends Expr {
+  kind: "PlusEqualsExpr";
+  left: Expr;
+  right: Expr;
+  operator: "+=";
+}
+
+export interface MinusEqualsExpr extends Expr {
+  kind: "MinusEqualsExpr";
+  left: Expr;
+  right: Expr;
+  operator: "-=";
 }
 
 export interface CallExpr extends Expr {

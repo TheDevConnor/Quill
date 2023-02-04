@@ -1,6 +1,6 @@
 import { AssignmentExpr, BinaryExpr,CallExpr, Identifier, 
 	     ObjectLiteral, GreaterThanExpr, LessThanExpr, 
-		 MemberExpr,EqualsExpr, NotEqualsExpr, AndExpr, OrExpr} from "../../FrontEnd/ast.ts";
+		 MemberExpr,EqualsExpr, NotEqualsExpr, AndExpr, OrExpr, PlusEqualsExpr, MinusEqualsExpr, GreaterThanOrEqualsExpr, LessThanOrEqualsExpr} from "../../FrontEnd/ast.ts";
 
 import { NumberVal, RuntimeVal,MK_NULL, ObjectVal,
 		 NativeFunctionVal, FunctionVal, NullVal, 
@@ -8,6 +8,7 @@ import { NumberVal, RuntimeVal,MK_NULL, ObjectVal,
 
 import Enviroment from "../enviroment.ts";
 import { evaluate } from "../interpreter.ts";
+import { error } from "../../FrontEnd/tracing.ts";
 
 function eval_numeric_binary_expr (leftHandSide: NumberVal, rightHandSide: NumberVal, operator: string): NumberVal {
 	let result: number;
@@ -72,12 +73,36 @@ export function eval_greater_than_expr (binop: GreaterThanExpr, env: Enviroment)
 	return MK_NULL() as NullVal;
 }
 
+export function eval_greater_than_or_equals_expr (binop: GreaterThanOrEqualsExpr, env: Enviroment): BooleanVal | NullVal {
+	const leftHandSide = evaluate(binop.left, env);
+	const rightHandSide = evaluate(binop.right, env);
+
+	if (leftHandSide.type == "number" && rightHandSide.type == "number"){
+		const result = leftHandSide.value >= rightHandSide.value;
+		return { value: result, type: "boolean" } as BooleanVal;
+	}
+	// One or both are null
+	return MK_NULL() as NullVal;
+}
+
 export function eval_less_than_expr (binop: LessThanExpr, env: Enviroment): BooleanVal | NullVal {
 	const leftHandSide = evaluate(binop.left, env);
 	const rightHandSide = evaluate(binop.right, env);
 
 	if (leftHandSide.type == "number" && rightHandSide.type == "number"){
 		const result = leftHandSide.value < rightHandSide.value;
+		return { value: result, type: "boolean" } as BooleanVal;
+	}
+	// One or both are null
+	return MK_NULL() as NullVal;
+}
+
+export function eval_less_than_or_equals_expr (binop: LessThanOrEqualsExpr, env: Enviroment): BooleanVal | NullVal {
+	const leftHandSide = evaluate(binop.left, env);
+	const rightHandSide = evaluate(binop.right, env);
+
+	if (leftHandSide.type == "number" && rightHandSide.type == "number"){
+		const result = leftHandSide.value <= rightHandSide.value;
 		return { value: result, type: "boolean" } as BooleanVal;
 	}
 	// One or both are null
@@ -132,6 +157,32 @@ export function eval_or_expr (binop: OrExpr, env: Enviroment): BooleanVal | Null
 	return MK_NULL() as NullVal;
 }
 
+export function eval_plus_equals_expr (binop: PlusEqualsExpr, env: Enviroment): NumberVal | NullVal {
+	const leftHandSide = evaluate(binop.left, env);
+	const rightHandSide = evaluate(binop.right, env);
+
+	if (leftHandSide.type == "number" && rightHandSide.type == "number"){
+		const result = leftHandSide.value += rightHandSide.value;
+		return { value: result, type: "number" } as NumberVal;
+	}
+
+	// One or both are null
+	return MK_NULL() as NullVal;
+}
+
+export function eval_minus_equals_expr (binop: MinusEqualsExpr, env: Enviroment): NumberVal | NullVal {
+	const leftHandSide = evaluate(binop.left, env);
+	const rightHandSide = evaluate(binop.right, env);
+
+	if (leftHandSide.type == "number" && rightHandSide.type == "number"){
+		const result = leftHandSide.value -= rightHandSide.value;
+		return { value: result, type: "number" } as NumberVal;
+	}
+
+	// One or both are null
+	return MK_NULL() as NullVal;
+}
+
 export function eval_member_expr (binop: MemberExpr, env: Enviroment): RuntimeVal {
 	const leftHandSide = evaluate(binop.left, env);
 	const rightHandSide = evaluate(binop.right, env);
@@ -162,7 +213,7 @@ export function eval_object_expr (obj: ObjectLiteral, env: Enviroment): RuntimeV
 
 export function eval_assingment (node: AssignmentExpr, env: Enviroment): RuntimeVal {
 	if (node.assingee.kind !== "Identifier") {
-		throw new Error(`invalid assingment target ${JSON.stringify(node.assingee)}`);
+		error(`invalid assingment target ${JSON.stringify(node.assingee)}`);
 	}
 	const varname = (node.assingee as Identifier).symbol;
 	return env.assignVar(varname, evaluate(node.value, env));
@@ -196,5 +247,6 @@ export function eval_call_expr (expr: CallExpr, env: Enviroment): RuntimeVal {
 		return result;
 	}
 
-	throw new Error(`invalid function call ${JSON.stringify(expr)}`);
+	error(`invalid function call ${JSON.stringify(expr)}`);
+	return MK_NULL();
 } 

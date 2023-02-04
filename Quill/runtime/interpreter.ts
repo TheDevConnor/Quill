@@ -22,6 +22,11 @@ import {
   AndExpr,
   ElifStmt,
   ArrayLiteral,
+  PlusEqualsExpr,
+  MinusEqualsExpr,
+  WhileStmt,
+  GreaterThanOrEqualsExpr,
+  LessThanOrEqualsExpr,
 } from "../FrontEnd/ast.ts";
 
 import {
@@ -32,11 +37,15 @@ import {
   eval_call_expr,
   eval_equal_expr,
   eval_greater_than_expr,
+  eval_greater_than_or_equals_expr,
   eval_less_than_expr,
+  eval_less_than_or_equals_expr,
   eval_member_expr,
+  eval_minus_equals_expr,
   eval_not_equal_expr,
   eval_object_expr,
   eval_or_expr,
+  eval_plus_equals_expr,
 } from "./eval/expressions.ts";
 
 import {
@@ -46,6 +55,7 @@ import {
   eval_return_stmt,
   eval_if_stmt,
   eval_elif_stmt,
+  eval_while_stmt,
 } from "./eval/statements.ts";
 
 import Enviroment from "./enviroment.ts";
@@ -55,7 +65,7 @@ export function evaluate(astNode: Stmt, env: Enviroment): RuntimeVal {
   // tracer.trace("Evaluating ast node: " + tracer.format(astNode.kind));
   // tracer.trace("Enviroment: "  + tracer.format(env));
   if (!astNode) {
-    throw Error("Invalid AST node: " + astNode);
+    tracer.error("Invalid AST node: " + astNode);
   }
 
   switch (astNode.kind) {
@@ -86,8 +96,20 @@ export function evaluate(astNode: Stmt, env: Enviroment): RuntimeVal {
     case "GreaterThanExpr":
       return eval_greater_than_expr(astNode as GreaterThanExpr, env);
 
+    case "GreaterThanOrEqualsExpr":
+      return eval_greater_than_or_equals_expr(
+        astNode as GreaterThanOrEqualsExpr,
+        env
+      );
+
     case "LessThanExpr":
       return eval_less_than_expr(astNode as LessThanExpr, env);
+
+    case "LessThanOrEqualsExpr":
+      return eval_less_than_or_equals_expr(
+        astNode as LessThanOrEqualsExpr,
+        env
+      );
 
     case "EqualsExpr":
       return eval_equal_expr(astNode as EqualsExpr, env);
@@ -97,6 +119,12 @@ export function evaluate(astNode: Stmt, env: Enviroment): RuntimeVal {
 
     case "AndExpr":
       return eval_and_expr(astNode as AndExpr, env);
+
+    case "PlusEqualsExpr":
+      return eval_plus_equals_expr(astNode as PlusEqualsExpr, env);
+
+    case "MinusEqualsExpr":
+      return eval_minus_equals_expr(astNode as MinusEqualsExpr, env);
 
     case "OrExpr":
       return eval_or_expr(astNode as OrExpr, env);
@@ -120,8 +148,11 @@ export function evaluate(astNode: Stmt, env: Enviroment): RuntimeVal {
     case "ElifStmt":
       return eval_elif_stmt(astNode as ElifStmt, env);
 
+    case "WhileStmt":
+      return eval_while_stmt(astNode as WhileStmt, env);
+
     case "ArrayLiteral":
-		throw tracer.format("Arrays are not implemented yet");
+      throw tracer.format("Arrays are not implemented yet");
 
     // Handle unimplemented ast nodes
     default:

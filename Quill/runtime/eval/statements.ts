@@ -6,6 +6,7 @@ import {
   IfStmt,
   ElifStmt,
   ArrayLiteral,
+  WhileStmt,
 } from "../../FrontEnd/ast.ts";
 
 import { RuntimeVal, MK_NULL, FunctionVal } from "../values.ts";
@@ -86,3 +87,13 @@ export function eval_function_decl(
   return env.declareVar(declaration.name, func, true);
 }
 
+export function eval_while_stmt(stmt: WhileStmt, env: Enviroment): RuntimeVal {
+  let condition = evaluate(stmt.condition, env);
+  while (condition.value) {
+    for (const statement of stmt.body) {
+      evaluate(statement, env);
+    }
+    condition = evaluate(stmt.condition, env);
+  }
+  return MK_NULL();
+}

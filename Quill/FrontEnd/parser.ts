@@ -23,10 +23,15 @@ import {
   NullExpr,
   ElifStmt,
   ArrayLiteral,
+  WhileStmt,
+  PlusEqualsExpr,
+  MinusEqualsExpr,
+  GreaterThanOrEqualsExpr,
+  LessThanOrEqualsExpr,
 } from "./ast.ts";
 
 import { Token, tokenize, TokenType } from "./lexer.ts";
-import { error } from "./tracing.ts";
+import { error, trace } from "./tracing.ts";
 
 /**
  * Frontend for producing a valid AST from sourcode
@@ -109,9 +114,31 @@ export default class Parser {
         return this.parse_array_literal();
       case TokenType.RETURN:
         return this.parse_return_stmt();
+      case TokenType.WHILE:
+        return this.parse_while_stmt();
       default:
         return this.parse_expr();
     }
+  }
+
+  private parse_while_stmt(): WhileStmt {
+    this.eat(); // Eat the 'while' keyword
+
+    const condition = this.parse_expr();
+
+    this.expect(TokenType.OPENBRACKET, "Expected '{' after while condition");
+    const body: Stmt[] = [];
+    while (this.at().type !== TokenType.EOF && this.at().type !== TokenType.CLOSEBRACKET) {
+      body.push(this.parse_stmt());
+    }
+
+    this.expect(TokenType.CLOSEBRACKET, "Expected '}' after while body");
+    
+    return {
+      kind: "WhileStmt",
+      condition,
+      body,
+    } as unknown as WhileStmt;
   }
 
   private parse_array_literal(): ArrayLiteral {
@@ -135,10 +162,9 @@ export default class Parser {
       name,
       elements,
       kind: "ArrayLiteral"
-    };
+    } as ArrayLiteral;
   }
   
-
   // Handles Function Declarations
   parse_function_decl(): Stmt {
     this.eat(); // Eat the 'func' keyword
@@ -197,7 +223,7 @@ export default class Parser {
     if (this.at().type == TokenType.Semicolen || this.next().type == TokenType.COLON) {
       this.eat();
       if (isConstant) {
-        console.error(
+        error(
           "Cannot declare a constant without a value being assigned" + this.at().value);
       }
 
@@ -215,7 +241,7 @@ export default class Parser {
     } else if (this.at().type === TokenType.Equals) {
       this.eat();
     } else {
-      console.error("Expected ':=' after ':'.");
+      error("Expected ':=' after ':'.");
     }
 
     const declaration = { 
@@ -250,6 +276,17 @@ export default class Parser {
       } as unknown as GreaterThanExpr | LessThanExpr;
     }
 
+    while (this.at().type == TokenType.GTE || this.at().type == TokenType.LTE) {
+      const opertation = this.eat();
+      const right = this.parse_assignment_expr();
+      expr = {
+        kind: opertation.type === TokenType.GTE ? "GreaterThanOrEqualsExpr" : "LessThanOrEqualsExpr",
+        left: expr,
+        right,
+        operation: opertation.value,
+      } as unknown as GreaterThanOrEqualsExpr | LessThanOrEqualsExpr;
+    }
+
     while (this.at().type == TokenType.Equals || this.at().type == TokenType.NOT) {
       const opertation = this.eat(); // Eat the operator
       const right = this.parse_expr();
@@ -270,6 +307,17 @@ export default class Parser {
         right,
         operation: opertation.value,
       } as unknown as AndExpr | OrExpr;
+    }
+
+    while (this.at().type == TokenType.PLUSEQUAL || this.at().type == TokenType.MINUSEQUAL) {
+      const operation = this.eat(); // Eat the operator
+      const right = this.parse_assignment_expr();
+      expr = {
+        kind: operation.type === TokenType.PLUSEQUAL ? "PlusEqualsExpr" : "MinusEqualsExpr",
+        left: expr,
+        right,
+        operation: operation.value,
+      } as unknown as PlusEqualsExpr | MinusEqualsExpr;
     }
     return expr;
   }
@@ -339,7 +387,7 @@ export default class Parser {
             value,
           }as unknown as BinaryExpr;
         } else {
-          console.error("Expected ':=' after ':'.");
+          error("Expected ':=' after ':'.");
         }
       }
       return left;
