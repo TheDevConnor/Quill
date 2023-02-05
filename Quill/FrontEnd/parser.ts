@@ -212,12 +212,13 @@ export default class Parser {
     const name = this.expect(TokenType.Identifier, "Expected array name").value;
     this.expect(TokenType.OPENBRACE, "Expected '[' after array name");
 
-    const elements: Expr[] = [];
+    const elements: Expr[] | Stmt[] = [];
     while (
       this.at().type !== TokenType.EOF &&
       this.at().type !== TokenType.CLOSEBRACE
     ) {
       elements.push(this.parse_expr());
+      // elements.push(this.parse_stmt());
 
       if (this.at().type === TokenType.COMMA) {
         this.eat();
@@ -226,11 +227,15 @@ export default class Parser {
 
     this.expect(TokenType.CLOSEBRACE, "Expected ']' after array elements");
 
-    return {
-      name,
-      elements,
+    const array = {
+      name: name,
+      elements: elements,
       kind: "ArrayLiteral",
-    } as ArrayLiteral;
+    }
+
+    console.log(array);
+
+    return array as unknown as ArrayLiteral;
   }
 
   // Handles Function Declarations
@@ -647,92 +652,92 @@ export default class Parser {
     return left;
   }
 
-  // foo.x()()
-  private parse_call_member_expr(): Expr {
-    const member = this.parse_member_expr();
+// foo.x()()
+private parse_call_member_expr(): Expr {
+  const member = this.parse_member_expr();
 
-    if (this.at().type == TokenType.OpenParen) {
-      return this.parse_call_expr(member);
-    }
-
-    return member;
+  if (this.at().type == TokenType.OpenParen) {
+    return this.parse_call_expr(member);
   }
 
-  private parse_call_expr(caller: Expr): Expr {
-    let call_expr: Expr = {
-      kind: "CallExpr",
-      caller,
-      args: this.parse_args(),
-    } as CallExpr;
+  return member;
+}
 
-    if (this.at().type == TokenType.OpenParen) {
-      call_expr = this.parse_call_expr(call_expr);
-    }
+private parse_call_expr(caller: Expr): Expr {
+  let call_expr: Expr = {
+    kind: "CallExpr",
+    caller,
+    args: this.parse_args(),
+  } as CallExpr;
 
-    return call_expr;
+  if (this.at().type == TokenType.OpenParen) {
+    call_expr = this.parse_call_expr(call_expr);
   }
 
-  private parse_args(): Expr[] {
-    this.expect(TokenType.OpenParen, "Expected open parenthesis");
-    const args =
-      this.at().type == TokenType.CloseParen ? [] : this.parse_arguments_list();
+  return call_expr;
+}
 
-    this.expect(
-      TokenType.CloseParen,
-      "Missing closing parenthesis inside arguments list"
-    );
-    return args;
+private parse_args(): Expr[] {
+  this.expect(TokenType.OpenParen, "Expected open parenthesis");
+  const args = this.at().type == TokenType.CloseParen
+    ? []
+    : this.parse_arguments_list();
+
+  this.expect(
+    TokenType.CloseParen,
+    "Missing closing parenthesis inside arguments list",
+  );
+  return args;
+}
+
+private parse_arguments_list(): Expr[] {
+  const args = [this.parse_assignment_expr()];
+
+  while (this.at().type == TokenType.COMMA && this.eat()) {
+    args.push(this.parse_assignment_expr());
   }
 
-  private parse_arguments_list(): Expr[] {
-    const args = [this.parse_assignment_expr()];
+  return args;
+}
 
-    while (this.at().type == TokenType.COMMA && this.eat()) {
-      args.push(this.parse_assignment_expr());
-    }
+// allows for obj.prop and obj[computedValue]
+private parse_member_expr(): Expr {
+  let object = this.parse_primary_expr();
 
-    return args;
-  }
+  while (
+    this.at().type == TokenType.DOT || this.at().type == TokenType.OPENBRACE
+  ) {
+    const operator = this.eat();
+    let property: Expr;
+    let computed: boolean;
 
-  private parse_member_expr(): Expr {
-    let object = this.parse_primary_expr();
-
-    while (
-      this.at().type == TokenType.DOT ||
-      this.at().type == TokenType.OPENBRACE
-    ) {
-      const operator = this.eat();
-      let property: Expr;
-      let computed: boolean;
-
-      // non-computed values aka obj.expr
-      if (operator.type == TokenType.DOT) {
-        computed = false;
-        // get identifier
-        property = this.parse_primary_expr();
-        if (property.kind != "Identifier") {
-          throw `Cannonot use dot operator without right hand side being a identifier`;
-        }
-      } else {
-        // this allows obj[computedValue]
-        computed = true;
-        property = this.parse_expr();
-        this.expect(
-          TokenType.CLOSEBRACE,
-          "Missing closing bracket in computed value."
-        );
+    // non-computed values aka obj.expr
+    if (operator.type == TokenType.DOT) {
+      computed = false;
+      // get identifier
+      property = this.parse_primary_expr();
+      if (property.kind != "Identifier") {
+        throw `Cannonot use dot operator without right hand side being a identifier`;
       }
-
-      object = {
-        kind: "MemberExpr",
-        object,
-        property,
-        computed,
-      } as MemberExpr;
+    } else { // this allows obj[computedValue]
+      computed = true;
+      property = this.parse_expr();
+      this.expect(
+        TokenType.CLOSEBRACE,
+        "Missing closing bracket in computed value.",
+      );
     }
 
-    return object;
+    object = {
+      kind: "MemberExpr",
+      object,
+      property,
+      computed,
+    } as MemberExpr;
   }
+
+  return object;
+}
 
   // Orders Of Prescidence
   // Assignment

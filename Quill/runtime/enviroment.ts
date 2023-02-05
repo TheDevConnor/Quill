@@ -141,7 +141,7 @@ export default class Enviroment {
     return value;
   }
 
-  public lookupvar(varname: string): RuntimeVal {
+  public lookupVar(varname: string): RuntimeVal {
     const env = this.resolve(varname);
     return env.variables.get(varname) as RuntimeVal;
   }

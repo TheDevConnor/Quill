@@ -256,22 +256,23 @@ export function enal_identifier(
   ident: Identifier,
   env: Enviroment
 ): RuntimeVal {
-  const val = env.lookupvar(ident.symbol);
+  const val = env.lookupVar(ident.symbol);
   return val;
 }
 
 export function eval_object_expr(
   obj: ObjectLiteral,
-  env: Enviroment
+  env: Enviroment,
 ): RuntimeVal {
   const object = { type: "object", properties: new Map() } as ObjectVal;
-
   for (const { key, value } of obj.properties) {
-    //console.log(key, value);
-    const runtimeVal =
-      value == undefined ? env.lookupvar(key) : evaluate(value, env);
+    const runtimeVal = (value == undefined)
+      ? env.lookupVar(key)
+      : evaluate(value, env);
+
     object.properties.set(key, runtimeVal);
   }
+
   return object;
 }
 

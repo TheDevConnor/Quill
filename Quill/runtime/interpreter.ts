@@ -29,7 +29,7 @@ import {
   LessThanOrEqualsExpr,
   ForStmt,
   ElseStmt,
-StringLiteral,
+  StringLiteral,
 } from "../FrontEnd/ast.ts";
 
 import {
@@ -61,6 +61,7 @@ import {
   eval_while_stmt,
   eval_for_stmt,
   eval_else_stmt,
+  eval_array_literal,
 } from "./eval/statements.ts";
 
 import Enviroment from "./enviroment.ts";
@@ -164,7 +165,7 @@ export function evaluate(astNode: Stmt, env: Enviroment): RuntimeVal {
       return eval_for_stmt(astNode as ForStmt, env);
 
     case "ArrayLiteral":
-      return { value: (astNode as ArrayLiteral).elements, type: "array" };
+      return eval_array_literal(astNode as ArrayLiteral, env);
 
     case "StringLiteral":
       return { value: (astNode as StringLiteral).value, type: "string" };

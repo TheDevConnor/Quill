@@ -11,7 +11,7 @@ import {
   ElseStmt,
 } from "../../FrontEnd/ast.ts";
 
-import { RuntimeVal, MK_NULL, FunctionVal } from "../values.ts";
+import { RuntimeVal, MK_NULL, FunctionVal, ArrayVal, ObjectVal } from "../values.ts";
 import { evaluate } from "../interpreter.ts";
 import Enviroment from "../enviroment.ts";
 import { debug } from "../../FrontEnd/tracing.ts";
@@ -84,7 +84,6 @@ export function eval_else_stmt(stmt: ElseStmt, env: Enviroment): RuntimeVal {
   return MK_NULL();
 }
 
-
 export function eval_function_decl(
   declaration: FunctionDeclaration,
   env: Enviroment
@@ -127,4 +126,17 @@ export function eval_for_stmt(stmt: ForStmt, env: Enviroment): RuntimeVal {
     condition = evaluate(stmt.condition, env);
   }
   return MK_NULL();
+}
+
+export function eval_array_literal(
+  declaration: ArrayLiteral,
+  env: Enviroment
+): RuntimeVal {
+  const values = declaration.elements.map((element) => evaluate(element, env));
+  const array = {
+    type: "array",
+    values,
+  } as unknown as ArrayVal;
+
+  return env.declareVar(declaration.name, array, true);
 }

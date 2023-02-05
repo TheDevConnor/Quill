@@ -74,9 +74,8 @@ export interface FunctionDeclaration extends Stmt {
 
 export interface ArrayLiteral extends Stmt {
   kind: "ArrayLiteral";
-  name?: string;
-  body: any[];
-  elements: Expr[];
+  name: string;
+  elements: Stmt[] | Expr[];
 }
 
 export interface WhileStmt extends Stmt {
