@@ -22,6 +22,7 @@ export enum TokenType {
   FOR, // For
   STRING, // String
   CHAR, // Char
+  PULL, // Pull
 
   // Operators
   ARROWUP, // ^

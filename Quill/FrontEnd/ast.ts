@@ -34,6 +34,7 @@ export type NodeType =
   | "OrExpr"
   | "IncrementExpr"
   | "DecrementExpr"
+  | "PullStmt"
 
   // Literals
   | "Property"

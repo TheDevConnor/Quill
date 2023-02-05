@@ -135,8 +135,21 @@ export function eval_array_literal(
   const values = declaration.elements.map((element) => evaluate(element, env));
   const array = {
     type: "array",
-    values,
-  } as unknown as ArrayVal;
+    value: values,
+  } as ArrayVal;
 
-  return env.declareVar(declaration.name, array, true);
+  return env.declareVar(declaration.name, array, false);
+}
+
+export function eval_pull_literal(
+  declaration: ArrayLiteral,
+  env: Enviroment
+): RuntimeVal {
+  const values = declaration.elements.map((element) => evaluate(element, env));
+  const array = {
+    type: "array",
+    value: values,
+  } as ArrayVal;
+
+  return array;
 }

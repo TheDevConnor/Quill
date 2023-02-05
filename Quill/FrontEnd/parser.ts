@@ -34,6 +34,7 @@ import {
 } from "./ast.ts";
 
 import { Token, tokenize, TokenType } from "./lexer.ts";
+// deno-lint-ignore no-unused-vars
 import { error, trace, info } from "./tracing.ts";
 
 /**
@@ -227,19 +228,17 @@ export default class Parser {
 
     this.expect(TokenType.CLOSEBRACE, "Expected ']' after array elements");
 
-    const array = {
+    const array: ArrayLiteral = {
       name: name,
       elements: elements,
       kind: "ArrayLiteral",
-    }
+    };
 
-    console.log(array);
-
-    return array as unknown as ArrayLiteral;
+    return array;
   }
 
   // Handles Function Declarations
-  parse_function_decl(): Stmt {
+  private parse_function_decl(): Stmt {
     this.eat(); // Eat the 'func' keyword
 
     let isAsync = false;

@@ -24,7 +24,9 @@ export function createGlobalENV() {
   env.declareVar(
     "info",
     MK_NATIVE_FUNCTION((args, _scope) => {
-      const _info = info(format(args));
+      const arr = Array.from(args[0]["value"]);
+      const kv_pairs = arr.map((item) => item["value"]);
+      const _info = info(format(true, kv_pairs));
       return MK_NUMBER(Number(_info));
     }),
     true
@@ -33,7 +35,9 @@ export function createGlobalENV() {
   env.declareVar(
     "error",
     MK_NATIVE_FUNCTION((args, _scope) => {
-      const _error = error(format(args));
+      const arr = Array.from(args[0]["value"]);
+      const kv_pairs = arr.map((item) => item["value"]);
+      const _error = error(format(true, kv_pairs));
       return MK_NUMBER(Number(_error));
     }),
     true
@@ -42,7 +46,9 @@ export function createGlobalENV() {
   env.declareVar(
     "warn",
     MK_NATIVE_FUNCTION((args, _scope) => {
-      const _warn = warn(format(args));
+      const arr = Array.from(args[0]["value"]);
+      const kv_pairs = arr.map((item) => item["value"]);
+      const _warn = warn(format(true, kv_pairs));
       return MK_NUMBER(Number(_warn));
     }),
     true
@@ -51,7 +57,9 @@ export function createGlobalENV() {
   env.declareVar(
     "trace",
     MK_NATIVE_FUNCTION((args, _scope) => {
-      const _trace = trace(format(args));
+      const arr = Array.from(args[0]["value"]);
+      const kv_pairs = arr.map((item) => item["value"]);
+      const _trace = trace(format(false, kv_pairs));
       return MK_NUMBER(Number(_trace));
     }),
     true
@@ -60,7 +68,9 @@ export function createGlobalENV() {
   env.declareVar(
     "debug",
     MK_NATIVE_FUNCTION((args, _scope) => {
-      const _debug = debug(format(args));
+      const arr = Array.from(args[0]["value"]);
+      const kv_pairs = arr.map((item) => item["value"]);
+      const _debug = debug(format(false, kv_pairs));
       return MK_NUMBER(Number(_debug));
     }),
     true
@@ -69,7 +79,7 @@ export function createGlobalENV() {
   env.declareVar(
     "input",
     MK_NATIVE_FUNCTION((args, _scope) => {
-      const input = prompt(format(args));
+      const input = prompt(format(true, args));
       return input ? MK_NUMBER(Number(input)) : MK_NULL();
     }),
     true

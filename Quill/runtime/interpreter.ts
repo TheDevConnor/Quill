@@ -74,7 +74,7 @@ export function evaluate(astNode: Stmt, env: Enviroment): RuntimeVal {
     tracer.error("Invalid AST node: " + astNode);
   }
 
-  switch (astNode.kind) {
+  switch(astNode.kind) {
     case "NumericLiteral":
       return {
         value: (astNode as NumericLiteral).value,
