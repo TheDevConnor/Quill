@@ -127,5 +127,6 @@ func async fizz_buzz (min, max) {
 # debug(test_vector)
 
 # Lets add in an array.
+
 array myArray [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-info(myArray)
+warn(myArray)

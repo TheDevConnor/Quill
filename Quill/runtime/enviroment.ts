@@ -26,7 +26,7 @@ export function createGlobalENV() {
     MK_NATIVE_FUNCTION((args, _scope) => {
       const arr = Array.from(args[0]["value"]);
       const kv_pairs = arr.map((item) => item["value"]);
-      const _info = info(format(true, kv_pairs));
+      const _info = info(format(true, kv_pairs, args));
       return MK_NUMBER(Number(_info));
     }),
     true
@@ -37,7 +37,7 @@ export function createGlobalENV() {
     MK_NATIVE_FUNCTION((args, _scope) => {
       const arr = Array.from(args[0]["value"]);
       const kv_pairs = arr.map((item) => item["value"]);
-      const _error = error(format(true, kv_pairs));
+      const _error = error(format(true, kv_pairs, args));
       return MK_NUMBER(Number(_error));
     }),
     true
@@ -48,7 +48,7 @@ export function createGlobalENV() {
     MK_NATIVE_FUNCTION((args, _scope) => {
       const arr = Array.from(args[0]["value"]);
       const kv_pairs = arr.map((item) => item["value"]);
-      const _warn = warn(format(true, kv_pairs));
+      const _warn = warn(format(true, kv_pairs, args));
       return MK_NUMBER(Number(_warn));
     }),
     true
@@ -59,7 +59,7 @@ export function createGlobalENV() {
     MK_NATIVE_FUNCTION((args, _scope) => {
       const arr = Array.from(args[0]["value"]);
       const kv_pairs = arr.map((item) => item["value"]);
-      const _trace = trace(format(false, kv_pairs));
+      const _trace = trace(format(false, kv_pairs, args));
       return MK_NUMBER(Number(_trace));
     }),
     true
@@ -70,7 +70,7 @@ export function createGlobalENV() {
     MK_NATIVE_FUNCTION((args, _scope) => {
       const arr = Array.from(args[0]["value"]);
       const kv_pairs = arr.map((item) => item["value"]);
-      const _debug = debug(format(false, kv_pairs));
+      const _debug = debug(format(false, kv_pairs, args));
       return MK_NUMBER(Number(_debug));
     }),
     true
