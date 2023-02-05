@@ -1,4 +1,4 @@
-# Quill Language ![image|512x397, 20%](./QuillLogo.png)
+# Quill Language
 ![LangCount](https://img.shields.io/github/languages/count/TheRealHiThere/Quill)
 ![CodeSize](https://img.shields.io/github/languages/code-size/TheRealHiThere/Quill)
 ![Contributors](https://img.shields.io/github/contributors/TheRealHiThere/Quill)
