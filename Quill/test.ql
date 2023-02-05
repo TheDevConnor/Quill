@@ -97,5 +97,31 @@ func test (min, max) {
 # test(10, 10) # This will print out 110. because 10 + (10 * 10) = 110.
 
 # Lets add in an array.
-array test_array [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-debug(test_array) # This will print out 1.
+# array test_array [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+# debug(test_array) # This will print out 1.
+
+
+
+# this is a fizz buzz example. Written in quill.
+func async fizz_buzz (min, max) {
+	# This for loop will run as long as the condition i > min is true.
+	for have i := min; i < max; {
+		# If this condition is true, then the function of info (a built in function to print to the console) will be called.
+		if i % 3 = 0 {
+			info(100)
+		} elif i % 5 = 0 {
+			info(200)
+		} elif i % 3 = 0 && i % 5 = 0 {
+			info(300)
+		} else {
+			# If the condition is false, then the function of debug (a built in function to print to the console) will be called.
+			debug(i)
+		}
+
+		# Then we need to iterate through the loop. You can do this at the beginning of the for loop or at the end.
+		i := i + 1
+	}
+}
+
+# Now lets test the fizz_buzz function.
+fizz_buzz(1, 100) # This will print out 1.
