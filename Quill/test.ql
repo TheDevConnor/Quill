@@ -50,8 +50,8 @@ func async for_loop_test (min) {
 }
 
 # Now lets test the for_loop_test function.
-# info(random_number)
-# for_loop_test(random_number) # This will print out 10 down to 0.
+info(random_number)
+for_loop_test(random_number) # This will print out 10 down to 0.
 
 # This is a function that ius named "Test" and it takes in two parameters, "min" and "max".
 func test (min, max) {
@@ -127,6 +127,5 @@ func async fizz_buzz (min, max) {
 # debug(test_vector)
 
 # Lets add in an array.
-
-array myArray [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-warn(myArray)
+# array myArray [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+# warn(myArray)
