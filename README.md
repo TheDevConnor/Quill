@@ -11,6 +11,14 @@ Quill runs on Deno, a better JS runtime. Plan on making our on QVM (Quill Virtua
 
 ![image](./code1.png)
 
+Example 2:
+
+![image](./code2.png)
+
+Example 3:
+
+![image](./code3.png)
+
 ## Acknowledgements
  - [Typescript](https://github.com/microsoft/TypeScript)
  - [DenoJS](https://deno.land/)
