@@ -10,7 +10,7 @@ have min_1 := 10
 have max_1 := 10
 
 # you can also take in the user input as well. By using the built in function of input.
-# have user_input := input()
+have user_input := input()
 
 # This is a function that is named "while_loop_test" and it takes in two parameters, "min" and "max".
 # and will test the while loop.
@@ -21,11 +21,15 @@ func async while_loop_test (min, max){
 		warn(min)
 		# The value of min_1 is increased by 1
 		min := min + 1
+		return min
 	}
+
+	# This function will trace the user when the condition is false.
+	trace(min)
 }
 
 # Now lets test the while_loop_test function.
-# while_loop_test(user_input, 100) # This will print out 0 up to 10.
+while_loop_test(user_input, 100) # This will print out 0 up to 10.
 
 # there is also a built in random function that can be used to generate a random number.
 # You can call the random function by saying random() then passing your parameters.
@@ -50,8 +54,8 @@ func async for_loop_test (min) {
 }
 
 # Now lets test the for_loop_test function.
-info(random_number)
-for_loop_test(random_number) # This will print out 10 down to 0.
+# info(random_number)
+# for_loop_test(random_number) # This will print out 10 down to 0.
 
 # This is a function that ius named "Test" and it takes in two parameters, "min" and "max".
 func test (min, max) {
@@ -129,3 +133,4 @@ func async fizz_buzz (min, max) {
 # Lets add in an array.
 # array myArray [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 # warn(myArray)
+
