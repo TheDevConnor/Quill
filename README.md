@@ -21,6 +21,10 @@ Example 3:
 
 ![image](./code3.png)
 
+Example 4:
+
+![image](./code4.png)
+
 ## Acknowledgements
  - [Typescript](https://github.com/microsoft/TypeScript)
  - [DenoJS](https://deno.land/)
