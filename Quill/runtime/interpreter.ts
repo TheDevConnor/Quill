@@ -1,5 +1,5 @@
 // deno-lint-ignore-file
-import { RuntimeVal, NumberVal } from "./values.ts";
+import { RuntimeVal, NumberVal, StringVal } from "./values.ts";
 
 import {
   Stmt,
@@ -30,7 +30,7 @@ import {
   LessThanOrEqualsExpr,
   ForStmt,
   ElseStmt,
-  Expr,
+  StringLiteral,
 } from "../FrontEnd/ast.ts";
 
 import {
@@ -81,6 +81,12 @@ export function evaluate(astNode: Stmt, env: Enviroment): RuntimeVal {
         value: (astNode as NumericLiteral).value,
         type: "number",
       } as NumberVal;
+
+    case "StringLiteral":
+      return {
+        value: (astNode as StringLiteral).value,
+        type: "string",
+      } as StringVal;
 
     case "Identifier":
       return enal_identifier(astNode as Identifier, env);

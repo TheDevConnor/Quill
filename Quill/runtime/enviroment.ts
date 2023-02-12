@@ -33,6 +33,16 @@ export function createGlobalENV() {
   );
 
   env.declareVar(
+    "console",
+    MK_NATIVE_FUNCTION((args, _scope) => {
+      console.log(...args);
+      return MK_NULL();
+    }),
+    true
+  );
+
+
+  env.declareVar(
     "error",
     MK_NATIVE_FUNCTION((args, _scope) => {
       const arr = Array.from(args[0]["value"]);

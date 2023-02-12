@@ -216,11 +216,6 @@ export interface MemberExpr extends Expr {
   computed: boolean;
 }
 
-export interface StringLiteral extends Expr {
-  kind: "StringLiteral";
-  value: string;
-}
-
 export interface Identifier extends Expr {
   kind: "Identifier";
   symbol: string;
@@ -229,6 +224,11 @@ export interface Identifier extends Expr {
 export interface NumericLiteral extends Expr {
   kind: "NumericLiteral";
   value: number;
+}
+
+export interface StringLiteral extends Expr {
+  kind: "StringLiteral";
+  value: string;
 }
 
 export interface Property extends Expr {

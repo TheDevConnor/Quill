@@ -232,7 +232,7 @@ export default class Parser {
  
    const name = this.expect(TokenType.Identifier, "Expected function name").value;
    const args = this.parse_args();
-   const params = args.filter(arg => arg.kind === "Identifier").map(arg => arg.symbol);
+   const params = args.filter(arg => arg.kind === "Identifier").map(arg => arg.kind);
    
    this.expect(TokenType.OPENBRACKET, "Expected '{' after function parameters");
    const body = [];
@@ -307,6 +307,16 @@ export default class Parser {
   private parse_expr(): Expr {
     // Initialize a variable to store the parsed expression
     let expr = this.parse_assignment_expr();
+
+    // Check if the current token is of typ String
+    // If it is, eat the token, parse the next assignment expression, and update the expr variable with a StringLiteral object
+    while (this.at().type == TokenType.String) {
+      const value = this.eat().value;
+      expr = {
+        kind: "StringLiteral",
+        value,
+      } as unknown as StringLiteral;
+    }
 
     // Check if the current token is of type NULL
     // If it is, eat the token and assign a NullExpr to the expr variable
@@ -681,6 +691,12 @@ private parse_assignment_expr(): Expr {
           kind: "NumericLiteral",
           value: parseFloat(this.eat().value),
         } as NumericLiteral;
+
+      case TokenType.String:
+        return {
+          kind: "StringLiteral",
+          value: this.eat().value,
+        } as StringLiteral;
 
       // Grouping Expressions
       case TokenType.OpenParen: {

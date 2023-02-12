@@ -20,7 +20,6 @@ export enum TokenType {
   ELIF, //Else if
   WHILE, // While
   FOR, // For
-  STRING, // String
   CHAR, // Char
   PULL, // Pull
 
@@ -236,37 +235,6 @@ export function tokenize(sourceCode: string): Token[] {
       tokens.push(token(src.shift(), TokenType.MINUSEQUAL, Line));
       src.shift();
     }
-
-    // TODO:: HANDLE STRING LITERALS
-    else if (src.length > 0 && src[0] == '"') {
-      let str = "";
-      src.shift();
-      while (src.length > 0 && src[0] !== '"') {
-        if (src[0] == "\ ") {
-          str += src.shift();
-        }
-        str += src.shift();
-      }
-      if (src.length === 0 || src[0] !== '"') {
-        throw new Error("Unterminated string literal.");
-      }
-      src.shift();
-      tokens.push(token(str, TokenType.STRING, Line));
-    } else if (src.length > 0 && src[0] == "'") {
-      let str = "";
-      src.shift();
-      while (src.length > 0 && src[0] !== "'") {
-        if (src[0] == "\ ") {
-          str += src.shift();
-        }
-        str += src.shift();
-      }
-      if (src.length === 0 || src[0] !== "'") {
-        throw new Error("Unterminated string literal.");
-      }
-      src.shift();
-      tokens.push(token(str, TokenType.CHAR, Line));
-    }
     
     // HANDLE WHITESPACE
     else if (isskippable(src[0])) {
@@ -294,7 +262,20 @@ export function tokenize(sourceCode: string): Token[] {
 
         // append new numeric token.
         tokens.push(token(num, TokenType.Number, Line));
-      } // Handle Identifier & Keyword Tokens.
+      } 
+
+      // TODO:: HANDLE STRING LITERALS
+      else if (src[0] == '"') {
+        let str = "";
+        while (src.length > 0 && src[0] != '"') {
+          str += src.shift();
+        }
+        src.shift();
+        src.shift();
+        tokens.push(token(str, TokenType.String, Line));
+      }
+
+      // Handle Identifier & Keyword Tokens.
       else if (isalpha(src[0]) || src[0] == "_") {
         let ident = "";
         while (src.length > 0) {

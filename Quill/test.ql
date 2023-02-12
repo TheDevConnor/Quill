@@ -147,15 +147,9 @@ func test_const () {
 }
 
 # Test the `test_const` function
-test_const() # This will print out 1.
-
-
-# vec test_vector [1, 10, 3]# [1, 10, 3]
-# test_vector.push(11)# [1, 10, 3, 11]
-# test_vector.pull(2)# [1, 10, 3, 11] returns, 3
-# test_vector.pop()# [1, 10, 3] returns, 11
-# test_vector.pop_front()# [10, 3] returns, 1
-# debug(test_vector)
+# test_const() # This will print out 1.
+have string := "1"
+info(string)
 
 # Lets add in an array.
 # array myArray [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
