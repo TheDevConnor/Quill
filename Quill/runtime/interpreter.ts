@@ -1,3 +1,4 @@
+// deno-lint-ignore-file
 import { RuntimeVal, NumberVal } from "./values.ts";
 
 import {
@@ -29,6 +30,7 @@ import {
   LessThanOrEqualsExpr,
   ForStmt,
   ElseStmt,
+  Expr,
 } from "../FrontEnd/ast.ts";
 
 import {
@@ -165,6 +167,9 @@ export function evaluate(astNode: Stmt, env: Enviroment): RuntimeVal {
 
     case "ArrayLiteral":
       return eval_array_literal(astNode as ArrayLiteral, env);
+
+    case "ObjectLiteral":
+      return eval_object_expr(astNode as ObjectLiteral, env);
 
     // Handle unimplemented ast nodes
     default:

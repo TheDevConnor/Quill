@@ -12,8 +12,11 @@ export type ValueType =
   | "char";
 
 export interface RuntimeVal {
+  kind: string;
   type: ValueType;
   value: any;
+
+  [index: string]: any;
 }
 
 export interface NullVal extends RuntimeVal {

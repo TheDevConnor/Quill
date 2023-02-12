@@ -1,3 +1,4 @@
+// deno-lint-ignore-file
 import {
   AssignmentExpr,
   BinaryExpr,
@@ -15,6 +16,7 @@ import {
   MinusEqualsExpr,
   GreaterThanOrEqualsExpr,
   LessThanOrEqualsExpr,
+  Expr,
 } from "../../FrontEnd/ast.ts";
 
 import {
@@ -26,6 +28,8 @@ import {
   FunctionVal,
   NullVal,
   BooleanVal,
+  MK_STRING,
+StringVal,
 } from "../values.ts";
 
 import Enviroment from "../enviroment.ts";
@@ -62,7 +66,7 @@ function eval_numeric_binary_expr(
     result = leftHandSide.value % rightHandSide.value;
   }
 
-  return { value: result, type: "number", property: null } as NumberVal;
+  return { value: result, type: "number" } as NumberVal;
 }
 
 export function eval_binary_expr(
@@ -245,27 +249,43 @@ export function enal_identifier(
 
 export function eval_member_expr(
   member: MemberExpr,
-  env: Enviroment
+  env: Enviroment,
 ): RuntimeVal {
-  error("eval_member_expr not implemented");
+  const object = evaluate(member.object, env) as ObjectVal;
+  if (!object || object.type !== "object") {
+    throw error(`Cannot resolve '${member.object.kind}' as it does not exist! 3`);
+  }
 
-  return MK_NULL();
+  const property = evaluate(member.property, env) as ObjectVal;
+  if (!property || property.type !== "object") {
+    throw error(`Cannot resolve '${member.property.kind}' as it does not exist! 2`);
+  }
+
+  const value = object.properties.get(property.value as string);
+  if (value === undefined) {
+    throw error(`Cannot resolve '${property.value}' as it does not exist! 1`);
+  }
+
+  return value;
 }
 
 export function eval_object_expr(
   obj: ObjectLiteral,
   env: Enviroment,
-): RuntimeVal {
-  const object = { type: "object", properties: new Map() } as ObjectVal;
+): ObjectVal {
+  const properties = new Map<string, RuntimeVal>();
   for (const { key, value } of obj.properties) {
     const runtimeVal = (value == undefined)
       ? env.lookupVar(key)
       : evaluate(value, env);
 
-    object.properties.set(key, runtimeVal);
+    properties.set(key, runtimeVal);
+    console.log(key, runtimeVal);
   }
-
-  return object;
+  return {
+    type: "object",
+    properties,
+  } as ObjectVal;
 }
 
 export function eval_assingment(
@@ -306,7 +326,6 @@ export function eval_call_expr(expr: CallExpr, env: Enviroment): RuntimeVal {
     }
     return result;
   }
-
   error(`invalid function call ${JSON.stringify(expr)}`);
   return MK_NULL();
 }
