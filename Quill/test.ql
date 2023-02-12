@@ -154,12 +154,3 @@ debug(int[x_random][value])
 # Lets add in an array.
 # array myArray [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 # warn(myArray)
-
-fn(exif)[pub]<T$Eq+?ToString>(_args:*(T)[]):u8{
-    var(name)=String("Hello There")
-    if(){
-        log.info(name)
-    }else{
-        log.info("No name was found!")
-    }
-}
