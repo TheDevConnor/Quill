@@ -123,6 +123,20 @@ func async fizz_buzz (min, max) {
 # have user_input_result := (user_input * 2) + 100
 # info(user_input_result)
 
+# Lets test the construstor function.
+const int := {
+	x_random: {
+		value: random(1, 10)
+	},
+}
+
+for have i := 0; i <= int[x_random][value] /*Or you can write it like this 'int.x_random.value'*/; {
+	info(i)
+	i := i + 1
+}
+
+# debug(int[x_random][value] /* Or you can write it like this 'int.x_random.value'*/)
+
 # vec test_vector [1, 10, 3]# [1, 10, 3]
 # test_vector.push(11)# [1, 10, 3, 11]
 # test_vector.pull(2)# [1, 10, 3, 11] returns, 3
@@ -134,18 +148,3 @@ func async fizz_buzz (min, max) {
 # array myArray [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 # warn(myArray)
 
-have foo := 50 / 2
-
-const obj := {
-	x: 1,
-	y: 2,
-	foo,
-
-	complex: {
-		bar: true,
-		baz: 10,
-	},
-}
-
-info(obj[complex][baz] + obj[foo])
-warn(obj.complex.bar)
