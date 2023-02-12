@@ -117,11 +117,6 @@ export default class Parser {
         if (currentTokenValue === "return") {
           return this.parse_return_stmt();
         }
-
-        if (this.next().type === TokenType.STRING) {
-          return this.parse_string_decl();
-        }
-
         return this.parse_expr();
       case TokenType.FUNC:
         return this.parse_function_decl();
@@ -136,17 +131,6 @@ export default class Parser {
       default:
         return this.parse_expr();
     }
-  }
-
-  private parse_string_decl(): StringLiteral {
-    this.eat(); // Eat the 'return' keyword
-
-    const value = this.eat().value;
-
-    return {
-      kind: "StringLiteral",
-      value,
-    } as StringLiteral;
   }
 
   private parse_while_stmt(): WhileStmt {
