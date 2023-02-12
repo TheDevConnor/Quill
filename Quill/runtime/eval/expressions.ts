@@ -247,18 +247,8 @@ export function eval_member_expr(
   member: MemberExpr,
   env: Enviroment
 ): RuntimeVal {
-  const obj = evaluate(member.object, env);
-  while (obj.type == "object") {
-    const val = obj.property;
-    if (val) {
-      return val;
-    }
-    if (obj.prototype) {
-      return eval_member_expr(member, obj.prototype);
-    }
-    return MK_NULL();
-  }
-  info(`cannot access property ${member.property} of ${obj.type}`);
+  error("eval_member_expr not implemented");
+
   return MK_NULL();
 }
 

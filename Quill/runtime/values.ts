@@ -12,8 +12,6 @@ export type ValueType =
   | "char";
 
 export interface RuntimeVal {
-  prototype: any;
-  property: any;
   type: ValueType;
   value: any;
 }

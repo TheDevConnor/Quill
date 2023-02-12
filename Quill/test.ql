@@ -146,4 +146,4 @@ const obj := {
 	},
 }
 
-have f := obj[x]
+have bar := obj.complex.bar
