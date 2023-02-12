@@ -259,37 +259,19 @@ export function eval_member_expr(
     );
   }
 
-// Assign the property of the `member` object to a variable `property`
-const property = member.property as Identifier;
-
-// Check if `property` exists and its `kind` is "Identifier"
-if (!property || property.kind !== "Identifier") {
-  // If `property` doesn't exist or its `kind` is not "Identifier", throw an error with a message indicating the issue
-  throw error(
-    `Cannot resolve '${member.property.kind}' as it does not exist! 2`
-  );
-
-// Check if the `object` has a property with the same symbol as `property`
-} else if (!object.properties.has(property.symbol)) {
-  // If the `object` doesn't have a property with the same symbol as `property`, throw an error with a message indicating the issue
-  throw error(`Cannot resolve '${property.symbol}' as it does not exist! 1`);
-
-// If both `property` and the corresponding property in `object` exist
-} else {
-  // Get the value of the property in `object` that has the same symbol as `property`
-  const value = object.properties.get(property.symbol);
-
-  // Check if the value of the property is undefined
-  if (value === undefined) {
-    // If the value of the property is undefined, throw an error with a message indicating the issue
+  const property = member.property as Identifier;
+  if (!property || property.kind !== "Identifier") {
     throw error(
-      `Cannot resolve '${property.symbol}' as it does not exist! 1`
+      `Cannot resolve '${member.property.kind}' as it does not exist! 2`
     );
   }
-  // Return the value of the property
-  return value;
-}
 
+  const value = object.properties.get(property.symbol);
+  if (value === undefined) {
+    throw error(`Cannot resolve '${property.symbol}' as it does not exist! 1`);
+  }
+
+  return value;
 }
 
 export function eval_object_expr(
@@ -297,16 +279,15 @@ export function eval_object_expr(
   env: Enviroment
 ): ObjectVal {
   const properties = new Map<string, RuntimeVal>();
-  for (const { key, value } of obj.properties) {
+  for (const property of obj.properties) {
     const runtimeVal =
-      value == undefined ? env.lookupVar(key) : evaluate(value, env);
+      property.value === undefined
+        ? env.lookupVar(property.key)
+        : evaluate(property.value, env);
 
-    properties.set(key, runtimeVal);
+    properties.set(property.key, runtimeVal);
   }
-  return {
-    type: "object",
-    properties: properties,
-  } as unknown as ObjectVal;
+  return { type: "object", properties } as ObjectVal;
 }
 
 export function eval_assingment(
