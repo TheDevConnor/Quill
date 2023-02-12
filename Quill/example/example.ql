@@ -11,8 +11,8 @@ const obj := {
 		baz: 400,
 	},
 };
-CSPrint(foo + obj[complex.bar] + obj[x])
-CSPrint(foo + obj.complex.bar + obj.x)
+info(foo + obj[complex][bar] + obj[x])
+info(foo + obj.complex.bar + obj.x)
 --------------------------------------------------------------------------------------------------------------------------------
 have f := 5 * 2;
 f := f / 4 + 5

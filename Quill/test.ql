@@ -125,17 +125,24 @@ func async fizz_buzz (min, max) {
 
 # Lets test the construstor function.
 const int := {
+  # Create an object `int` with a property `x_random`
 	x_random: {
+		# The `x_random` object has a property `value` with a randomly generated number between 1 and 10
 		value: random(1, 10)
 	},
 }
 
-for have i := 0; i <= int[x_random][value] /*Or you can write it like this 'int.x_random.value'*/; {
+# Loop through the values starting from 0 up to the `value` of `x_random`
+for have i := 0; i <= int[x_random][value]; {
+	# Print the current iteration value
 	info(i)
+	# Increment the value of `i` by 1 in each iteration
 	i := i + 1
 }
 
-# debug(int[x_random][value] /* Or you can write it like this 'int.x_random.value'*/)
+# Print the `value` of `x_random`
+debug(int[x_random][value])
+
 
 # vec test_vector [1, 10, 3]# [1, 10, 3]
 # test_vector.push(11)# [1, 10, 3, 11]
@@ -148,3 +155,11 @@ for have i := 0; i <= int[x_random][value] /*Or you can write it like this 'int.
 # array myArray [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 # warn(myArray)
 
+fn(exif)[pub]<T$Eq+?ToString>(_args:*(T)[]):u8{
+    var(name)=String("Hello There")
+    if(){
+        log.info(name)
+    }else{
+        log.info("No name was found!")
+    }
+}
