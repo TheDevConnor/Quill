@@ -29,7 +29,7 @@ import {
   NullVal,
   BooleanVal,
   MK_STRING,
-StringVal,
+  StringVal,
 } from "../values.ts";
 
 import Enviroment from "../enviroment.ts";
@@ -250,36 +250,56 @@ export function enal_identifier(
 
 export function eval_member_expr(
   member: MemberExpr,
-  env: Enviroment,
+  env: Enviroment
 ): RuntimeVal {
   const object = evaluate(member.object, env) as ObjectVal;
   if (!object || object.type !== "object") {
-    throw error(`Cannot resolve '${member.object.kind}' as it does not exist! 3`);
+    throw error(
+      `Cannot resolve '${member.object.kind}' as it does not exist! 3`
+    );
   }
 
-  const property = member.property as Identifier;
-  if (!property || property.kind !== "Identifier") {
-    throw error(`Cannot resolve '${member.property.kind}' as it does not exist! 2`);
-  } else if (!object.properties.has(property.symbol)) {
-    throw error(`Cannot resolve '${property.symbol}' as it does not exist! 1`);
-  } else {
-    const value = object.properties.get(property.symbol);
-    if (value === undefined) {
-      throw error(`Cannot resolve '${property.symbol}' as it does not exist! 1`);
-    }
-    return value;
+// Assign the property of the `member` object to a variable `property`
+const property = member.property as Identifier;
+
+// Check if `property` exists and its `kind` is "Identifier"
+if (!property || property.kind !== "Identifier") {
+  // If `property` doesn't exist or its `kind` is not "Identifier", throw an error with a message indicating the issue
+  throw error(
+    `Cannot resolve '${member.property.kind}' as it does not exist! 2`
+  );
+
+// Check if the `object` has a property with the same symbol as `property`
+} else if (!object.properties.has(property.symbol)) {
+  // If the `object` doesn't have a property with the same symbol as `property`, throw an error with a message indicating the issue
+  throw error(`Cannot resolve '${property.symbol}' as it does not exist! 1`);
+
+// If both `property` and the corresponding property in `object` exist
+} else {
+  // Get the value of the property in `object` that has the same symbol as `property`
+  const value = object.properties.get(property.symbol);
+
+  // Check if the value of the property is undefined
+  if (value === undefined) {
+    // If the value of the property is undefined, throw an error with a message indicating the issue
+    throw error(
+      `Cannot resolve '${property.symbol}' as it does not exist! 1`
+    );
   }
+  // Return the value of the property
+  return value;
+}
+
 }
 
 export function eval_object_expr(
   obj: ObjectLiteral,
-  env: Enviroment,
+  env: Enviroment
 ): ObjectVal {
   const properties = new Map<string, RuntimeVal>();
   for (const { key, value } of obj.properties) {
-    const runtimeVal = (value == undefined)
-      ? env.lookupVar(key)
-      : evaluate(value, env);
+    const runtimeVal =
+      value == undefined ? env.lookupVar(key) : evaluate(value, env);
 
     properties.set(key, runtimeVal);
   }
