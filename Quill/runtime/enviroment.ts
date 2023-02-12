@@ -161,19 +161,11 @@ export default class Enviroment {
       return this;
     }
 
-    trace(format(false,`Resolving ${varname} in ${obj} enviroment`));// obj and varname are the same thing here!
     if(this.variables.has(obj)){
       let val = this.variables.get(obj)?.value;
       console.log(val);
     }
-    // dude, it is looking for 'x', not obj['x'] but if you call 'x' it will not work because x is not set to anything right?
-    // yes, 'varname' = 'x' 
-    // but we need 'varname' = 'obj[x]'
-    // we first need to know what object to look in
-    // You are taking about int the parser
-    // no, when you index obj['x'] you have to pass 2 arguments to the function,
-    // 'obj' and 'x'
-    // K, so i am pretty sure that is happening in the expressions eval_object_expr.
+
     if (this.parent == undefined) {
       throw `Cannot resolve '${varname}' as it does not exist!`;
     }

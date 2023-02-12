@@ -124,24 +124,30 @@ func async fizz_buzz (min, max) {
 # info(user_input_result)
 
 # Lets test the construstor function.
-const int := {
-  # Create an object `int` with a property `x_random`
-	x_random: {
-		# The `x_random` object has a property `value` with a randomly generated number between 1 and 10
-		value: random(1, 10)
-	},
+func test_const () {
+	# Create a constant `int` object with a property `x_random`
+	const int := {
+		# Create a property `x_random` with an object
+		x_random: {
+			# The `x_random` object has a property `value` with a randomly generated number between 1 and 10
+			value: random(1, 10)
+		},
+	}
+
+	# Loop through the values starting from 0 up to the `value` of `x_random`
+	for have i := 0; i <= int[x_random][value]; {
+		# Print the current iteration value
+		info(i)
+		# Increment the value of `i` by 1 in each iteration
+		i := i + 1
+	}
+
+	# Print the `value` of `x_random`
+	debug(int[x_random][value])
 }
 
-# Loop through the values starting from 0 up to the `value` of `x_random`
-for have i := 0; i <= int[x_random][value]; {
-	# Print the current iteration value
-	info(i)
-	# Increment the value of `i` by 1 in each iteration
-	i := i + 1
-}
-
-# Print the `value` of `x_random`
-debug(int[x_random][value])
+# Test the `test_const` function
+test_const() # This will print out 1.
 
 
 # vec test_vector [1, 10, 3]# [1, 10, 3]
