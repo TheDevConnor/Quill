@@ -238,26 +238,36 @@ export function tokenize(sourceCode: string): Token[] {
     }
 
     // TODO:: HANDLE STRING LITERALS
-    else if (src[0] == '"') {
+    else if (src.length > 0 && src[0] == '"') {
       let str = "";
       src.shift();
       while (src.length > 0 && src[0] !== '"') {
+        if (src[0] == "\ ") {
+          str += src.shift();
+        }
         str += src.shift();
+      }
+      if (src.length === 0 || src[0] !== '"') {
+        throw new Error("Unterminated string literal.");
       }
       src.shift();
       tokens.push(token(str, TokenType.STRING, Line));
-    }
-
-    else if (src[0] == "'") {
+    } else if (src.length > 0 && src[0] == "'") {
       let str = "";
       src.shift();
       while (src.length > 0 && src[0] !== "'") {
+        if (src[0] == "\ ") {
+          str += src.shift();
+        }
         str += src.shift();
+      }
+      if (src.length === 0 || src[0] !== "'") {
+        throw new Error("Unterminated string literal.");
       }
       src.shift();
       tokens.push(token(str, TokenType.CHAR, Line));
     }
-
+    
     // HANDLE WHITESPACE
     else if (isskippable(src[0])) {
       src.shift();
