@@ -603,7 +603,10 @@ export default class Parser {
     }
 
     this.expect(TokenType.CLOSEBRACKET, "Object literal missing closing brace.");
-    return { kind: "ObjectLiteral", properties } as ObjectLiteral;
+    return {
+      kind: "ObjectLiteral",
+      properties
+    } as unknown as ObjectLiteral;
   }
 
   // Handle Addition & Subtraction Operations

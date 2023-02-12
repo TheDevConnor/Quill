@@ -35,6 +35,7 @@ StringVal,
 import Enviroment from "../enviroment.ts";
 import { evaluate } from "../interpreter.ts";
 import { error, info, debug, trace } from "../../FrontEnd/tracing.ts";
+import { kEmptyObject } from "https://deno.land/std@0.171.0/node/internal/util.mjs";
 
 function eval_numeric_binary_expr(
   leftHandSide: NumberVal,
@@ -256,17 +257,18 @@ export function eval_member_expr(
     throw error(`Cannot resolve '${member.object.kind}' as it does not exist! 3`);
   }
 
-  const property = evaluate(member.property, env) as ObjectVal;
-  if (!property || property.type !== "object") {
+  const property = member.property as Identifier;
+  if (!property || property.kind !== "Identifier") {
     throw error(`Cannot resolve '${member.property.kind}' as it does not exist! 2`);
+  } else if (!object.properties.has(property.symbol)) {
+    throw error(`Cannot resolve '${property.symbol}' as it does not exist! 1`);
+  } else {
+    const value = object.properties.get(property.symbol);
+    if (value === undefined) {
+      throw error(`Cannot resolve '${property.symbol}' as it does not exist! 1`);
+    }
+    return value;
   }
-
-  const value = object.properties.get(property.value as string);
-  if (value === undefined) {
-    throw error(`Cannot resolve '${property.value}' as it does not exist! 1`);
-  }
-
-  return value;
 }
 
 export function eval_object_expr(
@@ -280,12 +282,11 @@ export function eval_object_expr(
       : evaluate(value, env);
 
     properties.set(key, runtimeVal);
-    console.log(key, runtimeVal);
   }
   return {
     type: "object",
-    properties,
-  } as ObjectVal;
+    properties: properties,
+  } as unknown as ObjectVal;
 }
 
 export function eval_assingment(

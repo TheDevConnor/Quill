@@ -239,6 +239,8 @@ export interface Property extends Expr {
 
 export interface ObjectLiteral extends Expr {
   kind: "ObjectLiteral";
+  name: string;
+  key: string;
   properties: Property[];
 }
 

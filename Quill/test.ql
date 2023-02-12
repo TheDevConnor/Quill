@@ -134,7 +134,7 @@ func async fizz_buzz (min, max) {
 # array myArray [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 # warn(myArray)
 
-have foo := 10 / 2
+have foo := 50 / 2
 
 const obj := {
 	x: 1,
@@ -143,7 +143,9 @@ const obj := {
 
 	complex: {
 		bar: true,
+		baz: 10,
 	},
 }
 
-obj[complex]
+info(obj[complex][baz] + obj[foo])
+warn(obj.complex.bar)

@@ -9,7 +9,8 @@ export type ValueType =
   | "function"
   | "string"
   | "array"
-  | "char";
+  | "char"
+  | "undefined";
 
 export interface RuntimeVal {
   kind: string;
