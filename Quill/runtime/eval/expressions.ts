@@ -15,7 +15,6 @@ import {
   MinusEqualsExpr,
   GreaterThanOrEqualsExpr,
   LessThanOrEqualsExpr,
-  StringLiteral,
 } from "../../FrontEnd/ast.ts";
 
 import {
@@ -27,12 +26,11 @@ import {
   FunctionVal,
   NullVal,
   BooleanVal,
-StringVal,
 } from "../values.ts";
 
 import Enviroment from "../enviroment.ts";
 import { evaluate } from "../interpreter.ts";
-import { error } from "../../FrontEnd/tracing.ts";
+import { error, info, debug, trace } from "../../FrontEnd/tracing.ts";
 
 function eval_numeric_binary_expr(
   leftHandSide: NumberVal,
@@ -64,7 +62,7 @@ function eval_numeric_binary_expr(
     result = leftHandSide.value % rightHandSide.value;
   }
 
-  return { value: result, type: "number" };
+  return { value: result, type: "number", property: null } as NumberVal;
 }
 
 export function eval_binary_expr(
@@ -237,27 +235,31 @@ export function eval_minus_equals_expr(
   return MK_NULL() as NullVal;
 }
 
-export function eval_member_expr(
-  binop: MemberExpr,
-  env: Enviroment
-): RuntimeVal {
-  const leftHandSide = evaluate(binop.left, env);
-  const rightHandSide = evaluate(binop.right, env);
-
-  if (leftHandSide.type == "object") {
-    const obj = leftHandSide as ObjectVal;
-    return obj.properties.get(rightHandSide.value) as RuntimeVal;
-  }
-  // One or both are null
-  return MK_NULL() as NullVal;
-}
-
 export function enal_identifier(
   ident: Identifier,
   env: Enviroment
 ): RuntimeVal {
   const val = env.lookupVar(ident.symbol);
   return val;
+}
+
+export function eval_member_expr(
+  member: MemberExpr,
+  env: Enviroment
+): RuntimeVal {
+  const obj = evaluate(member.object, env);
+  while (obj.type == "object") {
+    const val = obj.property;
+    if (val) {
+      return val;
+    }
+    if (obj.prototype) {
+      return eval_member_expr(member, obj.prototype);
+    }
+    return MK_NULL();
+  }
+  info(`cannot access property ${member.property} of ${obj.type}`);
+  return MK_NULL();
 }
 
 export function eval_object_expr(

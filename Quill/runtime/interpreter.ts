@@ -29,7 +29,6 @@ import {
   LessThanOrEqualsExpr,
   ForStmt,
   ElseStmt,
-  StringLiteral,
 } from "../FrontEnd/ast.ts";
 
 import {
@@ -93,9 +92,6 @@ export function evaluate(astNode: Stmt, env: Enviroment): RuntimeVal {
     case "BinaryExpr":
       return eval_binary_expr(astNode as BinaryExpr, env);
 
-    case "MemberExpr":
-      return eval_member_expr(astNode as MemberExpr, env);
-
     case "AssignmentExpr":
       return eval_assingment(astNode as AssignmentExpr, env);
 
@@ -139,6 +135,9 @@ export function evaluate(astNode: Stmt, env: Enviroment): RuntimeVal {
     case "Program":
       return eval_program(astNode as Program, env);
 
+    case "MemberExpr":
+      return eval_member_expr(astNode as MemberExpr, env);
+
     // Handle statements
     case "VarDeclaration":
       return eval_var_decl(astNode as VarDeclaration, env);
@@ -167,13 +166,10 @@ export function evaluate(astNode: Stmt, env: Enviroment): RuntimeVal {
     case "ArrayLiteral":
       return eval_array_literal(astNode as ArrayLiteral, env);
 
-    case "StringLiteral":
-      return { value: (astNode as StringLiteral).value, type: "string" };
-
     // Handle unimplemented ast nodes
     default:
       tracer.error(
-        "This ast node has not yet been set up for inter." + astNode.kind
+        "This ast node has not yet been set up for interpretation." + astNode.kind
       );
       Deno.exit(0);
   }

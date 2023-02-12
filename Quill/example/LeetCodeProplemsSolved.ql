@@ -30,7 +30,7 @@
 # -109 <= target <= 109
 # Only one valid answer exists.
 
-func twoSum (nums, target: int) {
+func twoSum (nums: array[], target: int) {
 	# This for loop will run as long as the condition i > min is true.
 	for have i := 0; i < nums.length; {
 		# If this condition is true, then the function of info

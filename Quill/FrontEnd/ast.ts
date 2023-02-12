@@ -201,16 +201,16 @@ export interface MinusEqualsExpr extends Expr {
   operator: "-=";
 }
 
+// foo.bar()
 export interface CallExpr extends Expr {
   kind: "CallExpr";
   args: Expr[];
   caller: Expr;
 }
 
+//foo["bar"]()
 export interface MemberExpr extends Expr {
   kind: "MemberExpr";
-  left: Expr;
-  right: Expr;
   object: Expr;
   property: Expr;
   computed: boolean;
