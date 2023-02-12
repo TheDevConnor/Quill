@@ -95,11 +95,11 @@ func async fizz_buzz (min, max) {
 		# If this condition is true, then the function of info 
 		# (a built in function to print to the console) will be called.
 		if i % 3 = 0 {
-			info(1)
+			"Fizz"
 		} if i % 5 = 0 {
-			info(2)
+			"Buzz"
 		} elif i % 3 = 0 && i % 5 = 0 {
-			info(i)
+			"FizzBuzz"
 		} else {
 			# If the condition is false, then the function of debug 
 			#(a built in function to print to the console) will be called.
@@ -148,8 +148,6 @@ func test_const () {
 
 # Test the `test_const` function
 # test_const() # This will print out 1.
-have string := "1"
-info(string)
 
 # Lets add in an array.
 # array myArray [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]

@@ -3,6 +3,7 @@ import {
   MK_NATIVE_FUNCTION,
   MK_NULL,
   MK_NUMBER,
+  MK_STRING,
   RuntimeVal,
 } from "./values.ts";
 import {

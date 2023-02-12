@@ -270,8 +270,6 @@ export function tokenize(sourceCode: string): Token[] {
         while (src.length > 0 && src[0] != '"') {
           str += src.shift();
         }
-        src.shift();
-        src.shift();
         tokens.push(token(str, TokenType.String, Line));
       }
 

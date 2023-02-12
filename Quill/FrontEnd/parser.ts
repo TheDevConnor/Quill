@@ -480,26 +480,26 @@ export default class Parser {
     } as unknown as IfStmt;
   }
 
-private parse_assignment_expr(): Expr {
-  const left = this.parse_object_expr();
+  private parse_assignment_expr(): Expr {
+    const left = this.parse_object_expr();
 
-  if (this.at().type !== TokenType.COLON) {
-    return left;
+    if (this.at().type !== TokenType.COLON) {
+      return left;
+    }
+
+    this.eat();
+    if (this.at().type !== TokenType.Equals) {
+      error("Expected ':=' after ':'.");
+    }
+
+    this.eat(); // advance to the next token
+    const value = this.parse_assignment_expr();
+    return {
+      kind: "AssignmentExpr",
+      assingee: left,
+      value,
+    } as unknown as BinaryExpr;
   }
-
-  this.eat();
-  if (this.at().type !== TokenType.Equals) {
-    error("Expected ':=' after ':'.");
-  }
-
-  this.eat(); // advance to the next token
-  const value = this.parse_assignment_expr();
-  return {
-    kind: "AssignmentExpr",
-    assingee: left,
-    value,
-  } as unknown as BinaryExpr;
-}
 
   private parse_object_expr(): Expr {
     // { Prop[] }
@@ -683,7 +683,10 @@ private parse_assignment_expr(): Expr {
     switch (tk) {
       // User defined values.
       case TokenType.Identifier:
-        return { kind: "Identifier", symbol: this.eat().value } as Identifier;
+        return { 
+          kind: "Identifier", 
+          symbol: this.eat().value 
+        } as Identifier;
 
       // Constants and Numeric Constants
       case TokenType.Number:
@@ -695,8 +698,8 @@ private parse_assignment_expr(): Expr {
       case TokenType.String:
         return {
           kind: "StringLiteral",
-          value: this.eat().value,
-        } as StringLiteral;
+          value: this.eat().type,
+        } as unknown as StringLiteral;
 
       // Grouping Expressions
       case TokenType.OpenParen: {
