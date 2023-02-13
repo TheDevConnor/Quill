@@ -221,36 +221,52 @@ export default class Parser {
   }
 
   // Handles Function Declarations
- private parse_function_decl(): Stmt {
-   this.eat(); // Eat the 'func' keyword
- 
-   let isAsync = false;
-   if (this.at().type == TokenType.ASYNC) {
-     isAsync = true;
-     this.eat(); // Eat the 'async' keyword
-   }
- 
-   const name = this.expect(TokenType.Identifier, "Expected function name").value;
-   const args = this.parse_args();
-   const params = args.filter(arg => arg.kind === "Identifier").map(arg => arg.kind);
-   
-   this.expect(TokenType.OPENBRACKET, "Expected '{' after function parameters");
-   const body = [];
-   while (this.at().type !== TokenType.EOF && this.at().type !== TokenType.CLOSEBRACKET) {
-     body.push(this.parse_stmt());
-   }
-   
-   this.expect(TokenType.CLOSEBRACKET, "Expected '}' after function body");
-   
-   return {
-     body,
-     name,
-     parameters: params,
-     async: isAsync,
-     kind: "FunctionDeclaration",
-   } as FunctionDeclaration;
- }
- 
+  private parse_function_decl(): Stmt {
+    this.eat(); // Eat the 'func' keyword
+
+    let isAsync = false;
+    if (this.at().type == TokenType.ASYNC) {
+      isAsync = true;
+      this.eat(); // Eat the 'async' keyword
+    }
+
+    const name = this.expect(
+      TokenType.Identifier,
+      "Expected function name"
+    ).value;
+    const args = this.parse_args();
+    const params: string[] = [];
+    for (const arg of args) {
+      if (arg.kind !== "Identifier") {
+        throw new Error("Expected Identifier inside function parameters");
+      }
+      params.push((arg as Identifier).symbol);
+    }
+    this.expect(
+      TokenType.OPENBRACKET,
+      "Expected '{' after function parameters"
+    );
+    const body: Stmt[] = [];
+    while (
+      this.at().type !== TokenType.EOF &&
+      this.at().type !== TokenType.CLOSEBRACKET
+    ) {
+      body.push(this.parse_stmt());
+    }
+
+    this.expect(TokenType.CLOSEBRACKET, "Expected '}' after function body");
+
+    const func = {
+      body,
+      name,
+      parameters: params,
+      async: isAsync,
+      kind: "FunctionDeclaration",
+    } as unknown as FunctionDeclaration;
+
+    return func;
+  }
+
   // Handles Return Statements
   // return EXPR ;
   parse_return_stmt(): Stmt {
@@ -265,58 +281,58 @@ export default class Parser {
   // Handle variable declarations
   // ( var | const ) IDENTIFIER ( = EXPR )? ( ; | \n
   parse_var_decl(): Stmt {
-      let isConstant = false;
-      let identifier = "";
-      let value = undefined;
-  
-      if (this.eat().type == TokenType.Const) {
-        isConstant = true;
+    const isConstant = this.eat().type == TokenType.Const;
+    const identifier = this.expect(
+      TokenType.Identifier,
+      "Expected Identifier name following 'have' or 'const' keywords, or an underscore (_)"
+    ).value;
+
+    if (
+      this.at().type == TokenType.Semicolen ||
+      this.next().type == TokenType.COLON
+    ) {
+      this.eat();
+      if (isConstant) {
+        error(
+          "Cannot declare a constant without a value being assigned" +
+            this.at().value
+        );
       }
-      identifier = this.expect(
-        TokenType.Identifier,
-        "Expected Identifier name following 'have' or 'const' keywords, or an underscore (_)"
-      ).value;
-  
-      if (this.at().type == TokenType.COLON) {
-        this.eat();
-        if (this.at().type === TokenType.Equals) {
-          this.eat();
-          value = this.parse_expr();
-        } else {
-          error("Expected ':=' after ':'.");
-        }
-      } else if (this.at().type === TokenType.Semicolen) {
-        if (isConstant) {
-          error(
-            "Cannot declare a constant without a value being assigned" +
-              this.at().value
-          );
-        }
-        this.eat();
-      }
-  
+
       return {
         kind: "VarDeclaration",
         identifier,
-        const: isConstant,
-        value,
+        const: false,
       } as unknown as VarDeclaration;
     }
+
+    //Checks to see if the assignment operator is present and is :=
+    if (
+      this.at().type === TokenType.COLON &&
+      this.next().type === TokenType.Equals
+    ) {
+      this.eat();
+      this.eat();
+    } else if (this.at().type === TokenType.Equals) {
+      this.eat();
+    } else {
+      error("Expected ':=' after ':'.");
+    }
+
+    const declaration = {
+      identifier,
+      kind: "VarDeclaration",
+      value: this.parse_expr(),
+      const: isConstant,
+    } as unknown as VarDeclaration;
+
+    return declaration;
+  }
 
   // Handle expressions
   private parse_expr(): Expr {
     // Initialize a variable to store the parsed expression
     let expr = this.parse_assignment_expr();
-
-    // Check if the current token is of typ String
-    // If it is, eat the token, parse the next assignment expression, and update the expr variable with a StringLiteral object
-    while (this.at().type == TokenType.String) {
-      const value = this.eat().value;
-      expr = {
-        kind: "StringLiteral",
-        value,
-      } as unknown as StringLiteral;
-    }
 
     // Check if the current token is of type NULL
     // If it is, eat the token and assign a NullExpr to the expr variable
@@ -409,54 +425,84 @@ export default class Parser {
     return expr;
   }
 
-  private parse_branch_body(): Stmt[] {
-    this.expect(TokenType.OPENBRACKET, "Expected '{' after branch keyword");
-    const body: Stmt[] = [];
+  private parse_if_stmt(): Stmt {
+    this.eat(); // Eat the 'if' keyword
+    const condition = this.parse_expr(); // Parse the condition
+    this.expect(TokenType.OPENBRACKET, "Expected '{' after if condition");
+    const thenBranch: Stmt[] = [];
     while (
       this.at().type !== TokenType.EOF &&
       this.at().type !== TokenType.CLOSEBRACKET
     ) {
-      body.push(this.parse_stmt());
+      thenBranch.push(this.parse_stmt());
     }
-    this.expect(
-      TokenType.CLOSEBRACKET,
-      "Expected '}' after branch keyword"
-    );
-    return body;
-  }
-  
-  private parse_if_stmt(): Stmt {
-    this.eat(); // Eat the 'if' keyword
-    const condition = this.parse_expr(); // Parse the condition
-    const thenBranch = this.parse_branch_body();
-  
+    this.expect(TokenType.CLOSEBRACKET, "Expected '}' after if condition");
+
     let elifBranch: ElifStmt[] | undefined; // undefined means no else branch
     let elseBranch: ElseStmt[] | undefined; // undefined means no else branch
-  
+
     while (
       this.at().type === TokenType.ELSE ||
       this.at().type === TokenType.ELIF
     ) {
       if (this.at().type === TokenType.ELSE) {
         this.eat(); // Eat the 'else' keyword
+        this.expect(TokenType.OPENBRACKET, "Expected '{' after 'else' keyword");
+        const elseBody: Stmt[] = [];
+        while (
+          this.at().type !== TokenType.EOF &&
+          this.at().type !== TokenType.CLOSEBRACKET
+        ) {
+          elseBody.push(this.parse_stmt());
+        }
+        this.expect(
+          TokenType.CLOSEBRACKET,
+          "Expected '}' after 'else' keyword"
+        );
         elseBranch = [
           {
             kind: "ElseStmt",
-            body: this.parse_branch_body(),
+            body: elseBody,
           },
         ];
       } else if (this.at().type === TokenType.ELIF) {
         this.eat(); // Eat the 'elif' keyword
         const elifCondition = this.parse_expr();
-        const elifBody = this.parse_branch_body();
-  
+        this.expect(TokenType.OPENBRACKET, "Expected '{' after 'elif' keyword");
+        const elifBody: Stmt[] = [];
+        while (
+          this.at().type !== TokenType.EOF &&
+          this.at().type !== TokenType.CLOSEBRACKET
+        ) {
+          elifBody.push(this.parse_stmt());
+        }
+        this.expect(
+          TokenType.CLOSEBRACKET,
+          "Expected '}' after 'elif' keyword"
+        );
+
         // Check if there is an else branch after the elif branch
         if (this.at().type === TokenType.ELSE) {
           this.eat(); // Eat the 'else' keyword
+          this.expect(
+            TokenType.OPENBRACKET,
+            "Expected '{' after 'else' keyword"
+          );
+          const elseBody: Stmt[] = [];
+          while (
+            this.at().type !== TokenType.EOF &&
+            this.at().type !== TokenType.CLOSEBRACKET
+          ) {
+            elseBody.push(this.parse_stmt());
+          }
+          this.expect(
+            TokenType.CLOSEBRACKET,
+            "Expected '}' after 'else' keyword"
+          );
           elseBranch = [
             {
               kind: "ElseStmt",
-              body: this.parse_branch_body(),
+              body: elseBody,
             },
           ];
         }
@@ -470,7 +516,7 @@ export default class Parser {
         ];
       }
     }
-  
+
     return {
       kind: "IfStmt",
       condition,
@@ -483,22 +529,21 @@ export default class Parser {
   private parse_assignment_expr(): Expr {
     const left = this.parse_object_expr();
 
-    if (this.at().type !== TokenType.COLON) {
-      return left;
+    if (this.at().type == TokenType.COLON) {
+      this.eat();
+      if (this.at().type == TokenType.Equals) {
+        this.eat(); // advance to the next token
+        const value = this.parse_assignment_expr();
+        return {
+          kind: "AssignmentExpr",
+          assingee: left,
+          value,
+        } as unknown as BinaryExpr;
+      } else {
+        error("Expected ':=' after ':'.");
+      }
     }
-
-    this.eat();
-    if (this.at().type !== TokenType.Equals) {
-      error("Expected ':=' after ':'.");
-    }
-
-    this.eat(); // advance to the next token
-    const value = this.parse_assignment_expr();
-    return {
-      kind: "AssignmentExpr",
-      assingee: left,
-      value,
-    } as unknown as BinaryExpr;
+    return left;
   }
 
   private parse_object_expr(): Expr {
@@ -506,37 +551,47 @@ export default class Parser {
     if (this.at().type !== TokenType.OPENBRACKET) {
       return this.parse_additive_expr();
     }
-  
+
     this.eat(); // advance past open brace.
-    const properties: Property[] = [];
-  
-    while (this.not_eof() && this.at().type !== TokenType.CLOSEBRACKET) {
-      const key = this.expect(TokenType.Identifier, "Object literal key expected").value;
-  
-      // Handle shorthand key: pair -> { key, } or { key }
-      if (this.at().type === TokenType.COMMA || this.at().type === TokenType.CLOSEBRACKET) {
+    const properties = new Array<Property>();
+
+    while (this.not_eof() && this.at().type != TokenType.CLOSEBRACKET) {
+      const key =
+        this.expect(TokenType.Identifier, "Object literal key exprected").value;
+
+      // Allows shorthand key: pair -> { key, }
+      if (this.at().type == TokenType.COMMA) {
+        this.eat(); // advance past comma
+        properties.push({ key, kind: "Property" } as Property);
+        continue;
+      } // Allows shorthand key: pair -> { key }
+      else if (this.at().type == TokenType.CLOSEBRACKET) {
         properties.push({ key, kind: "Property" });
-        if (this.at().type === TokenType.COMMA) {
-          this.eat(); // advance past comma
-        }
         continue;
       }
-  
+
       // { key: val }
-      this.expect(TokenType.COLON, "Missing colon following identifier in ObjectExpr");
+      this.expect(
+        TokenType.COLON,
+        "Missing colon following identifier in ObjectExpr",
+      );
       const value = this.parse_expr();
+
       properties.push({ kind: "Property", value, key });
-  
-      // Expect comma or closing bracket following property
-      if (this.at().type !== TokenType.CLOSEBRACKET) {
-        this.expect(TokenType.COMMA, "Expected comma or closing bracket following property");
+      if (this.at().type != TokenType.CLOSEBRACKET) {
+        this.expect(
+          TokenType.COMMA,
+          "Expected comma or closing bracket following property",
+        );
       }
     }
-  
+
     this.expect(TokenType.CLOSEBRACKET, "Object literal missing closing brace.");
-    return { kind: "ObjectLiteral", properties } as ObjectLiteral;
+    return {
+      kind: "ObjectLiteral",
+      properties
+    } as unknown as ObjectLiteral;
   }
-  
 
   // Handle Addition & Subtraction Operations
   private parse_additive_expr(): Expr {
@@ -683,10 +738,7 @@ export default class Parser {
     switch (tk) {
       // User defined values.
       case TokenType.Identifier:
-        return { 
-          kind: "Identifier", 
-          symbol: this.eat().value 
-        } as Identifier;
+        return { kind: "Identifier", symbol: this.eat().value } as Identifier;
 
       // Constants and Numeric Constants
       case TokenType.Number:
@@ -695,11 +747,12 @@ export default class Parser {
           value: parseFloat(this.eat().value),
         } as NumericLiteral;
 
+      // String Literals
       case TokenType.String:
         return {
           kind: "StringLiteral",
-          value: this.eat().type,
-        } as unknown as StringLiteral;
+          value: this.eat().value,
+        } as StringLiteral;
 
       // Grouping Expressions
       case TokenType.OpenParen: {

@@ -69,8 +69,7 @@ export function createGlobalENV() {
     "trace",
     MK_NATIVE_FUNCTION((args, _scope) => {
       const arr = Array.from(args[0]["value"]);
-      const kv_pairs = arr.map((item) => item["value"]);
-      const _trace = trace(format(false, kv_pairs, args));
+      const _trace = trace(format(false, arr, args));
       return MK_NUMBER(Number(_trace));
     }),
     true
