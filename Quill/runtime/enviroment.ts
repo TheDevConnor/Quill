@@ -22,69 +22,36 @@ export function createGlobalENV() {
   env.declareVar("?", MK_NULL(), true);
 
   // Define a native built in function
-  env.declareVar(
-    "info",
-    MK_NATIVE_FUNCTION((args, _scope) => {
-      const arr = Array.from(args[0]["value"]);
-      const kv_pairs = arr.map((item) => item["value"]);
-      const _info = info(format(true, kv_pairs, args));
-      return MK_NUMBER(Number(_info));
-    }),
-    true
-  );
+  // A custom print function that only prints the value
+  function infoFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    info(format(false,"{" + args.map((arg) => arg.value).join(", ") + "}"));
+    return MK_NULL();
+  }
+  env.declareVar("info", MK_NATIVE_FUNCTION(infoFunction), true);
 
-  env.declareVar(
-    "console",
-    MK_NATIVE_FUNCTION((args, _scope) => {
-      console.log(...args);
-      return MK_NULL();
-    }),
-    true
-  );
+  function formatFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    trace(format(false,"{" + args.map((arg) => arg.value).join(", ") + "}"));
+    return MK_NULL();
+  }
+  env.declareVar("format", MK_NATIVE_FUNCTION(formatFunction), true);
 
+  function debugFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    debug(format(false, args));
+    return MK_NULL();
+  }
+  env.declareVar("debug", MK_NATIVE_FUNCTION(debugFunction), true);
 
-  env.declareVar(
-    "error",
-    MK_NATIVE_FUNCTION((args, _scope) => {
-      const arr = Array.from(args[0]["value"]);
-      const kv_pairs = arr.map((item) => item["value"]);
-      const _error = error(format(true, kv_pairs, args));
-      return MK_NUMBER(Number(_error));
-    }),
-    true
-  );
+  function warnFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    warn(format(false,"{" + args.map((arg) => arg.value).join(", ") + "}"));
+    return MK_NULL();
+  }
+  env.declareVar("warn", MK_NATIVE_FUNCTION(warnFunction), true);
 
-  env.declareVar(
-    "warn",
-    MK_NATIVE_FUNCTION((args, _scope) => {
-      const arr = Array.from(args[0]["value"]);
-      const kv_pairs = arr.map((item) => item["value"]);
-      const _warn = warn(format(true, kv_pairs, args));
-      return MK_NUMBER(Number(_warn));
-    }),
-    true
-  );
-
-  env.declareVar(
-    "trace",
-    MK_NATIVE_FUNCTION((args, _scope) => {
-      const arr = Array.from(args[0]["value"]);
-      const _trace = trace(format(false, arr, args));
-      return MK_NUMBER(Number(_trace));
-    }),
-    true
-  );
-
-  env.declareVar(
-    "debug",
-    MK_NATIVE_FUNCTION((args, _scope) => {
-      const arr = Array.from(args[0]["value"]);
-      const kv_pairs = arr.map((item) => item["value"]);
-      const _debug = debug(format(false, kv_pairs, args));
-      return MK_NUMBER(Number(_debug));
-    }),
-    true
-  );
+  function errorFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    error(format(false, args));
+    return MK_NULL();
+  }
+  env.declareVar("error", MK_NATIVE_FUNCTION(errorFunction), true);
 
   env.declareVar(
     "input",
