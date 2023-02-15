@@ -46,6 +46,10 @@ export function MK_NUMBER(n = 0) {
   return { value: n, type: "number" } as NumberVal;
 }
 
+export function MK_ARRAY(a: any[] = []) {
+  return { value: a, type: "array" } as ArrayVal;
+}
+
 export interface ObjectVal extends RuntimeVal {
   type: "object";
   properties: Map<string, RuntimeVal>;

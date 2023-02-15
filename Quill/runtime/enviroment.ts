@@ -1,4 +1,6 @@
+// deno-lint-ignore-file
 import {
+MK_ARRAY,
   MK_BOOL,
   MK_NATIVE_FUNCTION,
   MK_NULL,
@@ -392,12 +394,285 @@ export function createGlobalENV() {
 
     return MK_NUMBER(Math.pow(arg1.value, arg2.value));
   }
+  // A built in function that handles the meadian of a list of numbers
+  function medianFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    if (args.length !== 1) {
+      throw "Median function takes one argument";
+    }
+
+    const [arg] = args;
+
+    if (arg.type !== "array") {
+      throw "Median function takes one array";
+    }
+
+    const numbers = arg.value.filter((v: { type: string; }) => v.type === "number");
+
+    if (numbers.length !== arg.value.length) {
+      throw "Median function takes one array of numbers";
+    }
+
+    const sorted = numbers.sort((a: { value: number; }, b: { value: number; }) => a.value - b.value);
+
+    if (sorted.length % 2 === 0) {
+      const mid = sorted.length / 2;
+      return MK_NUMBER((sorted[mid].value + sorted[mid - 1].value) / 2);
+    } else {
+      return sorted[Math.floor(sorted.length / 2)];
+    }
+  }
+  // A built in function that handles the mean of a list of numbers
+  function meanFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    if (args.length !== 1) {
+      throw "Mean function takes one argument";
+    }
+
+    const [arg] = args;
+
+    if (arg.type !== "array") {
+      throw "Mean function takes one array";
+    }
+
+    const numbers = arg.value.filter((v: { type: string; }) => v.type === "number");
+
+    if (numbers.length !== arg.value.length) {
+      throw "Mean function takes one array of numbers";
+    }
+
+    const sum = numbers.reduce((acc: any, v: { value: any; }) => acc + v.value, 0);
+
+    return MK_NUMBER(sum / numbers.length);
+  }
+  // A built in function that handles the mode of a list of numbers
+  function modeFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    if (args.length !== 1) {
+      throw "Mode function takes one argument";
+    }
+
+    const [arg] = args;
+
+    if (arg.type !== "array") {
+      throw "Mode function takes one array";
+    }
+
+    const numbers = arg.value.filter((v) => v.type === "number");
+
+    if (numbers.length !== arg.value.length) {
+      throw "Mode function takes one array of numbers";
+    }
+
+    const counts: Record<number, number> = {};
+
+    for (const v of numbers) {
+      if (counts[v.value] === undefined) {
+        counts[v.value] = 1;
+      } else {
+        counts[v.value]++;
+      }
+    }
+
+    const max = Object.entries(counts).reduce(
+      (acc, [k, v]) => (v > acc[1] ? [k, v] : acc),
+      ["", 0]
+    );
+
+    return MK_NUMBER(Number(max[0]));
+  }
+  // A buitl in function to push a value to an array
+  function pushFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    if (args.length !== 2) {
+      throw "Push function takes two arguments";
+    }
+
+    const [arg1, arg2] = args;
+
+    if (arg1.type !== "array") {
+      throw "Push function takes an array and a value";
+    }
+
+    return MK_ARRAY([...arg1.value, arg2]);
+  }
+  // A built in function to pop a value from an array
+  function popFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    if (args.length !== 1) {
+      throw "Pop function takes one argument";
+    }
+
+    const [arg] = args;
+
+    if (arg.type !== "array") {
+      throw "Pop function takes an array";
+    }
+
+    if (arg.value.length === 0) {
+      throw "Pop function takes an array with at least one element";
+    }
+
+    return MK_ARRAY(arg.value.slice(0, -1));
+  }
+  // A built in function to get the length of an array
+  function lengthFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    if (args.length !== 1) {
+      throw "Length function takes one argument";
+    }
+
+    const [arg] = args;
+
+    if (arg.type !== "array") {
+      throw "Length function takes an array";
+    }
+
+    return MK_NUMBER(arg.value.length);
+  }
+  // A built in function to get the first element of an array
+  function firstFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    if (args.length !== 1) {
+      throw "First function takes one argument";
+    }
+
+    const [arg] = args;
+
+    if (arg.type !== "array") {
+      throw "First function takes an array";
+    }
+
+    if (arg.value.length === 0) {
+      throw "First function takes an array with at least one element";
+    }
+
+    return arg.value[0];
+  }
+  // A built in function to get the last element of an array
+  function lastFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    if (args.length !== 1) {
+      throw "Last function takes one argument";
+    }
+
+    const [arg] = args;
+
+    if (arg.type !== "array") {
+      throw "Last function takes an array";
+    }
+
+    if (arg.value.length === 0) {
+      throw "Last function takes an array with at least one element";
+    }
+
+    return arg.value[arg.value.length - 1];
+  }
+  // A built in function to get the nth element of an array
+  function nthFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    if (args.length !== 2) {
+      throw "Nth function takes two arguments";
+    }
+
+    const [arg1, arg2] = args;
+
+    if (arg1.type !== "array") {
+      throw "Nth function takes an array and a number";
+    }
+
+    if (arg2.type !== "number") {
+      throw "Nth function takes an array and a number";
+    }
+
+    if (arg1.value.length === 0) {
+      throw "Nth function takes an array with at least one element";
+    }
+
+    if (arg2.value < 0 || arg2.value >= arg1.value.length) {
+      throw "Nth function takes a number in the range of the array";
+    }
+
+    return arg1.value[arg2.value];
+  }
+  // A built in function to get the index of an element in an array
+  function indexOfFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    if (args.length !== 2) {
+      throw "Index of function takes two arguments";
+    }
+
+    const [arg1, arg2] = args;
+
+    if (arg1.type !== "array") {
+      throw "Index of function takes an array and a value";
+    }
+
+    if (arg1.value.length === 0) {
+      throw "Index of function takes an array with at least one element";
+    }
+
+    const index = arg1.value.findIndex((v: { value: any; }) => v.value === arg2.value);
+
+    if (index === -1) {
+      throw "Index of function takes a value that is in the array";
+    }
+
+    return MK_NUMBER(index);
+  }
+  // A built in function that pulls from an array
+  function pullFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    if (args.length !== 2) {
+      throw "Pull function takes two arguments";
+    }
+
+    const [arg1, arg2] = args;
+
+    if (arg1.type !== "array") {
+      throw "Pull function takes an array and a value";
+    }
+
+    if (arg1.value.length === 0) {
+      throw "Pull function takes an array with at least one element";
+    }
+
+    const index = arg1.value.findIndex((v: { value: any; }) => v.value === arg2.value);
+
+    if (index === -1) {
+      throw "Pull function takes a value that is in the array";
+    }
+
+    return MK_ARRAY([...arg1.value.slice(0, index), ...arg1.value.slice(index + 1)]);
+  }
+  // A built in function to get the sum of an array
+  function sumFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    if (args.length !== 1) {
+      throw "Sum function takes one argument";
+    }
+
+    const [arg] = args;
+
+    if (arg.type !== "array") {
+      throw "Sum function takes an array";
+    }
+
+    if (arg.value.length === 0) {
+      throw "Sum function takes an array with at least one element";
+    }
+
+    return MK_NUMBER(arg.value.reduce((acc: number, v: { value: number; }) => acc + v.value, 0));
+  }
+  // A built in function to get the product of an array
 
   env.declareVar("add", MK_NATIVE_FUNCTION(addFunction), true);
   env.declareVar("sub", MK_NATIVE_FUNCTION(subFunction), true);
   env.declareVar("mul", MK_NATIVE_FUNCTION(mulFunction), true);
   env.declareVar("div", MK_NATIVE_FUNCTION(divFunction), true);
   env.declareVar("mod", MK_NATIVE_FUNCTION(modFunction), true);
+
+  env.declareVar("median", MK_NATIVE_FUNCTION(medianFunction), true);
+  env.declareVar("mean", MK_NATIVE_FUNCTION(meanFunction), true);
+  env.declareVar("mode", MK_NATIVE_FUNCTION(modeFunction), true);
+
+  env.declareVar("push", MK_NATIVE_FUNCTION(pushFunction), true);
+  env.declareVar("pop", MK_NATIVE_FUNCTION(popFunction), true);
+  env.declareVar("pull", MK_NATIVE_FUNCTION(pullFunction), true);
+  env.declareVar("length", MK_NATIVE_FUNCTION(lengthFunction), true);
+  env.declareVar("first", MK_NATIVE_FUNCTION(firstFunction), true);
+  env.declareVar("last", MK_NATIVE_FUNCTION(lastFunction), true);
+  env.declareVar("nth", MK_NATIVE_FUNCTION(nthFunction), true);
+  env.declareVar("indexOf", MK_NATIVE_FUNCTION(indexOfFunction), true);
+  env.declareVar("sumArray", MK_NATIVE_FUNCTION(sumFunction), true);
 
   env.declareVar("floor", MK_NATIVE_FUNCTION(floorFunction), true);
   env.declareVar("ceil", MK_NATIVE_FUNCTION(ceilFunction), true);
