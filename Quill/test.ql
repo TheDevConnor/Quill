@@ -44,6 +44,11 @@ func async test_built_in_math_functions (i) {
 	info(28, pull(my_array, 144)) # pull (remove an element from an array)
 	info(29, sumArray(my_array)) # sum (sum all the elements in an array)
 
+	info(30, random(1, 100)) # random (get a random number between two numbers
+
+	info(31, date()) # date (get the current date)
+	info(32, time()) # time (get the current time)
+
 
 	# TODO: date and time
 	# TODO: (maybe) add a way to convert between different units of measurement

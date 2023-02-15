@@ -652,7 +652,14 @@ export function createGlobalENV() {
 
     return MK_NUMBER(arg.value.reduce((acc: number, v: { value: number; }) => acc + v.value, 0));
   }
-  // A built in function to get the product of an array
+  // A built in function to get the date
+  function dateFunction(_args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    return MK_NUMBER(new Date().getDate());
+  }
+  // A built in function to get the time
+  function timeFunction(_args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    return MK_NUMBER(new Date().getTime());
+  }
 
   env.declareVar("add", MK_NATIVE_FUNCTION(addFunction), true);
   env.declareVar("sub", MK_NATIVE_FUNCTION(subFunction), true);
@@ -693,11 +700,8 @@ export function createGlobalENV() {
   env.declareVar("log", MK_NATIVE_FUNCTION(logFunction), true); // Natural log
   env.declareVar("log10", MK_NATIVE_FUNCTION(log10Function), true); // Base 10 log
 
-  // Time
-  function timeFunction(_args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
-    return MK_NUMBER(Date.now());
-  }
-  env.declareVar("GetTime", MK_NATIVE_FUNCTION(timeFunction), true);
+  env.declareVar("date", MK_NATIVE_FUNCTION(dateFunction), true);
+  env.declareVar("time", MK_NATIVE_FUNCTION(timeFunction), true);
 
   // Picks a random number between two given numbers
   function randomFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
