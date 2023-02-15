@@ -1,5 +1,7 @@
 # Built in math functions
 
+have user_input := input()
+
 func async test_built_in_math_functions (i) {
 
 	info(1, sin(i)) # sine
@@ -25,7 +27,7 @@ func async test_built_in_math_functions (i) {
 	info(14, ceil(i)) # ceil is used to round a number up to the nearest integer
 	info(15, min(i, 30)) # minimum
 	info(16, max(i, 30)) # maximum
-	info(17, pow(30, 2)) # power {30^2} so 900
+	info(17, pow(30, i)) # power {30^2} so 900
 }
 
-test_built_in_math_functions(1)
+test_built_in_math_functions(user_input)
