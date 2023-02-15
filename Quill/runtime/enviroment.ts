@@ -440,6 +440,11 @@ export function createGlobalENV() {
   }
   env.declareVar("random", MK_NATIVE_FUNCTION(randomFunction), true);
 
+  // TODO: a built in function that handles graphics
+  // TODO: a built in function that handles sound
+  // TODO: a built in function that handles sockets
+  // TODO: a built in function that handles importing files
+
   return env;
 }
 
