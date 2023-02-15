@@ -28,6 +28,9 @@ func async test_built_in_math_functions (i) {
 	info(15, min(i, 30)) # minimum
 	info(16, max(i, 30)) # maximum
 	info(17, pow(30, i)) # power {30^2} so 900
+
+	# TODO: Add median math and also modal math
+	# TODO: date and time
 }
 
 test_built_in_math_functions(user_input)
