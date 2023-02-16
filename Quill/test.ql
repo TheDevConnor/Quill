@@ -42,9 +42,9 @@
 # Define our variables
 have A := 64
 have a := 16
-have b := 17
+have b := 10
 
-func calculateTheLawOfSines () {
+func async calculateTheLawOfSines () {
 	# Calculate the angle B
 	const CalculateAngle := {
 		B: radToDeg(asin(b * sin(degToRad(A)) / a)),
@@ -52,7 +52,7 @@ func calculateTheLawOfSines () {
 
 	# Calculate the angle C
 	const CalculateAngleC := {
-		C: 180 - CalculateAngle[B] - A,
+		C: 180 - (CalculateAngle[B] + A),
 	}
 
 	# Calculate the side c
@@ -79,16 +79,15 @@ func calculateTheLawOfSines () {
 		const CalculateObtuseSideC := {
 			ObtuseSideC: CalculateObtuseAngle[ObtuseSideA] * sin(degToRad(CalculateObtuseAngleC[ObtuseAngleC])) / sin(degToRad(CalculateObtuseAngle[ObtuseAngleA])),
 		}
-		# Print out teh results of the calculations
+		# Print out the results of the calculations
 		trace(A, CalculateAngle[B], CalculateAngleC[C])
 		trace(a, b, CalculateSideC[c])
 		warn(CalculateObtuseAngle[ObtuseAngleA], CalculateObtuseAngle[ObtuseAngleB], CalculateObtuseAngleC[ObtuseAngleC])
 		warn(CalculateObtuseAngle[ObtuseSideA], CalculateObtuseAngle[ObtuseSideB], CalculateObtuseSideC[ObtuseSideC])
 	} else {
-		info(1, A, CalculateAngle[B], CalculateAngleC[C])
-		info(2, a, b, CalculateSideC[c])
+		trace(A, CalculateAngle[B], CalculateAngleC[C])
+		trace(a, b, CalculateSideC[c])
 	}
 }
 
 calculateTheLawOfSines()
-
