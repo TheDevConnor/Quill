@@ -25,11 +25,14 @@ export function createGlobalENV() {
 
   // Define a native built in function
   // A custom print function that only prints the value
-  function infoFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
-    info(format(true, "{ " + args.map((arg) => arg.value).join(", ") + " }"));
-    return MK_NULL();
-  }
-  env.declareVar("info", MK_NATIVE_FUNCTION(infoFunction), true);
+  env.declareVar(
+    "info",
+    MK_NATIVE_FUNCTION((args, _scope) => {
+      const _info = console.log(format(true, args.map((item) => item["value"])));
+      return MK_NULL() || MK_NUMBER(Number(_info));
+    }),
+    true
+  );
 
   function formatFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
     trace(format(false, "{" + args.map((arg) => arg.value).join(", ") + "}"));
@@ -198,6 +201,20 @@ export function createGlobalENV() {
 
     return MK_NUMBER(Math.sin(arg.value));
   }
+  // A built in function that handles the inverse sin
+  function asinFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    if (args.length !== 1) {
+      throw "Asin function takes one argument";
+    }
+
+    const [arg] = args;
+
+    if (arg.type !== "number") {
+      throw "Asin function takes one number";
+    }
+
+    return MK_NUMBER(Math.asin(arg.value));
+  }
   // A built in function that handles cos
   function cosFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
     if (args.length !== 1) {
@@ -212,6 +229,20 @@ export function createGlobalENV() {
 
     return MK_NUMBER(Math.cos(arg.value));
   }
+  // A built in function that handles the inverse cos
+  function acosFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    if (args.length !== 1) {
+      throw "Acos function takes one argument";
+    }
+
+    const [arg] = args;
+
+    if (arg.type !== "number") {
+      throw "Acos function takes one number";
+    }
+
+    return MK_NUMBER(Math.acos(arg.value));
+  }
   // A built in function that handles tan
   function tanFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
     if (args.length !== 1) {
@@ -225,6 +256,20 @@ export function createGlobalENV() {
     }
 
     return MK_NUMBER(Math.tan(arg.value));
+  }
+  // A built in function that handles the inverse tan
+  function atanFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    if (args.length !== 1) {
+      throw "Atan function takes one argument";
+    }
+
+    const [arg] = args;
+
+    if (arg.type !== "number") {
+      throw "Atan function takes one number";
+    }
+
+    return MK_NUMBER(Math.atan(arg.value));
   }
   // A built in function that handles cot
   function cotFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
@@ -323,6 +368,20 @@ export function createGlobalENV() {
     }
 
     return MK_NUMBER(Math.log10(arg.value));
+  }
+  // A built in log that handles a log of a custom base
+  function logBaseFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    if (args.length !== 2) {
+      throw "Log function takes two arguments";
+    }
+
+    const [arg1, arg2] = args;
+
+    if (arg1.type !== "number" || arg2.type !== "number") {
+      throw "Log function takes two numbers";
+    }
+
+    return MK_NUMBER(Math.log(arg1.value) / Math.log(arg2.value));
   }
   // A built in function that handles floor of a number
   function floorFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
@@ -678,7 +737,56 @@ export function createGlobalENV() {
   function breakFunction(_args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
     throw "break";
   }
+  // a built in function for null values
+  function nullFunction(_args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    return MK_NULL();
+  }
+  // A built in function to convert radians to degrees
+  function radToDegFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    if (args.length !== 1) {
+      throw "Rad to deg function takes one argument";
+    }
 
+    const [arg] = args;
+
+    if (arg.type !== "number") {
+      throw "Rad to deg function takes a number";
+    }
+
+    return MK_NUMBER(arg.value * (180 / Math.PI));
+  }
+  // A built in function to convert degrees to radians
+  function degToRadFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    if (args.length !== 1) {
+      throw "Deg to rad function takes one argument";
+    }
+
+    const [arg] = args;
+
+    if (arg.type !== "number") {
+      throw "Deg to rad function takes a number";
+    }
+
+    return MK_NUMBER(arg.value * (Math.PI / 180));
+  }
+  // A built in function to define a number as a degree
+  function degFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    if (args.length !== 1) {
+      throw "Deg function takes one argument";
+    }
+
+    const [arg] = args;
+
+    if (arg.type !== "number") {
+      throw "Deg function takes a number";
+    }
+
+    return MK_NUMBER(arg.value * (Math.PI / 180));
+  }
+  // Pi
+  function piFunction(_args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    return MK_NUMBER(Math.PI);
+  }
 
   env.declareVar("add", MK_NATIVE_FUNCTION(addFunction), true);
   env.declareVar("sub", MK_NATIVE_FUNCTION(subFunction), true);
@@ -710,13 +818,18 @@ export function createGlobalENV() {
   env.declareVar("cos", MK_NATIVE_FUNCTION(cosFunction), true);
   env.declareVar("tan", MK_NATIVE_FUNCTION(tanFunction), true);
 
+  env.declareVar("asin", MK_NATIVE_FUNCTION(asinFunction), true);
+  env.declareVar("acos", MK_NATIVE_FUNCTION(acosFunction), true);
+  env.declareVar("atan", MK_NATIVE_FUNCTION(atanFunction), true);
+
   env.declareVar("cot", MK_NATIVE_FUNCTION(cotFunction), true);
   env.declareVar("sec", MK_NATIVE_FUNCTION(secFunction), true);
   env.declareVar("csc", MK_NATIVE_FUNCTION(cscFunction), true);
 
   env.declareVar("sqrt", MK_NATIVE_FUNCTION(sqrtFunction), true);
   env.declareVar("abs", MK_NATIVE_FUNCTION(absFunction), true); // Absolute value
-  env.declareVar("log", MK_NATIVE_FUNCTION(logFunction), true); // Natural log
+  env.declareVar("ln", MK_NATIVE_FUNCTION(logFunction), true); // Natural log
+  env.declareVar("log", MK_NATIVE_FUNCTION(logBaseFunction), true); // Custom base log
   env.declareVar("log10", MK_NATIVE_FUNCTION(log10Function), true); // Base 10 log
 
   env.declareVar("date", MK_NATIVE_FUNCTION(dateFunction), true);
@@ -724,6 +837,12 @@ export function createGlobalENV() {
 
   env.declareVar("append", MK_NATIVE_FUNCTION(appendFunction), true);
   env.declareVar("break", MK_NATIVE_FUNCTION(breakFunction), true);
+  env.declareVar("null", MK_NATIVE_FUNCTION(nullFunction), true);
+
+  env.declareVar("radToDeg", MK_NATIVE_FUNCTION(radToDegFunction), true);
+  env.declareVar("degToRad", MK_NATIVE_FUNCTION(degToRadFunction), true);
+  env.declareVar("deg", MK_NATIVE_FUNCTION(degFunction), true);
+  env.declareVar("pi", MK_NATIVE_FUNCTION(piFunction), true);
 
   // Picks a random number between two given numbers
   function randomFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
