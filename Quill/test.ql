@@ -80,10 +80,10 @@ func calculateTheLawOfSines () {
 			ObtuseSideC: CalculateObtuseAngle[ObtuseSideA] * sin(degToRad(CalculateObtuseAngleC[ObtuseAngleC])) / sin(degToRad(CalculateObtuseAngle[ObtuseAngleA])),
 		}
 		# Print out teh results of the calculations
-		trace(1, A, CalculateAngle[B], CalculateAngleC[C])
-		trace(2, a, b, CalculateSideC[c])
-		warn(10, CalculateObtuseAngle[ObtuseAngleA], CalculateObtuseAngle[ObtuseAngleB], CalculateObtuseAngleC[ObtuseAngleC])
-		warn(20, CalculateObtuseAngle[ObtuseSideA], CalculateObtuseAngle[ObtuseSideB], CalculateObtuseSideC[ObtuseSideC])
+		trace(A, CalculateAngle[B], CalculateAngleC[C])
+		trace(a, b, CalculateSideC[c])
+		warn(CalculateObtuseAngle[ObtuseAngleA], CalculateObtuseAngle[ObtuseAngleB], CalculateObtuseAngleC[ObtuseAngleC])
+		warn(CalculateObtuseAngle[ObtuseSideA], CalculateObtuseAngle[ObtuseSideB], CalculateObtuseSideC[ObtuseSideC])
 	} else {
 		info(1, A, CalculateAngle[B], CalculateAngleC[C])
 		info(2, a, b, CalculateSideC[c])
