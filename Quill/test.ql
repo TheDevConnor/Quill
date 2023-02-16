@@ -40,15 +40,14 @@
 # side(c) := 3
 
 # Define our variables
-func async LawOfSinesForTwoTriangles (){
-	have A := 64
-	have a := 16
-	have b := 17
+have A := 64
+have a := 16
+have b := 17
 
+func calculateTheLawOfSines () {
 	# Calculate the angle B
 	const CalculateAngle := {
 		B: radToDeg(asin(b * sin(degToRad(A)) / a)),
-		c: a * sin(degToRad(CalculateAngleC[C])) / sin(degToRad(A)),
 	}
 
 	# Calculate the angle C
@@ -61,27 +60,9 @@ func async LawOfSinesForTwoTriangles (){
 		c: a * sin(degToRad(CalculateAngleC[C])) / sin(degToRad(A)),
 	}
 
-	info()
-	info(A)
-	info(a)
-	info()
-	info(CalculateAngle[B])
-	info(b)
-	info()
-	info(CalculateAngleC[C])
-	info(CalculateSideC[c])
-	info()
-
 	# now we determine if there is two triangles
 	# if the calculated angle B is greater then the given, then there is two triangles
 	# else there is only one triangle
-	if CalculateAngle[B] > A {
-		info(2)
-	} else {
-		info(1)
-	}
-
-	# now lets find the obtuse triangle
 	if CalculateAngle[B] > A {
 		const CalculateObtuseAngle := {
 			ObtuseAngleA: A,
@@ -98,20 +79,16 @@ func async LawOfSinesForTwoTriangles (){
 		const CalculateObtuseSideC := {
 			ObtuseSideC: CalculateObtuseAngle[ObtuseSideA] * sin(degToRad(CalculateObtuseAngleC[ObtuseAngleC])) / sin(degToRad(CalculateObtuseAngle[ObtuseAngleA])),
 		}
-
-		# Now lets print the obtuse triangle
-		info()
-		info(CalculateObtuseAngle[ObtuseAngleA])
-		info(CalculateObtuseAngle[ObtuseSideA])
-		info()
-		info(CalculateObtuseAngle[ObtuseAngleB])
-		info(CalculateObtuseAngle[ObtuseSideB])
-		info()
-		info(CalculateObtuseAngleC[ObtuseAngleC])
-		info(CalculateObtuseSideC[ObtuseSideC])
-		info()
+		# Print out teh results of the calculations
+		trace(1, A, CalculateAngle[B], CalculateAngleC[C])
+		trace(2, a, b, CalculateSideC[c])
+		warn(10, CalculateObtuseAngle[ObtuseAngleA], CalculateObtuseAngle[ObtuseAngleB], CalculateObtuseAngleC[ObtuseAngleC])
+		warn(20, CalculateObtuseAngle[ObtuseSideA], CalculateObtuseAngle[ObtuseSideB], CalculateObtuseSideC[ObtuseSideC])
+	} else {
+		info(1, A, CalculateAngle[B], CalculateAngleC[C])
+		info(2, a, b, CalculateSideC[c])
 	}
 }
 
-# Run the function
-LawOfSinesForTwoTriangles()
+calculateTheLawOfSines()
+

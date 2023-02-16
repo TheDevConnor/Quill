@@ -38,7 +38,7 @@ export function createGlobalENV() {
     trace(format(false, "{" + args.map((arg) => arg.value).join(", ") + "}"));
     return MK_NULL();
   }
-  env.declareVar("format", MK_NATIVE_FUNCTION(formatFunction), true);
+  env.declareVar("trace", MK_NATIVE_FUNCTION(formatFunction), true);
 
   function debugFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
     debug(format(false, args));
