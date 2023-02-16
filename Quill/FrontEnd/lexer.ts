@@ -225,9 +225,11 @@ export function tokenize(sourceCode: string): Token[] {
     } else if (src[0] == "&" && src[1] == "&") {
       tokens.push(token(src.shift(), TokenType.AND, Line));
       src.shift();
-    } else if (src[0] == "|" && src[1] == "|") {
-      tokens.push(token(src.shift(), TokenType.OR, Line));
-      src.shift();
+    } else if (src[0] == "|") {
+      if (src[1] == "|") {
+        tokens.push(token(src.shift(), TokenType.OR, Line));
+        src.shift();
+      }
     } else if (src[0] == "+" && src[1] == "=") {
       tokens.push(token(src.shift(), TokenType.PLUSEQUAL, Line));
       src.shift();

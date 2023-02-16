@@ -26,7 +26,7 @@ export function createGlobalENV() {
   // Define a native built in function
   // A custom print function that only prints the value
   function infoFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
-    info(format(false, "{" + args.map((arg) => arg.value).join(", ") + "}"));
+    info(format(true, "{ " + args.map((arg) => arg.value).join(", ") + " }"));
     return MK_NULL();
   }
   env.declareVar("info", MK_NATIVE_FUNCTION(infoFunction), true);
@@ -660,6 +660,25 @@ export function createGlobalENV() {
   function timeFunction(_args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
     return MK_NUMBER(new Date().getTime());
   }
+  // A built in function that will handle appending to an array
+  function appendFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    if (args.length !== 2) {
+      throw "Append function takes two arguments";
+    }
+
+    const [arg1, arg2] = args;
+
+    if (arg1.type !== "array") {
+      throw "Append function takes an array and a value";
+    }
+
+    return MK_ARRAY([...arg1.value, arg2]);
+  }
+  // A built in break function that will break out of a loop
+  function breakFunction(_args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    throw "break";
+  }
+
 
   env.declareVar("add", MK_NATIVE_FUNCTION(addFunction), true);
   env.declareVar("sub", MK_NATIVE_FUNCTION(subFunction), true);
@@ -702,6 +721,9 @@ export function createGlobalENV() {
 
   env.declareVar("date", MK_NATIVE_FUNCTION(dateFunction), true);
   env.declareVar("time", MK_NATIVE_FUNCTION(timeFunction), true);
+
+  env.declareVar("append", MK_NATIVE_FUNCTION(appendFunction), true);
+  env.declareVar("break", MK_NATIVE_FUNCTION(breakFunction), true);
 
   // Picks a random number between two given numbers
   function randomFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {

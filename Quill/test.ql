@@ -1,58 +1,52 @@
-# Built in math functions
+# Island Generation Algorithm (IGA) - Quill
+# Get the size of the island from user input
+have islandSize := input()
 
-have user_input := input()
-array my_array [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144] # fibonacci sequence
+# Initialize an empty array for the island
+array island []
 
-func async test_built_in_math_functions (i) {
+# Initialize variables
+have section := 2
+have height := 0
+have width := 0
 
-	info(1, sin(i)) # sine
-	info(2, cos(i)) # cosine
-	info(3, tan(i)) # tangent
+# Loop over the height of the island
+for height := 0; height < islandSize; {
 
-	info(21, sec(i)) # secant
-	info(31, csc(i)) # cosecant
-	info(11, cot(i)) # cotangent
+	# Loop over the width of the island
+	for width := 0; width < islandSize; {
 
-	info(4, sqrt(i)) # square root
-	info(5, abs(i)) # absolute value
-	info(6, log(i)) # natural logarithm
-	info(7, log10(i)) # base 10 logarithm
+		# Set the default section value to 2
+		section := 2
 
-	info(8, add(i, 30)) # addition
-	info(9, sub(i, 30)) # subtraction
-	info(10, mul(i, 30)) # multiplication
-	info(11, div(i, 30)) # division
-	info(12, mod(i, 30)) # modulus
+		# Check if the current row is the top or bottom of the island
+		if (height = 0) || (height = islandSize - 1) {
 
-	info(13, floor(i)) # floor is used to round a number down to the nearest integer
-	info(14, ceil(i)) # ceil is used to round a number up to the nearest integer
-	info(15, min(i, 30)) # minimum
-	info(16, max(i, 30)) # maximum
-	info(17, pow(30, i)) # power {30^2} so 900
+			# If the current section is not on the edge, set it to 1
+			if (width != 0) || (width != islandSize - 1) {
+				section := 1
+			}
+		}
 
-	info(18, mean(my_array)) # mean (average)
-	info(19, median(my_array)) # median (middle number)
-	info(20, mode(my_array)) # mode (most common number)
+		# Check if the current section is on the left or right edge of the island
+		if (width = 0) || (width = islandSize - 1) {
 
-	info(21, push(my_array, 233)) # push (add to the end of an array)
-	info(22, pop(my_array)) # pop (remove from the end of an array)
-	info(23, length(my_array)) # length (get the length of an array)
-	info(24, first(my_array)) # first (get the first element of an array)c
-	info(25, last(my_array)) # last (get the last element of an array)
-	info(26, nth(my_array, 3)) # nth (get the nth element of an array)
-	info(27, indexOf(my_array, 144)) # index (get the index of an element in an array)
-	info(28, pull(my_array, 144)) # pull (remove an element from an array)
-	info(29, sumArray(my_array)) # sum (sum all the elements in an array)
+			# If the current section is on a corner of the island, set it to 0
+			if (height = 0) || (height = islandSize - 1) {
+				section := 0
+			} else {
+				section := 1
+			}
+		}
 
-	info(30, random(1, 100)) # random (get a random number between two numbers
+		# Increment the width counter
+		width := width + 1
+	}
 
-	info(31, date()) # date (get the current date)
-	info(32, time()) # time (get the current time)
+	# Add the current row of the island to the island array
+	info(append(island, section))
 
-
-	# TODO: date and time
-	# TODO: (maybe) add a way to convert between different units of measurement
-	# TODO: Finish strings
+	# Increment the height counter
+	height := height + 1
 }
 
-test_built_in_math_functions(user_input)
