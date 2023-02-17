@@ -172,24 +172,29 @@ func async calculateTheLawOFCosineForSAS (a, b, C){
 # just instead of using any angles we are trying to find the angles to complete the triangle
 
 func async calculateTheLawOFCosineForSSS (a, b, c){
-	# Calculate the angle A
-	const CalculateAngleA := {
-		A: radToDeg(acos((pow(b, 2) + pow(c, 2) - pow(a, 2)) / (2 * b * c))),
-	}
+	# an if statement to check if we have a triangle
+	if (a + b > c) && (a + c > b) && (b + c > a) {
+		# Calculate the angle A
+		const CalculateAngleA := {
+			A: radToDeg(acos((pow(b, 2) + pow(c, 2) - pow(a, 2)) / (2 * b * c))),
+		}
 
-	# Calculate the angle B
-	const CalculateAngleB := {
-		B: radToDeg(acos((pow(a, 2) + pow(c, 2) - pow(b, 2)) / (2 * a * c))),
-	}
+		# Calculate the angle B
+		const CalculateAngleB := {
+			B: radToDeg(acos((pow(a, 2) + pow(c, 2) - pow(b, 2)) / (2 * a * c))),
+		}
 
-	# Calculate the angle C
-	const CalculateAngleC := {
-		C: 180 - (CalculateAngleA[A] + CalculateAngleB[B]),
-	}
+		# Calculate the angle C
+		const CalculateAngleC := {
+			C: 180 - (CalculateAngleA[A] + CalculateAngleB[B]),
+		}
 
-	# Print out the results of the calculations
-	trace(CalculateAngleA[A], CalculateAngleB[B], CalculateAngleC[C])
-	trace(a, b, c)
+		# Print out the results of the calculations
+		trace(CalculateAngleA[A], CalculateAngleB[B], CalculateAngleC[C])
+		trace(a, b, c)
+		} else {
+		trace(1)
+	}
 }
 
 # calculateTheLawOFCosineForSSS(9, 7, 6)
@@ -211,11 +216,6 @@ func async calculateTheLawOFCosineForSSS (a, b, c){
 # area = 222.33152529
 
 func async calculateTheAreaOfATriangleSAS (a, b, C){
-	# Calculate the side c
-	const CalculateSideC := {
-		c: sqrt(pow(a, 2) + pow(b, 2) - 2 * a * b * cos(degToRad(C))),
-	}
-
 	# Calculate the area
 	const CalculateArea := {
 		area: (a * b * sin(degToRad(C))) / 2,
@@ -223,7 +223,7 @@ func async calculateTheAreaOfATriangleSAS (a, b, C){
 
 	# Print out the results of the calculations
 	trace(CalculateArea[area])
-	trace(a, b, CalculateSideC[c])
+	trace(a, b, C)
 }
 
 # calculateTheAreaOfATriangleSAS(19, 32, 47)
