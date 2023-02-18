@@ -1,0 +1,4 @@
+[submodule "Quill/qel"]
+	path = Quill/qel
+	url = https://github.com/BearFromMars/qel.git
+	
