@@ -20,19 +20,19 @@ You can then use Deno (NodeJS is untested) to run main.ts ($ deno run main.ts)
 
 # Here is a simple example of a Quill program:
 
-![image](./code1.png)
+![image](./Images/code1.png)
 
 Example 2:
 
-![image](./code2.png)
+![image](./Images/code2.png)
 
 Example 3:
 
-![image](./code3.png)
+![image](./Images/code3.png)
 
 Example 4:
 
-![image](./code4.png)
+![image](./Images/code4.png)
 
 ## Acknowledgements
  - [Typescript](https://github.com/microsoft/TypeScript)
