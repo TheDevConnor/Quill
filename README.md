@@ -9,6 +9,15 @@ Here is our [Discord Server](https://discord.gg/JvExQpGuXM)!
 
 Quill runs on Deno, a better JS runtime. Plan on making our on QVM (Quill Virtual Machine) in the future.
 
+# Using Quill
+
+Pull the repository 
+```
+$ git clone https://github.com/TheDevConnor/Quill --recurse-submodules
+$ cd Quill/Quill
+```
+You can then use Deno (NodeJS is untested) to run main.ts ($ deno run main.ts)
+
 # Here is a simple example of a Quill program:
 
 ![image](./code1.png)
