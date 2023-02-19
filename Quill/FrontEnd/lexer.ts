@@ -126,8 +126,6 @@ function isint(str: string) {
  */
 export function tokenize(sourceCode: string): Token[] {
   let Line = 1;
-  let inString = false;
-  let currentString = "";
   const tokens = new Array<Token>();
   const src = sourceCode.split("");
   while (src.length > 0) {
@@ -148,22 +146,6 @@ export function tokenize(sourceCode: string): Token[] {
       while (src.length > 0 && src[0] !== "\n") {
         src.shift();
       }
-      continue;
-    }
-
-    if (src[0] === "\"") {
-      if (inString) {
-        inString = false;
-        tokens.push(token(src.shift(), TokenType.String, Line));
-        currentString = "";
-      } else {
-        inString = true;
-        tokens.push(token(src.shift(), TokenType.String, Line));
-      }
-      src.shift();
-      continue;
-    } else if (inString) {
-      currentString += src.shift();
       continue;
     }
 
@@ -269,9 +251,18 @@ export function tokenize(sourceCode: string): Token[] {
       // TODO:: HANDLE STRING LITERALS
       else if (src[0] == '"') {
         let str = "";
-        while (src.length > 0 && src[0] != '"') {
-          str += src.shift();
+        src.shift();
+
+        for (let i = 0; i <= src.length; i++) {
+          if (src[i] == '"') {
+            str = src.splice(0, i + 1).join("");
+            if (str.length > 1) {
+              str = str.substring(0, str.length - 1);
+              break; // This fucker took me 2 hours to find.
+            }
+          }
         }
+
         tokens.push(token(str, TokenType.String, Line));
       }
 

@@ -752,7 +752,7 @@ export default class Parser {
         return {
           kind: "StringLiteral",
           value: this.eat().value,
-        } as StringLiteral;
+        } as unknown as StringLiteral;
 
       // Grouping Expressions
       case TokenType.OpenParen: {

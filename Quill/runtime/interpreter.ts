@@ -86,7 +86,7 @@ export function evaluate(astNode: Stmt, env: Enviroment): RuntimeVal {
       return {
         value: (astNode as StringLiteral).value,
         type: "string",
-      } as StringVal;
+      } as unknown as StringVal;
 
     case "Identifier":
       return enal_identifier(astNode as Identifier, env);

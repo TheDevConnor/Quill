@@ -514,7 +514,7 @@ export function createGlobalENV() {
       throw "Mode function takes one array";
     }
 
-    const numbers = arg.value.filter((v) => v.type === "number");
+    const numbers = arg.value.filter((v: { type: string; }) => v.type === "number");
 
     if (numbers.length !== arg.value.length) {
       throw "Mode function takes one array of numbers";

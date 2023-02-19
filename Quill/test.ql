@@ -85,7 +85,7 @@ func async calculateTheLawOfSines (A, a, b) {
 	}
 }
 
-# calculateTheLawOfSines(20, 11, 5)
+# calculateTheLawOfSines(64, 16, 17)
 
 # Law of Cosines for SAS
 # Off the bat we know that we will only have one triangle. 
@@ -259,3 +259,21 @@ func async calculateTheAreaOfATriangleSSS (a, b, c){
 }
 
 # calculateTheAreaOfATriangleSSS(13, 10, 8)
+
+
+func async fizz_buzz (min, max) {
+	for have i := min; i < max; {
+		if (i % 3 = 0) && (i % 5 = 0) {
+			trace("FizzBuzz")
+		} if i % 3 = 0 {
+			trace("Fizz")
+		} elif i % 5 = 0 {
+			trace("Buzz")
+		} else {
+			trace(i)
+		}
+
+		i := i + 1
+	}
+}
+fizz_buzz(1, 100)
