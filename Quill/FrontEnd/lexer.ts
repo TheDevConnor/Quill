@@ -4,65 +4,69 @@
 //------------------------------------------------------------
 
 export enum TokenType {
-  // Literal Types
-  Number,
-  Identifier,
-  String,
+// Literal Types
+Number,
+Identifier,
+String,
 
-  // Keywords
-  Var, // Variable
-  Const, // Constant
-  FUNC, // Function
-  ASYNC, // Async Function
-  ARRAY, // Array
-  IF, // If
-  ELSE, // Else
-  ELIF, //Else if
-  WHILE, // While
-  FOR, // For
-  CHAR, // Char
-  PULL, // Pull
+// Keywords
+Var,
+Const,
+FUNC,
+ASYNC,
+ARRAY,
+IF,
+ELSE,
+ELIF,
+WHILE,
+FOR,
+CHAR,
+PULL,
 
-  // Operators
-  ARROWUP, // ^
-  DASH, // -
 
-  GT, // >
-  GTE, // >=
-  EQUALTO, // ==
-  LT, // <
-  LTE, // <=
-  NOT, // !
-  AND, // &&
-  OR, // ||
-  NULL, // ?
-  PLUSEQUAL, // +=
-  MINUSEQUAL, // -=
+// Operators
+ARROWUP,
+DASH,
 
-  OpenParen, // (
-  CloseParen, // )
+GT,
+GTE,
+EQUALTO,
+LT,
+LTE,
+NOT,
+AND,
+OR,
+NULL,
+PLUSEQUAL,
+MINUSEQUAL,
 
-  OPENBRACE, // [
-  CLOSEBRACE, // ]
+OpenParen,
+CloseParen,
 
-  OPENBRACKET, // {
-  CLOSEBRACKET, // }
+OPENBRACE,
+CLOSEBRACE,
 
-  HASH, // #
+OPENBRACKET,
+CLOSEBRACKET,
 
-  // Grouping * Operators
-  BinaryOperator, // + - * / %
-  Equals, // =
-  Semicolen, // ;
-  COLON, // :
-  COMMA, // ,
-  DOT, // .
-  UNDERSCORE, // _
-  THEN, // Then
-  RETURN, // return
+HASH,
 
-  // Special
-  EOF, // Signified the end of file
+
+// Grouping * Operators
+BinaryOperator,
+Equals,
+Semicolen,
+COLON,
+COMMA,
+DOT,
+UNDERSCORE,
+THEN,
+RETURN,
+
+
+// Special
+EOF,
+Float
 }
 
 /**
