@@ -85,7 +85,7 @@ func async calculateTheLawOfSines (A, a, b) {
 	}
 }
 
-calculateTheLawOfSines(64, 16, 17)
+# calculateTheLawOfSines(64, 16, 17)
 
 # Law of Cosines for SAS
 # Off the bat we know that we will only have one triangle. 
@@ -259,3 +259,35 @@ func async calculateTheAreaOfATriangleSSS (a, b, c){
 }
 
 # calculateTheAreaOfATriangleSSS(13, 10, 8)
+
+
+# Fizz buzz example in a while loop
+
+func async fizzBuzz (){
+	while true {
+		# print out the numbers 1 to 100
+		for have i := 1; i <= 51; {
+			# if the number is divisible by 3 and 5 then print out fizz buzz
+			if (i % 3 = 0) && (i % 5 = 0) {
+				info("fizz buzz")
+			# if the number is divisible by 3 then print out fizz
+			} if i % 3 = 0 {
+				info("fizz")
+			# if the number is divisible by 5 then print out buzz
+			} elif i % 5 = 0 {
+				info("buzz")
+			# if the number is not divisible by 3 or 5 then print out the number
+			} else {
+				info(i)
+			}
+		
+			# increment the counter
+			i := i + 1
+		}
+
+		# break out of the loop
+		break()
+	}
+}
+
+fizzBuzz()
