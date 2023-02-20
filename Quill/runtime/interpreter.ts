@@ -31,6 +31,7 @@ import {
   ForStmt,
   ElseStmt,
   StringLiteral,
+  ImportStmt,
 } from "../FrontEnd/ast.ts";
 
 import {
@@ -63,6 +64,7 @@ import {
   eval_for_stmt,
   eval_else_stmt,
   eval_array_literal,
+eval_import_stmt,
 } from "./eval/statements.ts";
 
 import Enviroment from "./enviroment.ts";
@@ -176,6 +178,9 @@ export function evaluate(astNode: Stmt, env: Enviroment): RuntimeVal {
 
     case "ObjectLiteral":
       return eval_object_expr(astNode as ObjectLiteral, env);
+
+    case "ImportStmt":
+      return eval_import_stmt(astNode as ImportStmt, env);
 
     // Handle unimplemented ast nodes
     default:

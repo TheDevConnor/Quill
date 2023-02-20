@@ -31,6 +31,7 @@ import {
   ForStmt,
   ElseStmt,
   StringLiteral,
+  ImportStmt,
 } from "./ast.ts";
 
 import { Token, tokenize, TokenType } from "./lexer.ts";
@@ -128,6 +129,8 @@ export default class Parser {
         return this.parse_while_stmt();
       case TokenType.FOR:
         return this.parse_for_stmt();
+      case TokenType.Import:
+        return this.parse_import_stmt();
       default:
         return this.parse_expr();
     }
@@ -218,6 +221,60 @@ export default class Parser {
     };
 
     return array;
+  }
+
+  // Handles the import statement
+  // import { foo, bar } from "foo.ql";
+  private parse_import_stmt(): ImportStmt {
+    this.eat(); // Eat the 'import' keyword
+
+    const name = this.expect(TokenType.Identifier, "Expected import name").value;
+
+    this.expect(TokenType.FROM, "Expected 'from' after import name");
+
+    const fileName = this.expect(TokenType.String, "Expected string literal after 'from'");
+
+    return {
+      kind: "ImportStmt",
+      name,
+      fileName: fileName.value,
+    } as ImportStmt;
+
+    // this.expect(TokenType.OPENBRACE, "Expected '{' after import name");
+    // const name = this.expect(TokenType.Identifier, "Expected import name").value;
+
+    // const elements: Expr[] | Stmt[] = [];
+    // while (
+    //   this.at().type !== TokenType.EOF &&
+    //   this.at().type !== TokenType.CLOSEBRACE
+    // ) {
+    //   elements.push(this.parse_expr());
+    //   // elements.push(this.parse_stmt());
+
+    //   if (this.at().type === TokenType.COMMA) {
+    //     this.eat();
+    //   }
+    // }
+
+    // this.expect(TokenType.CLOSEBRACE, "Expected '}' after import elements");
+
+    // this.expect(TokenType.FROM, "Expected 'from' after import elements");
+
+    // const source = this.expect(
+    //   TokenType.String,
+    //   "Expected string literal after 'from'"
+    // ).value;
+
+    // this.expect(TokenType.Semicolen, "Expected ';' after import source");
+
+    // const importStmt: ImportStmt = {
+    //   kind: "ImportStmt",
+    //   name: name,
+    //   source: source,
+    //   elements: elements,
+    // };
+
+    // return importStmt;
   }
 
   // Handles Function Declarations

@@ -1,10 +1,10 @@
 // deno-lint-ignore-file
 import {
-MK_ARRAY,
   MK_BOOL,
   MK_NATIVE_FUNCTION,
   MK_NULL,
   MK_NUMBER,
+  MK_ARRAY,
   MK_STRING,
   RuntimeVal,
 } from "./values.ts";
@@ -16,6 +16,17 @@ import {
   format,
   debug,
 } from "../FrontEnd/tracing.ts";
+
+import { 
+  stringLookUpTable,
+  numberLookUpTable,
+  booleanLookUpTable,
+  nullLookUpTable,
+  functionLookUpTable,
+  objectLookUpTable,
+  arrayLookUpTable,
+} from "./eval/expressions.ts";
+
 export function createGlobalENV() {
   const env = new Enviroment();
   // Create Default Global Enviroment
@@ -28,8 +39,8 @@ export function createGlobalENV() {
   env.declareVar(
     "info",
     MK_NATIVE_FUNCTION((args, _scope) => {
-      const _info = console.log(format(true, args.map((item) => item["value"])));
-      return MK_NULL() || MK_NUMBER(Number(_info));
+      console.log(args);
+      return MK_NULL();
     }),
     true
   );
@@ -720,19 +731,19 @@ export function createGlobalENV() {
     return MK_NUMBER(new Date().getTime());
   }
   // A built in function that will handle appending to an array
-  function appendFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
-    if (args.length !== 2) {
-      throw "Append function takes two arguments";
-    }
+  // function appendFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+  //   if (args.length !== 2) {
+  //     throw "Append function takes two arguments";
+  //   }
 
-    const [arg1, arg2] = args;
+  //   const [arg1, arg2] = args;
 
-    if (arg1.type !== "array") {
-      throw "Append function takes an array and a value";
-    }
+  //   if (arg1.type !== "array") {
+  //     throw "Append function takes an array and a value";
+  //   }
 
-    return MK_ARRAY([...arg1.value, arg2]);
-  }
+  //   return MK_ARRAY([...arg1.value, arg2]);
+  // }
   // A built in break function that will break out of a loop
   function breakFunction(_args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
     throw "break";
@@ -835,7 +846,7 @@ export function createGlobalENV() {
   env.declareVar("date", MK_NATIVE_FUNCTION(dateFunction), true);
   env.declareVar("time", MK_NATIVE_FUNCTION(timeFunction), true);
 
-  env.declareVar("append", MK_NATIVE_FUNCTION(appendFunction), true);
+  // env.declareVar("append", MK_NATIVE_FUNCTION(appendFunction), true);
   env.declareVar("break", MK_NATIVE_FUNCTION(breakFunction), true);
   env.declareVar("null", MK_NATIVE_FUNCTION(nullFunction), true);
 
@@ -843,6 +854,11 @@ export function createGlobalENV() {
   env.declareVar("degToRad", MK_NATIVE_FUNCTION(degToRadFunction), true);
   env.declareVar("deg", MK_NATIVE_FUNCTION(degFunction), true);
   env.declareVar("pi", MK_NATIVE_FUNCTION(piFunction), true);
+
+  // function LengthOfString(str: RuntimeVal[]): RuntimeVal {
+  //   return MK_NUMBER(5);
+  // }
+  // stringLookUpTable.set("length", MK_NATIVE_FUNCTION(LengthOfString));
 
   // Picks a random number between two given numbers
   function randomFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {

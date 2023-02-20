@@ -10,6 +10,9 @@ Identifier,
 String,
 
 // Keywords
+Import,
+FROM,
+
 Var,
 Const,
 FUNC,
@@ -66,7 +69,6 @@ RETURN,
 
 // Special
 EOF,
-Float
 }
 
 /**
@@ -85,6 +87,9 @@ const KEYWORDS: Record<string, TokenType> = {
   array: TokenType.ARRAY,
   while: TokenType.WHILE,
   for: TokenType.FOR,
+
+  import: TokenType.Import,
+  from: TokenType.FROM,
 };
 // Reoresents a single token from the source-code.
 export interface Token {
@@ -132,6 +137,7 @@ export function tokenize(sourceCode: string): Token[] {
   let Line = 1;
   const tokens = new Array<Token>();
   const src = sourceCode.split("");
+
   while (src.length > 0) {
     // Check if the new line character is present
     if (src[0] == "\n") {

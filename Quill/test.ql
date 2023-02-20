@@ -260,9 +260,7 @@ func async calculateTheAreaOfATriangleSSS (a, b, c){
 
 # calculateTheAreaOfATriangleSSS(13, 10, 8)
 
-
 # Fizz buzz example in a while loop
-
 func async fizzBuzz (){
 	while true {
 		# print out the numbers 1 to 100
@@ -290,4 +288,15 @@ func async fizzBuzz (){
 	}
 }
 
-fizzBuzz()
+# fizzBuzz()
+
+array test [1, 2, 3, 4]
+
+const i := {
+	i: test,
+	s: "string",
+	b: 12,
+	foo: null
+}
+
+i.foo

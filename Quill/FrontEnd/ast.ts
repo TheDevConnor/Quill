@@ -7,6 +7,7 @@
 export type NodeType =
   // Statements
   | "Program"
+  | "Module"
   | "VarDeclaration"
   | "FunctionDeclaration"
 
@@ -22,6 +23,7 @@ export type NodeType =
   | "WhileStmt"
   | "ForStmt"
   | "ElseStmt"
+  | "ImportStmt"
 
   // Comaparison
   | "GreaterThanExpr"
@@ -34,7 +36,6 @@ export type NodeType =
   | "OrExpr"
   | "IncrementExpr"
   | "DecrementExpr"
-  | "PullStmt"
 
   // Literals
   | "Property"
@@ -58,11 +59,23 @@ export interface Program extends Stmt {
   body: Stmt[];
 }
 
+export interface Module extends Stmt {
+  kind: "Module";
+  body: Stmt[];
+  map: Map<string, Stmt>;
+}
+
 export interface VarDeclaration extends Stmt {
   kind: "VarDeclaration";
   constant: boolean;
   identifier: string;
   value?: Expr;
+}
+
+export interface ImportStmt extends Stmt {
+  kind: "ImportStmt";
+  name: string;
+  fileName: string;
 }
 
 export interface FunctionDeclaration extends Stmt {

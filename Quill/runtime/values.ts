@@ -14,10 +14,9 @@ export type ValueType =
 
 export interface RuntimeVal {
   kind: string;
-  type: ValueType;
+  type: ValueType | any;
   value: any;
 
-  [index: string]: any;
 }
 
 export interface NullVal extends RuntimeVal {
@@ -44,10 +43,6 @@ export interface NumberVal extends RuntimeVal {
 
 export function MK_NUMBER(n = 0) {
   return { value: n, type: "number" } as NumberVal;
-}
-
-export function MK_ARRAY(a: any[] = []) {
-  return { value: a, type: "array" } as ArrayVal;
 }
 
 export interface ObjectVal extends RuntimeVal {
@@ -89,3 +84,8 @@ export interface ArrayVal extends RuntimeVal {
   declarationsENV: Enviroment;
   element: Stmt[] | Expr[];
 }
+
+export function MK_ARRAY(a = Array) {
+  return { value: a, type: "array" } as ArrayVal;
+}
+
