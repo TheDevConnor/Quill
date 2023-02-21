@@ -336,7 +336,7 @@ export function eval_member_expr(
   // }
 
   const object = evaluate(member.object, env) as ObjectVal;
-  console.log(object)
+  // console.log(object)
   if (!object || object.type !== "object") {
     throw error(
       `Cannot resolve '${member.object.kind}' as it does not exist! 3`
@@ -344,7 +344,7 @@ export function eval_member_expr(
   }
   
   const property = member.property as Identifier;
-  console.log(property)
+  // console.log(property)
   if (!property || property.kind !== "Identifier") {
     throw error(
       `Cannot resolve '${member.property.kind}' as it does not exist! 2`
@@ -352,7 +352,7 @@ export function eval_member_expr(
   }
 
   const value = object.properties.get(property.symbol);
-  console.log(value)
+  // console.log(value)
   if (value === undefined) {
     throw error(`Cannot resolve '${property.symbol}' as it does not exist! 1`);
   }

@@ -80,12 +80,12 @@ func async calculateTheLawOfSines (A, a, b) {
 		info("Obtuse Triangle Degeers",CalculateObtuseAngle[ObtuseAngleA], CalculateObtuseAngle[ObtuseAngleB], CalculateObtuseAngleC[ObtuseAngleC])
 		info("Acute Triangle Sides", CalculateObtuseAngle[ObtuseSideA], CalculateObtuseAngle[ObtuseSideB], CalculateObtuseSideC[ObtuseSideC])
 	} else {
-		info("Acute Triangle Degeers", A, CalculateAngle[B], CalculateAngleC[C])
-		info("Acute Triangle Sides", a, b, CalculateSideC[c])
+		warn("Acute Triangle Degeers", A, CalculateAngle[B], CalculateAngleC[C])
+		warn("Acute Triangle Sides", a, b, CalculateSideC[c])
 	}
 }
 
-# calculateTheLawOfSines(64, 16, 17)
+calculateTheLawOfSines(64, 16, 1)
 
 # Law of Cosines for SAS
 # Off the bat we know that we will only have one triangle. 
@@ -289,14 +289,3 @@ func async fizzBuzz (){
 }
 
 # fizzBuzz()
-
-array test [1, 2, 3, 4]
-
-const i := {
-	i: test,
-	s: "string",
-	b: 12,
-	foo: null
-}
-
-i.foo
