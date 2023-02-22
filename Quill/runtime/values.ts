@@ -16,7 +16,6 @@ export interface RuntimeVal {
   kind: string;
   type: ValueType | any;
   value: any;
-
 }
 
 export interface NullVal extends RuntimeVal {
@@ -61,6 +60,10 @@ export function MK_NATIVE_FUNCTION(call: FunctionCall) {
   return { type: "native-function", call } as NativeFunctionVal;
 }
 
+export function MK_STATIC_BUILTIN_HANDLER<T>(call: (obj: T) => RuntimeVal) {
+  return { type: "native-methoud", call };
+}
+
 export interface StringVal extends RuntimeVal {
   type: "string";
   value: string;
@@ -88,4 +91,3 @@ export interface ArrayVal extends RuntimeVal {
 export function MK_ARRAY(a = Array) {
   return { value: a, type: "array" } as ArrayVal;
 }
-

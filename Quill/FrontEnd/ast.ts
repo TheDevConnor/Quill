@@ -223,6 +223,7 @@ export interface CallExpr extends Expr {
 
 //foo["bar"]()
 export interface MemberExpr extends Expr {
+  loc: any;
   kind: "MemberExpr";
   object: Expr;
   property: Expr;

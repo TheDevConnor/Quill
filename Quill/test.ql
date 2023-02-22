@@ -254,8 +254,8 @@ func async calculateTheAreaOfATriangleSSS (a, b, c){
 	}
 
 	# Print out the results of the calculations
-	trace(CalculateArea[area])
-	trace(a, b, c)
+	info(CalculateArea[area])
+	info(a, b, c)
 }
 
 # calculateTheAreaOfATriangleSSS(13, 10, 8)
@@ -290,13 +290,4 @@ func async fizzBuzz (){
 
 # fizzBuzz()
 
-array test [1, 2, 3, 4]
 
-const i := {
-	i: test,
-	s: "string",
-	b: 12,
-	foo: null
-}
-
-i.foo

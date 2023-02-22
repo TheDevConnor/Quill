@@ -7,6 +7,7 @@ import {
   MK_ARRAY,
   MK_STRING,
   RuntimeVal,
+  MK_STATIC_BUILTIN_HANDLER,
 } from "./values.ts";
 import {
   info,
@@ -19,12 +20,7 @@ import {
 
 import { 
   stringLookUpTable,
-  numberLookUpTable,
-  booleanLookUpTable,
-  nullLookUpTable,
-  functionLookUpTable,
   objectLookUpTable,
-  arrayLookUpTable,
 } from "./eval/expressions.ts";
 
 export function createGlobalENV() {
@@ -39,7 +35,7 @@ export function createGlobalENV() {
   env.declareVar(
     "info",
     MK_NATIVE_FUNCTION((args, _scope) => {
-      console.log(args);
+      console.log(format(false, "{" + args.map((arg) => arg.value).join(", ") + "}"));
       return MK_NULL();
     }),
     true
