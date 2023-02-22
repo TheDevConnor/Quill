@@ -258,20 +258,18 @@ export function tokenize(sourceCode: string): Token[] {
         tokens.push(token(num, TokenType.Number, Line));
       }
 
-      // Floats
-      // if (Number.isInteger(src)) {
-      //   let num = "";
-      //   // Check to see if the number is a float or integer
-      //   for (let i = 0; i <= src.length; i++) {
-      //     if (src[i] == ".") {
-      //       num += src.splice(i, src[i]).join("");
-      //     }
-      //     num += src.splice(i, src[i]).join("");
-      //     console.log(num);
-      //     console.log(typeof num);
-      //   }
-      //   tokens.push(token(num, TokenType.Number, Line));
-      // }
+      // TODO:: HANDLE FLOAT LITERALS
+      else if (src[0] == ".") {
+        let num = "";
+        while (src.length > 0 && isint(src[0])) {
+          console.log(src[0]);
+          num += src.shift();
+        }
+
+        console.log(num);
+        // append new numeric token.
+        tokens.push(token(num, TokenType.Number, Line));
+      }
 
       // TODO:: HANDLE STRING LITERALS
       else if (src[0] == '"') {

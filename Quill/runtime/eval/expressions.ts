@@ -259,57 +259,30 @@ export function eval_member_expr(
   env: Enviroment
 ): RuntimeVal {
   // String, Number, Boolean, Object
-  const object = evaluate(member.object, env) as RuntimeVal;
+  // const object = evaluate(member.object, env) as RuntimeVal;
   
-  switch (object.type) {
-    case "string":
-      const stringLiteral = evaluate(member.property, env) as StringVal;
-      const stringProperty = member.property as Identifier
+  // switch (object.type) {
+  //   case "string":
+  //     const stringLiteral = evaluate(member.property, env) as StringVal;
+  //     const stringProperty = member.property as Identifier
 
-      console.log("string", stringLiteral)
+  //     console.log("string", stringLiteral)
 
-      if (!stringProperty || stringProperty.kind !== "Identifier") {
-          throw error(`Connot resolve '${member.property.kind}' as it does not exist! 2`)
-      }
-
-      console.log("property", stringProperty)
-
-      return stringLookUpTable.get(stringProperty.symbol) as StringVal;
-
-    case "object":
-      const objectCase = evaluate(member.object, env) as ObjectVal;
-      // console.log("Object", objectCase)
-
-      const objectProperty = member.property as Identifier  
-      // console.log("Property", objectProperty)
-      // console.log("Computed", member.computed)
-
-      if(!objectProperty || objectProperty.kind !== "Identifier"){
-        throw error(`cannot resolve '${member.property.kind}' as it does not exist!`)
-      }
-
-      const objectValue = objectCase.properties.get(objectProperty.symbol)
-      // console.log("value", objectValue)
-
-  //     console.log("function", func);
-  //     if(!functionLookUpTable.has(func.value)) {
-  //       throw error(`Cannot resolve '${property5}' as it does not exist!`);
+  //     if (!stringProperty || stringProperty.kind !== "Identifier") {
+  //         throw error(`Connot resolve '${member.property.kind}' as it does not exist! 2`)
   //     }
-  //     return functionLookUpTable.get(func.value) as RuntimeVal;
 
-  //   case "null":
-  //     const nul = evaluate(member.property, env) as NullVal;
-  //     const property6 = (member.property as Identifier).symbol;
+  //     console.log("property", stringProperty)
 
-  //     console.log("null", nul);
-  //     if(!nullLookUpTable.has(nul.value)) {
-  //       throw error(`Cannot resolve '${property6}' as it does not exist!`)
-  //     }
-  //     return nullLookUpTable.get(nul.value) as RuntimeVal;
-  //   default:
-  //     throw error(`Cannot resolve '${member.object.kind}' as it does not exist!`);
-  // }
+  //     return stringLookUpTable.get(stringProperty.symbol) as StringVal;
 
+  //   case "object":
+  //     const objectCase = evaluate(member.object, env) as ObjectVal;
+  //     // console.log("Object", objectCase)
+
+  //     const objectProperty = member.property as Identifier  
+  //     // console.log("Property", objectProperty)
+  //     // console.log("Computed", member.computed)
   const object = evaluate(member.object, env) as ObjectVal;
   // console.log(object)
   if (!object || object.type !== "object") {
