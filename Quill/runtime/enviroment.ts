@@ -35,14 +35,14 @@ export function createGlobalENV() {
   env.declareVar(
     "info",
     MK_NATIVE_FUNCTION((args, _scope) => {
-      console.log(format(false, "{" + args.map((arg) => arg.value).join(", ") + "}"));
+      console.log(args);
       return MK_NULL();
     }),
     true
   );
 
   function formatFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
-    trace(format(false, "{" + args.map((arg) => arg.value).join(", ") + "}"));
+    trace(format(true, "{" + args.map((arg) => arg.value).join("\n\t") + "}"));
     return MK_NULL();
   }
   env.declareVar("trace", MK_NATIVE_FUNCTION(formatFunction), true);
@@ -54,7 +54,7 @@ export function createGlobalENV() {
   env.declareVar("debug", MK_NATIVE_FUNCTION(debugFunction), true);
 
   function warnFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
-    warn(format(false, "{" + args.map((arg) => arg.value).join(", ") + "}"));
+    warn(format(false, "{ " + args.map((arg) => arg.value).join("\n\t") + " }"));
     return MK_NULL();
   }
   env.declareVar("warn", MK_NATIVE_FUNCTION(warnFunction), true);
