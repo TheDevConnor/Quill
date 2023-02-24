@@ -312,5 +312,5 @@ const math := {
 # info("complex: ", math[complex][a])
 
 have string := "hello world"
-string.length()
+string.len()
 

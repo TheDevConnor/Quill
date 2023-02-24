@@ -33,7 +33,8 @@ import {
   MK_NATIVE_FUNCTION,
   MK_NUMBER,
   ArrayVal,
-  MK_STATIC_BUILTIN_HANDLER
+  MK_STATIC_BUILTIN_HANDLER,
+  StaticFunctionCall
 } from "../values.ts";
 
 import Enviroment from "../enviroment.ts";
@@ -254,10 +255,10 @@ export function enal_identifier(
 export const stringLookUpTable = new Map<string, RuntimeVal>();
 export const numberLookUpTable = new Map<Number, RuntimeVal>();
 
-function lengthOfaString(): RuntimeVal {
-  return MK_NUMBER(5);
+function lengthOfaString(string: StringVal): RuntimeVal {
+  return MK_NUMBER(string.value.length);
 }
-stringLookUpTable.set("len", MK_NATIVE_FUNCTION(lengthOfaString));
+stringLookUpTable.set("len", MK_STATIC_BUILTIN_HANDLER(lengthOfaString));
 
 export function eval_member_expr(
   member: MemberExpr,
@@ -293,7 +294,7 @@ export function eval_member_expr(
       const stringCase = evaluate(member.property, env) as StringVal;
       console.log("string", stringCase)
 
-      const stringProperty = (member.property as Identifier)
+      const stringProperty = member.property as Identifier
       console.log("property", stringProperty)
 
 
@@ -301,13 +302,23 @@ export function eval_member_expr(
           throw error(`Connot resolve '${stringCase.type}' as it does not exist! 2`)
       }
 
-      const stringValue = stringCase.value
-      console.log("value", stringValue)
+      // const stringValue = stringCase.value
+      // console.log("value", stringValue)
 
-      stringLookUpTable.set(stringValue, stringCase)
-      console.log("table", stringLookUpTable)
+      // stringLookUpTable.set(stringValue, stringCase)
+      // console.log("table", stringLookUpTable)
 
-      return stringLookUpTable.get(stringValue) as RuntimeVal;
+      const staticMethod = stringLookUpTable.get(stringProperty.symbol) as NativeFunctionVal;
+      console.log(staticMethod)
+
+      if (!staticMethod) {
+        throw error(`Connot resolve '${stringCase.type}' as it does not exist! 2`)
+      }
+
+      const fn = staticMethod.call as StaticFunctionCall;
+
+      const clouser = MK_NATIVE_FUNCTION((args: RuntimeVal[], env: Enviroment) => { return fn(stringCase) })
+      return clouser;
 
       default:
         throw error(`Cannot resolve '${member.object.kind}' as it does not exist! 3`)

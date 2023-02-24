@@ -50,10 +50,11 @@ export interface ObjectVal extends RuntimeVal {
 }
 
 export type FunctionCall = (args: RuntimeVal[], env: Enviroment) => RuntimeVal;
+export type StaticFunctionCall = (obj: RuntimeVal) => RuntimeVal;
 
 export interface NativeFunctionVal extends RuntimeVal {
   type: "native-function";
-  call: FunctionCall;
+  call: FunctionCall | StaticFunctionCall;
 }
 
 export function MK_NATIVE_FUNCTION(call: FunctionCall) {
@@ -61,7 +62,7 @@ export function MK_NATIVE_FUNCTION(call: FunctionCall) {
 }
 
 export function MK_STATIC_BUILTIN_HANDLER<T>(call: (obj: T) => RuntimeVal) {
-  return { type: "native-methoud", call };
+  return { type: "native-function", call } as NativeFunctionVal;
 }
 
 export interface StringVal extends RuntimeVal {
