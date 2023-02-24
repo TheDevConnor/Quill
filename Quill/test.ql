@@ -290,4 +290,27 @@ func async fizzBuzz (){
 
 # fizzBuzz()
 
-45.8
+# 45.8
+
+# import math from "math"
+
+const math := {
+	x: 1, 
+	y: "string of x",
+	z: 3,
+
+	complex: {
+		a: 4,
+		b: 5,
+		c: 6,
+	},
+}
+
+# info("y: ", math[y])
+# info("x: ", math[x])
+# info("z: ", math[z])
+# info("complex: ", math[complex][a])
+
+have string := "hello world"
+string.length()
+

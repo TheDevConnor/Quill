@@ -229,10 +229,12 @@ export default class Parser {
     this.eat(); // Eat the 'import' keyword
 
     const name = this.expect(TokenType.Identifier, "Expected import name").value;
+    // console.log("Name of import", name)
 
     this.expect(TokenType.FROM, "Expected 'from' after import name");
 
     const fileName = this.expect(TokenType.String, "Expected string literal after 'from'");
+    // console.log("File name", fileName.value)
 
     return {
       kind: "ImportStmt",

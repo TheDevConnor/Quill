@@ -12,12 +12,10 @@ import {
   ImportStmt,
 } from "../../FrontEnd/ast.ts";
 
-import Parser from "../../FrontEnd/parser.ts";
-
 import { RuntimeVal, MK_NULL, FunctionVal, ArrayVal, ObjectVal } from "../values.ts";
 import { evaluate } from "../interpreter.ts";
 import Enviroment from "../enviroment.ts";
-import { debug } from "../../FrontEnd/tracing.ts";
+import { debug, error } from "../../FrontEnd/tracing.ts";
 
 export function eval_program(program: Program, env: Enviroment): RuntimeVal {
   let lastEvaluated: RuntimeVal = MK_NULL();
@@ -27,16 +25,12 @@ export function eval_program(program: Program, env: Enviroment): RuntimeVal {
   return lastEvaluated;
 }
 
-export function eval_import_stmt (stmt: ImportStmt, env: Enviroment): RuntimeVal {
+export function eval_import_stmt (_stmt: ImportStmt, _env: Enviroment): RuntimeVal {
   // 1: consturct the module path
   // 2: Add the new module to the gloable scope
   // 3: Declare the module
   // const parser = new Parser();
-
-  // const imported = parser.produceModule(stmt.fileName);
-  // env.declareVar(stmt.name, imported, true);
-  // return imported;
-  return MK_NULL();
+  throw error("imports have not been implemented yet!");
 }
 
 export function eval_var_decl(
