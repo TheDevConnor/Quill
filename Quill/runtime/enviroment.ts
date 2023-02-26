@@ -8,6 +8,7 @@ import {
   MK_STRING,
   RuntimeVal,
   MK_STATIC_BUILTIN_HANDLER,
+StringVal,
 } from "./values.ts";
 import {
   info,
@@ -20,7 +21,7 @@ import {
 
 import { 
   stringLookUpTable,
-  objectLookUpTable,
+  numberLookUpTable,
 } from "./eval/expressions.ts";
 
 export function createGlobalENV() {
@@ -851,10 +852,12 @@ export function createGlobalENV() {
   env.declareVar("deg", MK_NATIVE_FUNCTION(degFunction), true);
   env.declareVar("pi", MK_NATIVE_FUNCTION(piFunction), true);
 
-  // function LengthOfString(str: RuntimeVal[]): RuntimeVal {
-  //   return MK_NUMBER(5);
+  // A built in function to get the length of a string
+  // function lengthOfaString(string: StringVal): RuntimeVal {
+  //   return MK_NUMBER(string.value);
   // }
-  // stringLookUpTable.set("length", MK_NATIVE_FUNCTION(LengthOfString));
+  // stringLookUpTable.set("len", MK_STATIC_BUILTIN_HANDLER(lengthOfaString));
+  // env.declareVar("len", MK_STATIC_BUILTIN_HANDLER(lengthOfaString), true);
 
   // Picks a random number between two given numbers
   function randomFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
@@ -870,6 +873,7 @@ export function createGlobalENV() {
 
     return MK_NUMBER(Math.random() * (max.value - min.value) + min.value);
   }
+  numberLookUpTable.set("random", MK_NATIVE_FUNCTION(randomFunction));
   env.declareVar("random", MK_NATIVE_FUNCTION(randomFunction), true);
 
   // TODO: a built in function that handles graphics
