@@ -319,19 +319,16 @@ const math := {
 have randomNumber := random(1, 100)
 
 func async collatzConjecture (n){
-	# if n is even then divide it by 2
-	if n % 2 = 0 {
-		n := n / 2
-		info(n)
-	} else {
-		# if n is odd then multiply it by 3 and add 1
-		n := (n * 3) + 1
-		info(n)
-	}
-
-	# if n is not equal to 1 then call the function again
-	if n != 1 {
-		collatzConjecture(n)
+	while n != 1 {
+		# if n is even then divide it by 2
+		if n % 2 = 0 {
+			n := n / 2
+			info(n)
+		} else {
+			# if n is odd then multiply it by 3 and add 1
+			n := (n * 3) + 1
+			info(n)
+		}
 	}
 }
 
