@@ -32,6 +32,7 @@ import {
   ElseStmt,
   StringLiteral,
   ImportStmt,
+TernaryExpr,
 } from "../FrontEnd/ast.ts";
 
 import {
@@ -51,6 +52,7 @@ import {
   eval_object_expr,
   eval_or_expr,
   eval_plus_equals_expr,
+eval_ternary_expr,
 } from "./eval/expressions.ts";
 
 import {
@@ -181,6 +183,9 @@ export function evaluate(astNode: Stmt, env: Enviroment): RuntimeVal {
 
     case "ImportStmt":
       return eval_import_stmt(astNode as ImportStmt, env);
+
+    case "TernaryExpr":
+      return eval_ternary_expr(astNode as TernaryExpr, env);
 
     // Handle unimplemented ast nodes
     default:

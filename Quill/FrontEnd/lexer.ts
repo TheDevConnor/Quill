@@ -21,6 +21,7 @@ ARRAY,
 IF,
 ELSE,
 ELIF,
+TERNARY,
 WHILE,
 FOR,
 CHAR,
@@ -60,6 +61,8 @@ BinaryOperator,
 Equals,
 Semicolen,
 COLON,
+QuestionMark,
+TernaryColon,
 COMMA,
 DOT,
 UNDERSCORE,
@@ -87,6 +90,7 @@ const KEYWORDS: Record<string, TokenType> = {
   array: TokenType.ARRAY,
   while: TokenType.WHILE,
   for: TokenType.FOR,
+  tern: TokenType.TERNARY,
 
   import: TokenType.Import,
   from: TokenType.FROM,
@@ -176,15 +180,19 @@ export function tokenize(sourceCode: string): Token[] {
       tokens.push(token(src.shift(), TokenType.UNDERSCORE, Line));
     } else if (src[0] == ".") {
       tokens.push(token(src.shift(), TokenType.DOT, Line));
-    } else if (src[0] == "?") {
-      tokens.push(token(src.shift(), TokenType.NULL, Line));
     } 
+    // Handle ternary operator
+    else if (src[0] == "?") {
+      tokens.push(token(src.shift(), TokenType.QuestionMark, Line));
+    }
      // HANDLE MULTICHARACTER KEYWORDS, TOKENS, IDENTIFIERS ETC...
     else if (src[0] == ";") {
       tokens.push(token(src.shift(), TokenType.Semicolen, Line));
     } else if (src[0] == ":") {
       if (tokens[tokens.length - 1].type === TokenType.Identifier) {
         tokens.push(token(src.shift(), TokenType.COLON, Line));
+      } else {
+        tokens.push(token(src.shift(), TokenType.TernaryColon, Line));
       }
     } else if (src[0] == "<") {
       if (src[1] == "=") {

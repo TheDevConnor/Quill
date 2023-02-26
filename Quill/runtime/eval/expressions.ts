@@ -17,6 +17,7 @@ import {
   GreaterThanOrEqualsExpr,
   LessThanOrEqualsExpr,
   ImportStmt,
+TernaryExpr,
 } from "../../FrontEnd/ast.ts";
 
 import {
@@ -254,6 +255,7 @@ export function enal_identifier(
 
 export const stringLookUpTable = new Map<string, RuntimeVal>();
 export const numberLookUpTable = new Map<number, RuntimeVal>();
+export const booleanLookUpTable = new Map<boolean, RuntimeVal>();
 
 export function eval_member_expr(
   member: MemberExpr,
@@ -310,32 +312,6 @@ export function eval_member_expr(
         return fn(stringCase)
       })
       return clouser;
-
-    case "number":
-      const numberCase = evaluate(member.property, env) as NumberVal;
-      console.log("number", numberCase)
-
-      const numberProperty = member.property as Identifier
-      console.log("property", numberProperty)
-
-      if (!numberLookUpTable.has(numberProperty.symbol)) {
-          throw error(`Connot resolve '${numberCase.type}' as it does not exist! 2`)
-      }
-
-      const staticMethod2 = numberLookUpTable.get(numberProperty.symbol) as NativeFunctionVal;
-      console.log(staticMethod2)
-
-      if (!staticMethod2) {
-        throw error(`Connot resolve '${numberCase.type}' as it does not exist! 2`)
-      }
-
-      const fn2 = staticMethod2.call as StaticFunctionCall;
-
-      const clouser2 = MK_NATIVE_FUNCTION((args: RuntimeVal[], env: Enviroment) => {
-        return fn2(numberCase)
-      })
-      return clouser2;
-
       
       default:
         throw error(`Cannot resolve '${member.object.kind}' as it does not exist! 3`)
@@ -400,3 +376,20 @@ export function eval_assingment(
   return env.assignVar(varname, evaluate(node.value, env));
 }
 
+export function eval_ternary_expr(
+  node: TernaryExpr,
+  env: Enviroment
+): RuntimeVal {
+  const condition = evaluate(node.condition, env);
+  if (condition.type !== "boolean") {
+    error(`invalid condition type ${condition.type}`);
+  }
+
+  // console.log("condition", condition)
+  // console.log("then", node.thenExpr)
+  // console.log("else", node.elseExpr)
+
+  return condition.value
+    ? evaluate(node.thenExpr, env)
+    : evaluate(node.elseExpr, env);
+}

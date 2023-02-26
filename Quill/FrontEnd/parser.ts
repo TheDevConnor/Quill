@@ -32,6 +32,7 @@ import {
   ElseStmt,
   StringLiteral,
   ImportStmt,
+  TernaryExpr,
 } from "./ast.ts";
 
 import { Token, tokenize, TokenType } from "./lexer.ts";
@@ -114,10 +115,13 @@ export default class Parser {
         return this.parse_var_decl();
       case TokenType.IF:
         return this.parse_if_stmt();
+      case TokenType.TERNARY:
+        return this.parse_ternary_expr();
       case TokenType.Identifier:
         if (currentTokenValue === "return") {
           return this.parse_return_stmt();
         }
+
         return this.parse_expr();
       case TokenType.FUNC:
         return this.parse_function_decl();
@@ -241,42 +245,6 @@ export default class Parser {
       name,
       fileName: fileName.value,
     } as ImportStmt;
-
-    // this.expect(TokenType.OPENBRACE, "Expected '{' after import name");
-    // const name = this.expect(TokenType.Identifier, "Expected import name").value;
-
-    // const elements: Expr[] | Stmt[] = [];
-    // while (
-    //   this.at().type !== TokenType.EOF &&
-    //   this.at().type !== TokenType.CLOSEBRACE
-    // ) {
-    //   elements.push(this.parse_expr());
-    //   // elements.push(this.parse_stmt());
-
-    //   if (this.at().type === TokenType.COMMA) {
-    //     this.eat();
-    //   }
-    // }
-
-    // this.expect(TokenType.CLOSEBRACE, "Expected '}' after import elements");
-
-    // this.expect(TokenType.FROM, "Expected 'from' after import elements");
-
-    // const source = this.expect(
-    //   TokenType.String,
-    //   "Expected string literal after 'from'"
-    // ).value;
-
-    // this.expect(TokenType.Semicolen, "Expected ';' after import source");
-
-    // const importStmt: ImportStmt = {
-    //   kind: "ImportStmt",
-    //   name: name,
-    //   source: source,
-    //   elements: elements,
-    // };
-
-    // return importStmt;
   }
 
   // Handles Function Declarations
@@ -481,11 +449,13 @@ export default class Parser {
         operation: operation.value,
       } as unknown as PlusEqualsExpr | MinusEqualsExpr;
     }
+
     return expr;
   }
 
   private parse_if_stmt(): Stmt {
     this.eat(); // Eat the 'if' keyword
+
     const condition = this.parse_expr(); // Parse the condition
     this.expect(TokenType.OPENBRACKET, "Expected '{' after if condition");
     const thenBranch: Stmt[] = [];
@@ -584,6 +554,31 @@ export default class Parser {
       elseBranch,
     } as unknown as IfStmt;
   }
+
+  private parse_ternary_expr(): Expr {
+    this.eat(); // Eat the ternary keyword of 'tern'
+
+    const condition = this.parse_expr(); // Parse the condition
+    // console.log(condition);
+
+    this.expect(TokenType.QuestionMark, "Expected '?' in ternary expression");
+    
+    const thenExpr = this.parse_expr(); // Parse the 'then' expression
+    // console.log(thenExpr);
+
+    this.expect(TokenType.TernaryColon, "Expected ':' in ternary expression");
+    
+    const elseExpr = this.parse_expr(); // Parse the 'else' expression
+    // console.log(elseExpr);
+
+    return {
+      kind: "TernaryExpr",
+      condition,
+      thenExpr,
+      elseExpr,
+    } as TernaryExpr;
+  }
+  
 
   private parse_assignment_expr(): Expr {
     const left = this.parse_object_expr();

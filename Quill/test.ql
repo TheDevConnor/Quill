@@ -316,19 +316,41 @@ const math := {
 
 # Collatz Conjecture
 
-have randomNumber := random(1, 100)
+# have randomNumber := random(1, 100)
+
+# func async collatzConjecture (n){
+# 	while n != 1 {
+# 		# if n is even then divide it by 2
+# 		if n % 2 = 0 {
+# 			n := n / 2
+# 			info(n)
+# 		} else {
+# 			# if n is odd then multiply it by 3 and add 1
+# 			n := (n * 3) + 1
+# 			info(n)
+# 		}
+# 	}
+# }
+
+# info(randomNumber)
+# collatzConjecture(randomNumber)
+
+# an example of a ternary operator
+# have x := 5 info(x)
+# if x is equal to 1 then set y to 2 otherwise set y to 3
+# tern (x != 1) ? info("x is not equal to 1") : info("x is equal to 1")
+
+# Using the Ternary Opperation to do Collatz Conjecture
+have randomNumber := 10
 
 func async collatzConjecture (n){
 	while n != 1 {
-		# if n is even then divide it by 2
-		if n % 2 = 0 {
-			n := n / 2
-			info(n)
-		} else {
-			# if n is odd then multiply it by 3 and add 1
-			n := (n * 3) + 1
-			info(n)
-		}
+		# if randomNumber is even then divide it by 2
+		# if randomNumber is odd then multiply it by 3 and add 1
+		tern (n % 2 = 0) 
+				? n := n / 2 
+				: n := (n * 3) + 1
+		info(n)
 	}
 }
 

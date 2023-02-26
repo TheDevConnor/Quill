@@ -48,7 +48,8 @@ export type NodeType =
   | "PlusEqualsExpr"
   | "MinusEqualsExpr"
   | "StringLiteral"
-  | "CharLiteral";
+  | "CharLiteral"
+  | "TernaryExpr";
 
 export interface Stmt {
   kind: NodeType;
@@ -124,6 +125,13 @@ export interface ElifStmt extends Stmt {
 export interface ElseStmt extends Stmt {
   kind: "ElseStmt";
   body: Stmt[];
+}
+
+export interface TernaryExpr {
+  kind: "TernaryExpr";
+  condition: Expr;
+  thenExpr: Expr;
+  elseExpr: Expr;
 }
 
 export interface Expr extends Stmt {}
