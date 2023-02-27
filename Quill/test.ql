@@ -315,7 +315,6 @@ const math := {
 # info(string.len())
 
 # Collatz Conjecture
-
 # have randomNumber := random(1, 100)
 
 # func async collatzConjecture (n){
@@ -341,7 +340,7 @@ const math := {
 # tern (x != 1) ? info("x is not equal to 1") : info("x is equal to 1")
 
 # Using the Ternary Opperation to do Collatz Conjecture
-have randomNumber := 10
+have randomNumber := random(1, 100)
 
 func async collatzConjecture (n){
 	while n != 1 {
@@ -354,5 +353,39 @@ func async collatzConjecture (n){
 	}
 }
 
-info(randomNumber)
-collatzConjecture(randomNumber)
+# info(randomNumber)
+# collatzConjecture(randomNumber)
+
+# Fibonacci Sequence
+# The Fibonacci Sequence is the series of numbers: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, ...
+# The next number is found by adding up the two numbers before it.
+# The 2 is found by adding the two numbers before it (1+1)
+# The 3 is found by adding the two numbers before it (1+2), and so on!
+
+have randomNumber1 := random(1, 100)
+
+func async fibonacciSequence (n){
+	have a := 0
+	have b := 1
+	have c := 0
+
+	while c < n {
+		info(a)
+		c := a + b
+		a := b
+		b := c
+	}
+}
+
+# info(randomNumber1)
+# fibonacciSequence(randomNumber1)
+
+
+# The Collatz Conjecture and the Fibonacci Sequence are both examples of Recursion
+# Recursion is a method of solving a problem where the solution depends on solutions to smaller instances of 
+# the same problem (as opposed to iteration). The approach can be applied to many types of problems, and
+# recursion is one of the central ideas of computer science. 
+
+# imports
+import math from "math.ql"
+# info(math[x])

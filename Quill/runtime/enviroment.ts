@@ -853,11 +853,11 @@ export function createGlobalENV() {
   env.declareVar("pi", MK_NATIVE_FUNCTION(piFunction), true);
 
   // A built in function to get the length of a string
-  // function lengthOfaString(string: StringVal): RuntimeVal {
-  //   return MK_NUMBER(string.value);
-  // }
-  // stringLookUpTable.set("len", MK_STATIC_BUILTIN_HANDLER(lengthOfaString));
-  // env.declareVar("len", MK_STATIC_BUILTIN_HANDLER(lengthOfaString), true);
+  function lengthOfaString(string: StringVal): RuntimeVal {
+    return MK_NUMBER(string.value.length);
+  }
+  stringLookUpTable.set("len", MK_STATIC_BUILTIN_HANDLER(lengthOfaString));
+  env.declareVar("len", MK_STATIC_BUILTIN_HANDLER(lengthOfaString), true);
 
   // Picks a random number between two given numbers
   function randomFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
@@ -873,7 +873,6 @@ export function createGlobalENV() {
 
     return MK_NUMBER(Math.random() * (max.value - min.value) + min.value);
   }
-  numberLookUpTable.set("random", MK_NATIVE_FUNCTION(randomFunction));
   env.declareVar("random", MK_NATIVE_FUNCTION(randomFunction), true);
 
   // TODO: a built in function that handles graphics

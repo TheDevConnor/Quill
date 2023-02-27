@@ -13,9 +13,12 @@ import {
 } from "../../FrontEnd/ast.ts";
 
 import { RuntimeVal, MK_NULL, FunctionVal, ArrayVal, ObjectVal } from "../values.ts";
-import { evaluate } from "../interpreter.ts";
 import Enviroment from "../enviroment.ts";
 import { debug, error } from "../../FrontEnd/tracing.ts";
+
+import Parser from "../../FrontEnd/parser.ts";
+import { createGlobalENV } from "../enviroment.ts";
+import { evaluate } from "../interpreter.ts";
 
 export function eval_program(program: Program, env: Enviroment): RuntimeVal {
   let lastEvaluated: RuntimeVal = MK_NULL();
@@ -25,12 +28,24 @@ export function eval_program(program: Program, env: Enviroment): RuntimeVal {
   return lastEvaluated;
 }
 
-export function eval_import_stmt (_stmt: ImportStmt, _env: Enviroment): RuntimeVal {
+export async function eval_import_stmt (stmt: ImportStmt) {
   // 1: consturct the module path
   // 2: Add the new module to the gloable scope
   // 3: Declare the module
   // const parser = new Parser();
-  throw error("imports have not been implemented yet!");
+  // const module = parser.produceAST(stmt.fileName);
+  // return module;
+
+  const parser = new Parser();
+  const env = createGlobalENV();
+
+  const input = await Deno.readTextFile(stmt.fileName);
+  console.log(input);
+  const program = parser.produceAST(input);
+  console.log(program);
+  const result = evaluate(program, env);
+  console.log(result);
+  return result;
 }
 
 export function eval_var_decl(
