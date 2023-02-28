@@ -387,5 +387,4 @@ func async fibonacciSequence (n){
 # recursion is one of the central ideas of computer science. 
 
 # imports
-import math from "math.ql"
-# info(math[x])
+import test from "math.ql"

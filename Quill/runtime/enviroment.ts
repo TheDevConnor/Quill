@@ -857,7 +857,6 @@ export function createGlobalENV() {
     return MK_NUMBER(string.value.length);
   }
   stringLookUpTable.set("len", MK_STATIC_BUILTIN_HANDLER(lengthOfaString));
-  env.declareVar("len", MK_STATIC_BUILTIN_HANDLER(lengthOfaString), true);
 
   // Picks a random number between two given numbers
   function randomFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {

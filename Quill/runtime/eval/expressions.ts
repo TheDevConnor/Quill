@@ -266,7 +266,7 @@ export function eval_member_expr(
   
   switch (object.type) {
     case "object":
-      const objectCase = evaluate(member.object, env) as ObjectVal;
+      const objectCase = object as ObjectVal;
       // console.log("Object\n", objectCase.properties)
 
       const objectProperty = member.property as Identifier  
@@ -288,7 +288,7 @@ export function eval_member_expr(
 
     case "string":
       // Not fully working
-      const stringCase = evaluate(member.property, env) as StringVal;
+      const stringCase = object as StringVal;
       console.log("string", stringCase)
 
       const stringProperty = member.property as Identifier

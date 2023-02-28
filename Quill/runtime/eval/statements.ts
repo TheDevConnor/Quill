@@ -12,7 +12,7 @@ import {
   ImportStmt,
 } from "../../FrontEnd/ast.ts";
 
-import { RuntimeVal, MK_NULL, FunctionVal, ArrayVal, ObjectVal } from "../values.ts";
+import { RuntimeVal, MK_NULL, FunctionVal, ArrayVal, ObjectVal, NativeFunctionVal } from "../values.ts";
 import Enviroment from "../enviroment.ts";
 import { debug, error } from "../../FrontEnd/tracing.ts";
 
@@ -27,6 +27,8 @@ export function eval_program(program: Program, env: Enviroment): RuntimeVal {
   }
   return lastEvaluated;
 }
+
+const moduleLookUp = new Map<string, Program>();
 
 export async function eval_import_stmt (stmt: ImportStmt) {
   // 1: consturct the module path
@@ -43,9 +45,14 @@ export async function eval_import_stmt (stmt: ImportStmt) {
   console.log(input);
   const program = parser.produceAST(input);
   console.log(program);
-  const result = evaluate(program, env);
-  console.log(result);
-  return result;
+
+  // const result = moduleLookUp.set(stmt.name, program.body) as unknown as NativeFunctionVal;
+  // console.log(result);
+  
+  const module = { type: "module", name: stmt.name, value: program.body } as unknown as ObjectVal;
+  console.log(module);
+
+  return env.declareVar(stmt.name, module, true);
 }
 
 export function eval_var_decl(
