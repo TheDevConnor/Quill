@@ -28,31 +28,26 @@ export function eval_program(program: Program, env: Enviroment): RuntimeVal {
   return lastEvaluated;
 }
 
-const moduleLookUp = new Map<string, Program>();
-
 export async function eval_import_stmt (stmt: ImportStmt) {
   // 1: consturct the module path
   // 2: Add the new module to the gloable scope
-  // 3: Declare the module
-  // const parser = new Parser();
-  // const module = parser.produceAST(stmt.fileName);
-  // return module;
+  // 3: Declare the module in the global scope
 
   const parser = new Parser();
   const env = createGlobalENV();
 
   const input = await Deno.readTextFile(stmt.fileName);
-  console.log(input);
+  // console.log(input);
   const program = parser.produceAST(input);
-  console.log(program);
-
-  // const result = moduleLookUp.set(stmt.name, program.body) as unknown as NativeFunctionVal;
-  // console.log(result);
+  // console.log(program);
   
   const module = { type: "module", name: stmt.name, value: program.body } as unknown as ObjectVal;
-  console.log(module);
+  // console.log(module);
 
-  return env.declareVar(stmt.name, module, true);
+  const result = env.declareVar(stmt.name, module, false)
+  console.log(result)
+
+  return result
 }
 
 export function eval_var_decl(
