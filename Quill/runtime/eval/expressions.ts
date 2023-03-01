@@ -289,10 +289,10 @@ export function eval_member_expr(
     case "string":
       // Not fully working
       const stringCase = object as StringVal;
-      console.log("string", stringCase)
+      // console.log("string", stringCase)
 
       const stringProperty = member.property as Identifier
-      console.log("property", stringProperty)
+      // console.log("property", stringProperty)
 
 
       if (!stringLookUpTable.has(stringProperty.symbol)) {
@@ -300,7 +300,7 @@ export function eval_member_expr(
       }
 
       const staticMethod = stringLookUpTable.get(stringProperty.symbol) as NativeFunctionVal;
-      console.log(staticMethod)
+      // console.log(staticMethod)
 
       if (!staticMethod) {
         throw error(`Connot resolve '${stringCase.type}' as it does not exist! 2`)
