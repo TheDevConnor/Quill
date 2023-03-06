@@ -17,7 +17,7 @@ import {
   trace,
   format,
   debug,
-} from "../FrontEnd/tracing.ts";
+} from "https://raw.githubusercontent.com/AtomicGamer9523/quillstd/main/std/tracing/tracing.ts";
 
 import {
   stringLookUpTable,

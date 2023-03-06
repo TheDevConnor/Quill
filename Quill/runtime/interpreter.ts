@@ -70,7 +70,7 @@ import {
 } from "./eval/statements.ts";
 
 import Enviroment from "./enviroment.ts";
-import * as tracer from "../FrontEnd/tracing.ts";
+import * as tracer from "https://raw.githubusercontent.com/AtomicGamer9523/quillstd/main/std/tracing/tracing.ts";
 
 export function evaluate(astNode: Stmt, env: Enviroment): RuntimeVal {
   // tracer.trace("Evaluating ast node: " + tracer.format(astNode.kind));
