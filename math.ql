@@ -1,4 +1,4 @@
-func test (a, b) {
+func test1 (a, b) {
     return a + b
 }
 

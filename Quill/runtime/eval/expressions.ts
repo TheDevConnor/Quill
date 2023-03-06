@@ -35,7 +35,8 @@ import {
   MK_NUMBER,
   ArrayVal,
   MK_STATIC_BUILTIN_HANDLER,
-  StaticFunctionCall
+  StaticFunctionCall,
+ModuleVal
 } from "../values.ts";
 
 import Enviroment from "../enviroment.ts";
@@ -255,6 +256,7 @@ export function enal_identifier(
 
 export const stringLookUpTable = new Map<string, RuntimeVal>();
 export const numberLookUpTable = new Map<number, RuntimeVal>();
+export const moduleLookUpTable = new Map<string, RuntimeVal>();
 export const booleanLookUpTable = new Map<boolean, RuntimeVal>();
 
 export function eval_member_expr(
@@ -312,6 +314,32 @@ export function eval_member_expr(
         return fn(stringCase)
       })
       return clouser;
+
+    case "module":
+      const moduleCase = object as ModuleVal;
+      console.log("module", moduleCase)
+
+      const moduleProperty = member.property as Identifier
+      console.log("property", moduleProperty)
+
+      if (!moduleLookUpTable.has(moduleProperty.symbol)) {
+        throw error(`Connot resolve '${moduleCase.type}' as it does not exist! 2`)
+      }
+
+      const moduleMethod = moduleLookUpTable.get(moduleProperty.symbol) as NativeFunctionVal;
+      console.log(moduleMethod)
+
+      if (!moduleMethod) {
+        throw error(`Connot resolve '${moduleCase.type}' as it does not exist! 2`)
+      }
+
+      const moduleFn = moduleMethod.call as StaticFunctionCall;
+
+      const moduleClouser = MK_NATIVE_FUNCTION((args: RuntimeVal[], env: Enviroment) => {
+        return moduleFn(moduleCase)
+      })
+
+      return moduleClouser;
 
     default:
       throw error(`Cannot resolve '${member.object.kind}' as it does not exist! 3`)

@@ -182,7 +182,7 @@ export function evaluate(astNode: Stmt, env: Enviroment): RuntimeVal {
       return eval_object_expr(astNode as ObjectLiteral, env);
 
     case "ImportStmt":
-      return eval_import_stmt(astNode as ImportStmt);
+      return eval_import_stmt(astNode as ImportStmt, env) as unknown as RuntimeVal;
 
     case "TernaryExpr":
       return eval_ternary_expr(astNode as TernaryExpr, env);

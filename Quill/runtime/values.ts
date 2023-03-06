@@ -74,6 +74,12 @@ export function MK_STRING(s = String) {
   return { value: s, type: "string" } as unknown as StringVal;
 }
 
+export interface ModuleVal extends RuntimeVal {
+  type: "module";
+  name: string;
+  value: RuntimeVal;
+}
+
 export interface FunctionVal extends RuntimeVal {
   type: "function";
   name: string;

@@ -14,11 +14,13 @@ import {
 
 import { RuntimeVal, MK_NULL, FunctionVal, ArrayVal, ObjectVal } from "../values.ts";
 import Enviroment from "../enviroment.ts";
-// import { debug, error } from "https://raw.githubusercontent.com/AtomicGamer9523/quillstd/main/std/tracing/tracing.ts";
+import { debug, error } from "https://raw.githubusercontent.com/AtomicGamer9523/quillstd/main/std/tracing/tracing.ts";
 
 import Parser from "../../FrontEnd/parser.ts";
 import { createGlobalENV } from "../enviroment.ts";
 import { evaluate } from "../interpreter.ts";
+import { moduleLookUpTable } from "./expressions.ts"
+
 
 export function eval_program(program: Program, env: Enviroment): RuntimeVal {
   let lastEvaluated: RuntimeVal = MK_NULL();
@@ -28,26 +30,41 @@ export function eval_program(program: Program, env: Enviroment): RuntimeVal {
   return lastEvaluated;
 }
 
-export async function eval_import_stmt(stmt: ImportStmt) {
+export async function eval_import_stmt (stmt: ImportStmt, env: Enviroment) {
   // 1: consturct the module path
   // 2: Add the new module to the gloable scope
   // 3: Declare the module in the global scope
 
   const parser = new Parser();
-  const env = createGlobalENV();
-
+  // const moduleEnv = createGlobalENV();
+  
   const input = await Deno.readTextFile(stmt.fileName);
+
+  if (!input) {
+    error("File not found! " + stmt.fileName);
+  }
+
   // console.log(input);
-  const program = parser.produceAST(input);
+  const program = parser.produceModuleAST(input) as Program;
   // console.log(program);
 
-  const module = { type: "module", name: stmt.name, value: program.body } as unknown as ObjectVal;
-  // console.log(module);
+  // Use the moduleLooUpTable to check if the module has already been imported
+  // If it has, then just return the module
+  // If it hasn't, then import the module and add it to the moduleLooUpTable
+  const module = moduleLookUpTable.get(stmt.name);  
+  if (module) {
+    return module;
+  }
 
-  const result = env.declareVar(stmt.name, module, false)
-  console.log(result)
+  const moduleResult = eval_program(program, env) as ObjectVal;
+  moduleLookUpTable.set(stmt.name, moduleResult);
+  const result = env.declareVar(stmt.name, moduleResult, true);
+  console.log("Imported module: " + stmt.name);
+  console.log("Module: " + stmt.name + " has been added to the moduleLookUpTable");
+  console.log("ModuleLookUpTable: " + moduleLookUpTable);
+  // console.log(env);
 
-  return result
+  return result;
 }
 
 export function eval_var_decl(

@@ -102,6 +102,21 @@ export default class Parser {
     return program;
   }
 
+  public produceModuleAST(sourceCode: string): Program {
+    this.tokens = tokenize(sourceCode);
+    const program: Program = {
+      kind: "Program",
+      body: [],
+    };
+
+    // Parse until end of file
+    while (this.not_eof()) {
+      program.body.push(this.parse_stmt());
+    }
+
+    return program;
+  }
+
   // Handle complex statement types
   private parse_stmt(): Stmt {
     const currentToken = this.at();
