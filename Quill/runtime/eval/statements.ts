@@ -12,9 +12,9 @@ import {
   ImportStmt,
 } from "../../FrontEnd/ast.ts";
 
-import { RuntimeVal, MK_NULL, FunctionVal, ArrayVal, ObjectVal, NativeFunctionVal } from "../values.ts";
+import { RuntimeVal, MK_NULL, FunctionVal, ArrayVal, ObjectVal } from "../values.ts";
 import Enviroment from "../enviroment.ts";
-import { debug, error } from "https://raw.githubusercontent.com/AtomicGamer9523/quillstd/main/std/tracing/tracing.ts";
+// import { debug, error } from "https://raw.githubusercontent.com/AtomicGamer9523/quillstd/main/std/tracing/tracing.ts";
 
 import Parser from "../../FrontEnd/parser.ts";
 import { createGlobalENV } from "../enviroment.ts";

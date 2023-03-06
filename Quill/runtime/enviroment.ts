@@ -557,7 +557,7 @@ export function createGlobalENV() {
       throw "Push function takes an array and a value";
     }
 
-    return MK_ARRAY([...arg1.value, arg2]);
+    return MK_ARRAY(arg1.value.concat(arg2));
   }
   // A built in function to pop a value from an array
   function popFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
@@ -699,7 +699,7 @@ export function createGlobalENV() {
       throw "Pull function takes a value that is in the array";
     }
 
-    return MK_ARRAY([...arg1.value.slice(0, index), ...arg1.value.slice(index + 1)]);
+    return MK_ARRAY(arg1.value.slice(0, index).concat(arg1.value.slice(index + 1)));
   }
   // A built in function to get the sum of an array
   function sumFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
