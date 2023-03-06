@@ -37,7 +37,7 @@ import {
 
 import { Token, tokenize, TokenType } from "./lexer.ts";
 // deno-lint-ignore no-unused-vars
-import { error, trace, info, debug } from "./tracing.ts";
+import { error, trace, info, debug } from "https://raw.githubusercontent.com/AtomicGamer9523/quillstd/main/std/tracing/tracing.ts";
 
 /**
  * Frontend for producing a valid AST from sourcode

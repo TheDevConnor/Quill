@@ -40,7 +40,7 @@ import {
 
 import Enviroment from "../enviroment.ts";
 import { evaluate } from "../interpreter.ts";
-import { error, info, debug, trace } from "../../FrontEnd/tracing.ts";
+import { error, info, debug, trace } from "https://raw.githubusercontent.com/AtomicGamer9523/quillstd/main/std/tracing/tracing.ts";
 
 function eval_numeric_binary_expr(
   leftHandSide: NumberVal,
