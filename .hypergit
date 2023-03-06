@@ -1,0 +1,14 @@
+[HYPERGIT]
+VERSION="0.1.0"
+[HYPERGIT.THIS]
+HEAD="refs/heads/master"
+URL="https://github.com/AtomicGamer9523/Quill"
+FECTH="+refs/heads/*:refs/remotes/origin/*"
+BARE=false
+LATEST_COMMIT="faacfc41af09c7b246e1edc5fedae438aeb38c58"
+[HYPERGIT.UPSTREAM]
+HEAD="refs/heads/master"
+URL="https://github.com/TheDevConnor/Quill.git"
+FECTH="+refs/heads/*:refs/remotes/upstream/*"
+BARE=false
+LATEST_COMMIT="faacfc41af09c7b246e1edc5fedae438aeb38c58"
