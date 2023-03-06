@@ -1,9 +1,0 @@
-{
-    "deno.enable": true,
-    "deno.unstable": true,
-    "workbench.colorCustomizations": {
-        "tab.activeBackground": "#383b3b",
-        "minimap.background": "#00000000",
-        "scrollbar.shadow": "#00000000"
-    }
-}

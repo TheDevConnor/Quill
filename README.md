@@ -1,4 +1,5 @@
 # Quill Language
+
 ![LangCount](https://img.shields.io/github/languages/count/TheRealHiThere/Quill)
 ![CodeSize](https://img.shields.io/github/languages/code-size/TheRealHiThere/Quill)
 ![Contributors](https://img.shields.io/github/contributors/TheRealHiThere/Quill)
@@ -11,12 +12,19 @@ Quill runs on Deno, a better JS runtime. Plan on making our on QVM (Quill Virtua
 
 # Using Quill
 
-Pull the repository 
+Clone the repository
+
+```shell
+git clone https://github.com/TheDevConnor/Quill --recurse-submodules
+cd Quill/Quill
 ```
-$ git clone https://github.com/TheDevConnor/Quill --recurse-submodules
-$ cd Quill/Quill
+
+You can then use Deno (NodeJS is untested) to run:
+
+```shell
+./run --allow-env --allow-read
+# Can someone on linux test this?
 ```
-You can then use Deno (NodeJS is untested) to run main.ts ($ deno run main.ts)
 
 # Here is a simple example of a Quill program:
 
@@ -35,6 +43,7 @@ Example 4:
 ![image](./Images/code4.png)
 
 ## Acknowledgements
- - [Typescript](https://github.com/microsoft/TypeScript)
- - [DenoJS](https://deno.land/)
- - [How to write a Good readme](https://bulldogjob.com/news/449-how-to-write-a-good-readme-for-your-github-project)
+
+- [Typescript](https://github.com/microsoft/TypeScript)
+- [DenoJS](https://deno.land/)
+- [How to write a Good readme](https://bulldogjob.com/news/449-how-to-write-a-good-readme-for-your-github-project)

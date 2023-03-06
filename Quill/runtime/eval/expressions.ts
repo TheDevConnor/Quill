@@ -17,7 +17,7 @@ import {
   GreaterThanOrEqualsExpr,
   LessThanOrEqualsExpr,
   ImportStmt,
-TernaryExpr,
+  TernaryExpr,
 } from "../../FrontEnd/ast.ts";
 
 import {
@@ -263,17 +263,17 @@ export function eval_member_expr(
 ): RuntimeVal {
   // String, Number, Boolean, Object
   const object = evaluate(member.object, env) as RuntimeVal;
-  
+
   switch (object.type) {
     case "object":
       const objectCase = object as ObjectVal;
       // console.log("Object\n", objectCase.properties)
 
-      const objectProperty = member.property as Identifier  
+      const objectProperty = member.property as Identifier
       // console.log("Property\n", objectProperty)
       // console.log("Computed\n", member.computed)
 
-      if(!objectProperty || objectProperty.kind !== "Identifier"){
+      if (!objectProperty || objectProperty.kind !== "Identifier") {
         throw error(`cannot resolve '${member.property.kind}' as it does not exist!`)
       }
 
@@ -296,7 +296,7 @@ export function eval_member_expr(
 
 
       if (!stringLookUpTable.has(stringProperty.symbol)) {
-          throw error(`Connot resolve '${stringCase.type}' as it does not exist! 2`)
+        throw error(`Connot resolve '${stringCase.type}' as it does not exist! 2`)
       }
 
       const staticMethod = stringLookUpTable.get(stringProperty.symbol) as NativeFunctionVal;
@@ -308,13 +308,13 @@ export function eval_member_expr(
 
       const fn = staticMethod.call as StaticFunctionCall;
 
-      const clouser = MK_NATIVE_FUNCTION((args: RuntimeVal[], env: Enviroment) => { 
+      const clouser = MK_NATIVE_FUNCTION((args: RuntimeVal[], env: Enviroment) => {
         return fn(stringCase)
       })
       return clouser;
-      
-      default:
-        throw error(`Cannot resolve '${member.object.kind}' as it does not exist! 3`)
+
+    default:
+      throw error(`Cannot resolve '${member.object.kind}' as it does not exist! 3`)
   }
 }
 

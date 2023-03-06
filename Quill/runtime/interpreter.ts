@@ -32,7 +32,7 @@ import {
   ElseStmt,
   StringLiteral,
   ImportStmt,
-TernaryExpr,
+  TernaryExpr,
 } from "../FrontEnd/ast.ts";
 
 import {
@@ -52,7 +52,7 @@ import {
   eval_object_expr,
   eval_or_expr,
   eval_plus_equals_expr,
-eval_ternary_expr,
+  eval_ternary_expr,
 } from "./eval/expressions.ts";
 
 import {
@@ -66,7 +66,7 @@ import {
   eval_for_stmt,
   eval_else_stmt,
   eval_array_literal,
-eval_import_stmt,
+  eval_import_stmt,
 } from "./eval/statements.ts";
 
 import Enviroment from "./enviroment.ts";
@@ -79,7 +79,7 @@ export function evaluate(astNode: Stmt, env: Enviroment): RuntimeVal {
     tracer.error("Invalid AST node: " + astNode);
   }
 
-  switch(astNode.kind) {
+  switch (astNode.kind) {
     case "NumericLiteral":
       return {
         value: (astNode as NumericLiteral).value,

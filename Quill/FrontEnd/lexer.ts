@@ -4,74 +4,74 @@
 //------------------------------------------------------------
 
 export enum TokenType {
-// Literal Types
-Number,
-Identifier,
-String,
+  // Literal Types
+  Number,
+  Identifier,
+  String,
 
-// Keywords
-Import,
-FROM,
+  // Keywords
+  Import,
+  FROM,
 
-Var,
-Const,
-FUNC,
-ASYNC,
-ARRAY,
-IF,
-ELSE,
-ELIF,
-TERNARY,
-WHILE,
-FOR,
-CHAR,
-PULL,
-
-
-// Operators
-ARROWUP,
-DASH,
-
-GT,
-GTE,
-EQUALTO,
-LT,
-LTE,
-NOT,
-AND,
-OR,
-NULL,
-PLUSEQUAL,
-MINUSEQUAL,
-
-OpenParen,
-CloseParen,
-
-OPENBRACE,
-CLOSEBRACE,
-
-OPENBRACKET,
-CLOSEBRACKET,
-
-HASH,
+  Var,
+  Const,
+  FUNC,
+  ASYNC,
+  ARRAY,
+  IF,
+  ELSE,
+  ELIF,
+  TERNARY,
+  WHILE,
+  FOR,
+  CHAR,
+  PULL,
 
 
-// Grouping * Operators
-BinaryOperator,
-Equals,
-Semicolen,
-COLON,
-QuestionMark,
-TernaryColon,
-COMMA,
-DOT,
-UNDERSCORE,
-THEN,
-RETURN,
+  // Operators
+  ARROWUP,
+  DASH,
+
+  GT,
+  GTE,
+  EQUALTO,
+  LT,
+  LTE,
+  NOT,
+  AND,
+  OR,
+  NULL,
+  PLUSEQUAL,
+  MINUSEQUAL,
+
+  OpenParen,
+  CloseParen,
+
+  OPENBRACE,
+  CLOSEBRACE,
+
+  OPENBRACKET,
+  CLOSEBRACKET,
+
+  HASH,
 
 
-// Special
-EOF,
+  // Grouping * Operators
+  BinaryOperator,
+  Equals,
+  Semicolen,
+  COLON,
+  QuestionMark,
+  TernaryColon,
+  COMMA,
+  DOT,
+  UNDERSCORE,
+  THEN,
+  RETURN,
+
+
+  // Special
+  EOF,
 }
 
 /**
@@ -180,12 +180,12 @@ export function tokenize(sourceCode: string): Token[] {
       tokens.push(token(src.shift(), TokenType.UNDERSCORE, Line));
     } else if (src[0] == ".") {
       tokens.push(token(src.shift(), TokenType.DOT, Line));
-    } 
+    }
     // Handle ternary operator
     else if (src[0] == "?") {
       tokens.push(token(src.shift(), TokenType.QuestionMark, Line));
     }
-     // HANDLE MULTICHARACTER KEYWORDS, TOKENS, IDENTIFIERS ETC...
+    // HANDLE MULTICHARACTER KEYWORDS, TOKENS, IDENTIFIERS ETC...
     else if (src[0] == ";") {
       tokens.push(token(src.shift(), TokenType.Semicolen, Line));
     } else if (src[0] == ":") {
@@ -215,8 +215,8 @@ export function tokenize(sourceCode: string): Token[] {
       } else {
         tokens.push(token(src.shift(), TokenType.Equals, Line));
       }
-    } 
-    
+    }
+
     else if (src[0] == ",") {
       tokens.push(token(src.shift(), TokenType.COMMA, Line));
     } else if (src[0] == "!" && src[1] == "=") {
@@ -237,7 +237,7 @@ export function tokenize(sourceCode: string): Token[] {
       tokens.push(token(src.shift(), TokenType.MINUSEQUAL, Line));
       src.shift();
     }
-    
+
     // HANDLE WHITESPACE
     else if (isskippable(src[0])) {
       src.shift();

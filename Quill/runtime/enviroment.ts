@@ -8,7 +8,7 @@ import {
   MK_STRING,
   RuntimeVal,
   MK_STATIC_BUILTIN_HANDLER,
-StringVal,
+  StringVal,
 } from "./values.ts";
 import {
   info,
@@ -19,7 +19,7 @@ import {
   debug,
 } from "../FrontEnd/tracing.ts";
 
-import { 
+import {
   stringLookUpTable,
   numberLookUpTable,
 } from "./eval/expressions.ts";
@@ -194,7 +194,7 @@ export function createGlobalENV() {
     }
 
     return MK_NUMBER(arg1.value % arg2.value);
-  }  
+  }
   // A built in function that handles sin of radians
   function sinFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
     if (args.length !== 1) {
@@ -933,7 +933,7 @@ export default class Enviroment {
       return this;
     }
 
-    if(this.variables.has(obj)){
+    if (this.variables.has(obj)) {
       let val = this.variables.get(obj)?.value;
       console.log(val);
     }
@@ -941,7 +941,7 @@ export default class Enviroment {
     if (this.parent == undefined) {
       throw `Cannot resolve '${varname}' as it does not exist!`;
     }
-    
+
     return this.parent.resolve(obj, varname);
   }
 
