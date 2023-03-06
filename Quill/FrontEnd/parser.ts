@@ -79,8 +79,7 @@ export default class Parser {
     const prev = this.tokens.shift() as Token;
     if (!prev || prev.type != type) {
       throw new Error(
-        `[Parser] Error: ${errMessage} line: ${this.at().line} - Expecting: ${
-          this.at().value
+        `[Parser] Error: ${errMessage} line: ${this.at().line} - Expecting: ${this.at().value
         }`
       );
     }
@@ -322,7 +321,7 @@ export default class Parser {
       if (isConstant) {
         error(
           "Cannot declare a constant without a value being assigned" +
-            this.at().value
+          this.at().value
         );
       }
 
@@ -562,12 +561,12 @@ export default class Parser {
     // console.log(condition);
 
     this.expect(TokenType.QuestionMark, "Expected '?' in ternary expression");
-    
+
     const thenExpr = this.parse_expr(); // Parse the 'then' expression
     // console.log(thenExpr);
 
     this.expect(TokenType.TernaryColon, "Expected ':' in ternary expression");
-    
+
     const elseExpr = this.parse_expr(); // Parse the 'else' expression
     // console.log(elseExpr);
 
@@ -578,7 +577,7 @@ export default class Parser {
       elseExpr,
     } as TernaryExpr;
   }
-  
+
 
   private parse_assignment_expr(): Expr {
     const left = this.parse_object_expr();
@@ -823,10 +822,10 @@ export default class Parser {
       default:
         error(
           `\x1b[31m[Parser Error]\x1b[0m Unexpected token found during parsing! On line: '` +
-            `\x1b[31m${this.at().line}\x1b[0m` +
-            "' Of type: '" +
-            `\x1b[31m${this.at().value}\x1b[0m` +
-            "'"
+          `\x1b[31m${this.at().line}\x1b[0m` +
+          "' Of type: '" +
+          `\x1b[31m${this.at().value}\x1b[0m` +
+          "'"
         );
         Deno.exit(1);
     }

@@ -5,7 +5,7 @@ import { evaluate } from "./runtime/interpreter.ts";
 runTime("./test.ql")
 // rtt();
 
-async function runTime(filename: string){
+async function runTime(filename: string) {
     const parser = new Parser();
     const env = createGlobalENV();
 
@@ -15,7 +15,7 @@ async function runTime(filename: string){
     // console.log(result);
 }
 
-function rtt () {
+function rtt() {
     const parser = new Parser();
     const env = createGlobalENV();
 
@@ -33,7 +33,7 @@ function rtt () {
         const program = parser.produceAST(input);
 
 
-	const result = evaluate(program, env);
-    	console.log(result);
+        const result = evaluate(program, env);
+        console.log(result);
     }
 }

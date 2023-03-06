@@ -134,7 +134,7 @@ export interface TernaryExpr {
   elseExpr: Expr;
 }
 
-export interface Expr extends Stmt {}
+export interface Expr extends Stmt { }
 
 export interface AssignmentExpr extends Expr {
   kind: "AssignmentExpr";
@@ -167,17 +167,17 @@ export interface LessThanExpr extends Expr {
 }
 
 export interface GreaterThanOrEqualsExpr extends Expr {
-    kind: "GreaterThanOrEqualsExpr";
-    left: Expr;
-    right: Expr;
-    operator: ">=";
+  kind: "GreaterThanOrEqualsExpr";
+  left: Expr;
+  right: Expr;
+  operator: ">=";
 }
 
 export interface LessThanOrEqualsExpr extends Expr {
-    kind: "LessThanOrEqualsExpr";
-    left: Expr;
-    right: Expr;
-    operation: "<=";
+  kind: "LessThanOrEqualsExpr";
+  left: Expr;
+  right: Expr;
+  operation: "<=";
 }
 
 export interface EqualsExpr extends Expr {

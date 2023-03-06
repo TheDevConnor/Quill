@@ -28,7 +28,7 @@ export function eval_program(program: Program, env: Enviroment): RuntimeVal {
   return lastEvaluated;
 }
 
-export async function eval_import_stmt (stmt: ImportStmt) {
+export async function eval_import_stmt(stmt: ImportStmt) {
   // 1: consturct the module path
   // 2: Add the new module to the gloable scope
   // 3: Declare the module in the global scope
@@ -40,7 +40,7 @@ export async function eval_import_stmt (stmt: ImportStmt) {
   // console.log(input);
   const program = parser.produceAST(input);
   // console.log(program);
-  
+
   const module = { type: "module", name: stmt.name, value: program.body } as unknown as ObjectVal;
   // console.log(module);
 
