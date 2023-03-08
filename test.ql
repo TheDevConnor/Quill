@@ -387,7 +387,29 @@ func async fibonacciSequence (n){
 # recursion is one of the central ideas of computer science. 
 
 # imports
-import ran from "math.ql"
+# import ran from "math.ql"
 
-have string := "hello world"
-string
+# An example of Generacs in QL
+# Generics are a way to create a function that can 
+# be used with different types of data.
+
+# func genericsExample <T> (obj: T){
+# 	# T is the type of data
+# 	# a and b are the parameters
+# 	# a and b are of type T
+#  	return info(obj.len())
+# }
+
+have string := "Hello World"
+have number := 5
+have boolean := true
+array array_test [1, 2, 3, 4, 5]
+
+tern (0 > 1) 
+	? trace(string.lower()) 
+	: trace(random(1, 100))
+
+# genericsExample(string)
+# genericsExample(number)
+# genericsExample(boolean)
+# genericsExample(array_test)

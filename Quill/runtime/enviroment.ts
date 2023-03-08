@@ -75,8 +75,311 @@ export function createGlobalENV() {
     true
   );
 
-  // A built in function that handles addition and can take in either one or two arguments
-  function addFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+  builtInNativeFunctions(env);
+  builtInStringFunctions();
+  builtInArrayFunctions(env);
+  builtInMathFunctions(env);
+
+  // TODO: a built in function that handles graphics
+  // TODO: a built in function that handles sound
+  // TODO: a built in function that handles sockets
+  // TODO: a built in function that handles importing files
+
+  return env;
+}
+
+function builtInNativeFunctions(env: Enviroment) {
+  // A built in break function that will break out of a loop
+  function breakFunction(_args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    throw "break";
+  }
+  // a built in function for null values
+  function nullFunction(_args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    return MK_NULL();
+  }
+  // A built in function to get the date
+  function dateFunction(_args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    return MK_NUMBER(new Date().getDate());
+  }
+  // A built in function to get the time
+  function timeFunction(_args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    return MK_NUMBER(new Date().getTime());
+  }
+  
+  env.declareVar("date", MK_NATIVE_FUNCTION(dateFunction), true);
+  env.declareVar("time", MK_NATIVE_FUNCTION(timeFunction), true);
+  env.declareVar("break", MK_NATIVE_FUNCTION(breakFunction), true);
+  env.declareVar("null", MK_NATIVE_FUNCTION(nullFunction), true);
+}
+
+function builtInStringFunctions(){
+  function lengthOfaString(string: StringVal): RuntimeVal {
+    return MK_NUMBER(string.value.length);
+  }
+  stringLookUpTable.set("len", MK_STATIC_BUILTIN_HANDLER(lengthOfaString));
+
+  function toUpperCase(string: StringVal): RuntimeVal {
+    return MK_STRING(string.value.toUpperCase());
+  }
+  stringLookUpTable.set("upper", MK_STATIC_BUILTIN_HANDLER(toUpperCase));
+
+  function toLowerCase(string: StringVal): RuntimeVal {
+    return MK_STRING(string.value.toLowerCase())
+  }
+  stringLookUpTable.set("lower", MK_STATIC_BUILTIN_HANDLER(toLowerCase));
+
+}
+
+function builtInArrayFunctions(env: Enviroment){
+  // A buitl in function to push a value to an array
+  function pushFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    if (args.length !== 2) {
+      throw "Push function takes two arguments";
+    }
+
+    const [arg1, arg2] = args;
+
+    if (arg1.type !== "array") {
+      throw "Push function takes an array and a value";
+    }
+
+    return MK_ARRAY(arg1.value.concat(arg2));
+  }
+  // A built in function to pop a value from an array
+  function popFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    if (args.length !== 1) {
+      throw "Pop function takes one argument";
+    }
+
+    const [arg] = args;
+
+    if (arg.type !== "array") {
+      throw "Pop function takes an array";
+    }
+
+    if (arg.value.length === 0) {
+      throw "Pop function takes an array with at least one element";
+    }
+
+    return MK_ARRAY(arg.value.slice(0, -1));
+  }
+  // A built in function to get the length of an array
+  function lengthFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    if (args.length !== 1) {
+      throw "Length function takes one argument";
+    }
+
+    const [arg] = args;
+
+    if (arg.type !== "array") {
+      throw "Length function takes an array";
+    }
+
+    return MK_NUMBER(arg.value.length);
+  }
+  // A built in function to get the first element of an array
+  function firstFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    if (args.length !== 1) {
+      throw "First function takes one argument";
+    }
+
+    const [arg] = args;
+
+    if (arg.type !== "array") {
+      throw "First function takes an array";
+    }
+
+    if (arg.value.length === 0) {
+      throw "First function takes an array with at least one element";
+    }
+
+    return arg.value[0];
+  }
+  // A built in function to get the last element of an array
+  function lastFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    if (args.length !== 1) {
+      throw "Last function takes one argument";
+    }
+
+    const [arg] = args;
+
+    if (arg.type !== "array") {
+      throw "Last function takes an array";
+    }
+
+    if (arg.value.length === 0) {
+      throw "Last function takes an array with at least one element";
+    }
+
+    return arg.value[arg.value.length - 1];
+  }
+  // A built in function to get the nth element of an array
+  function nthFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    if (args.length !== 2) {
+      throw "Nth function takes two arguments";
+    }
+
+    const [arg1, arg2] = args;
+
+    if (arg1.type !== "array") {
+      throw "Nth function takes an array and a number";
+    }
+
+    if (arg2.type !== "number") {
+      throw "Nth function takes an array and a number";
+    }
+
+    if (arg1.value.length === 0) {
+      throw "Nth function takes an array with at least one element";
+    }
+
+    if (arg2.value < 0 || arg2.value >= arg1.value.length) {
+      throw "Nth function takes a number in the range of the array";
+    }
+
+    return arg1.value[arg2.value];
+  }
+  // A built in function to get the index of an element in an array
+  function indexOfFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    if (args.length !== 2) {
+      throw "Index of function takes two arguments";
+    }
+
+    const [arg1, arg2] = args;
+
+    if (arg1.type !== "array") {
+      throw "Index of function takes an array and a value";
+    }
+
+    if (arg1.value.length === 0) {
+      throw "Index of function takes an array with at least one element";
+    }
+
+    const index = arg1.value.findIndex((v: { value: any; }) => v.value === arg2.value);
+
+    if (index === -1) {
+      throw "Index of function takes a value that is in the array";
+    }
+
+    return MK_NUMBER(index);
+  }
+  // A built in function that pulls from an array
+  function pullFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    if (args.length !== 2) {
+      throw "Pull function takes two arguments";
+    }
+
+    const [arg1, arg2] = args;
+
+    if (arg1.type !== "array") {
+      throw "Pull function takes an array and a value";
+    }
+
+    if (arg1.value.length === 0) {
+      throw "Pull function takes an array with at least one element";
+    }
+
+    const index = arg1.value.findIndex((v: { value: any; }) => v.value === arg2.value);
+
+    if (index === -1) {
+      throw "Pull function takes a value that is in the array";
+    }
+
+    return MK_ARRAY(arg1.value.slice(0, index).concat(arg1.value.slice(index + 1)));
+  }
+  // A built in function to get the sum of an array
+  function sumFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    if (args.length !== 1) {
+      throw "Sum function takes one argument";
+    }
+
+    const [arg] = args;
+
+    if (arg.type !== "array") {
+      throw "Sum function takes an array";
+    }
+
+    if (arg.value.length === 0) {
+      throw "Sum function takes an array with at least one element";
+    }
+
+    return MK_NUMBER(arg.value.reduce((acc: number, v: { value: number; }) => acc + v.value, 0));
+  }
+  // A built in function that will handle appending to an array
+  function appendFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    if (args.length !== 2) {
+      throw "Append function takes two arguments";
+    }
+
+    const [arg1, arg2] = args;
+
+    if (arg1.type !== "array") {
+      throw "Append function takes an array and a value";
+    }
+
+    return MK_ARRAY(arg1.value.concat(arg2));
+  }
+
+  env.declareVar("push", MK_NATIVE_FUNCTION(pushFunction), true);
+  env.declareVar("pop", MK_NATIVE_FUNCTION(popFunction), true);
+  env.declareVar("pull", MK_NATIVE_FUNCTION(pullFunction), true);
+  env.declareVar("length", MK_NATIVE_FUNCTION(lengthFunction), true);
+  env.declareVar("first", MK_NATIVE_FUNCTION(firstFunction), true);
+  env.declareVar("last", MK_NATIVE_FUNCTION(lastFunction), true);
+  env.declareVar("nth", MK_NATIVE_FUNCTION(nthFunction), true);
+  env.declareVar("indexOf", MK_NATIVE_FUNCTION(indexOfFunction), true);
+  env.declareVar("sumArray", MK_NATIVE_FUNCTION(sumFunction), true);
+  env.declareVar("append", MK_NATIVE_FUNCTION(appendFunction), true);
+}
+
+function builtInMathFunctions(env: Enviroment) {
+  function radToDegFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    if (args.length !== 1) {
+      throw "Rad to deg function takes one argument";
+    }
+
+    const [arg] = args;
+
+    if (arg.type !== "number") {
+      throw "Rad to deg function takes a number";
+    }
+
+    return MK_NUMBER(arg.value * (180 / Math.PI));
+  }
+  // A built in function to convert degrees to radians
+  function degToRadFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    if (args.length !== 1) {
+      throw "Deg to rad function takes one argument";
+    }
+
+    const [arg] = args;
+
+    if (arg.type !== "number") {
+      throw "Deg to rad function takes a number";
+    }
+
+    return MK_NUMBER(arg.value * (Math.PI / 180));
+  }
+  // A built in function to define a number as a degree
+  function degFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    if (args.length !== 1) {
+      throw "Deg function takes one argument";
+    }
+
+    const [arg] = args;
+
+    if (arg.type !== "number") {
+      throw "Deg function takes a number";
+    }
+
+    return MK_NUMBER(arg.value * (Math.PI / 180));
+  }
+  // Pi
+  function piFunction(_args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+    return MK_NUMBER(Math.PI);
+  }
+   // A built in function that handles addition and can take in either one or two arguments
+   function addFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
     if (args.length === 0) {
       throw "Add function takes at least one argument";
     }
@@ -545,256 +848,22 @@ export function createGlobalENV() {
 
     return MK_NUMBER(Number(max[0]));
   }
-  // A buitl in function to push a value to an array
-  function pushFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+  // Picks a random number between two given numbers
+  function randomFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
     if (args.length !== 2) {
-      throw "Push function takes two arguments";
+      throw "Random function takes two arguments";
     }
 
-    const [arg1, arg2] = args;
+    const [min, max] = args;
 
-    if (arg1.type !== "array") {
-      throw "Push function takes an array and a value";
+    if (min.type !== "number" || max.type !== "number") {
+      throw "Random function takes two numbers";
     }
 
-    return MK_ARRAY(arg1.value.concat(arg2));
+    return MK_NUMBER(Math.random() * (max.value - min.value) + min.value);
   }
-  // A built in function to pop a value from an array
-  function popFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
-    if (args.length !== 1) {
-      throw "Pop function takes one argument";
-    }
 
-    const [arg] = args;
-
-    if (arg.type !== "array") {
-      throw "Pop function takes an array";
-    }
-
-    if (arg.value.length === 0) {
-      throw "Pop function takes an array with at least one element";
-    }
-
-    return MK_ARRAY(arg.value.slice(0, -1));
-  }
-  // A built in function to get the length of an array
-  function lengthFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
-    if (args.length !== 1) {
-      throw "Length function takes one argument";
-    }
-
-    const [arg] = args;
-
-    if (arg.type !== "array") {
-      throw "Length function takes an array";
-    }
-
-    return MK_NUMBER(arg.value.length);
-  }
-  // A built in function to get the first element of an array
-  function firstFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
-    if (args.length !== 1) {
-      throw "First function takes one argument";
-    }
-
-    const [arg] = args;
-
-    if (arg.type !== "array") {
-      throw "First function takes an array";
-    }
-
-    if (arg.value.length === 0) {
-      throw "First function takes an array with at least one element";
-    }
-
-    return arg.value[0];
-  }
-  // A built in function to get the last element of an array
-  function lastFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
-    if (args.length !== 1) {
-      throw "Last function takes one argument";
-    }
-
-    const [arg] = args;
-
-    if (arg.type !== "array") {
-      throw "Last function takes an array";
-    }
-
-    if (arg.value.length === 0) {
-      throw "Last function takes an array with at least one element";
-    }
-
-    return arg.value[arg.value.length - 1];
-  }
-  // A built in function to get the nth element of an array
-  function nthFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
-    if (args.length !== 2) {
-      throw "Nth function takes two arguments";
-    }
-
-    const [arg1, arg2] = args;
-
-    if (arg1.type !== "array") {
-      throw "Nth function takes an array and a number";
-    }
-
-    if (arg2.type !== "number") {
-      throw "Nth function takes an array and a number";
-    }
-
-    if (arg1.value.length === 0) {
-      throw "Nth function takes an array with at least one element";
-    }
-
-    if (arg2.value < 0 || arg2.value >= arg1.value.length) {
-      throw "Nth function takes a number in the range of the array";
-    }
-
-    return arg1.value[arg2.value];
-  }
-  // A built in function to get the index of an element in an array
-  function indexOfFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
-    if (args.length !== 2) {
-      throw "Index of function takes two arguments";
-    }
-
-    const [arg1, arg2] = args;
-
-    if (arg1.type !== "array") {
-      throw "Index of function takes an array and a value";
-    }
-
-    if (arg1.value.length === 0) {
-      throw "Index of function takes an array with at least one element";
-    }
-
-    const index = arg1.value.findIndex((v: { value: any; }) => v.value === arg2.value);
-
-    if (index === -1) {
-      throw "Index of function takes a value that is in the array";
-    }
-
-    return MK_NUMBER(index);
-  }
-  // A built in function that pulls from an array
-  function pullFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
-    if (args.length !== 2) {
-      throw "Pull function takes two arguments";
-    }
-
-    const [arg1, arg2] = args;
-
-    if (arg1.type !== "array") {
-      throw "Pull function takes an array and a value";
-    }
-
-    if (arg1.value.length === 0) {
-      throw "Pull function takes an array with at least one element";
-    }
-
-    const index = arg1.value.findIndex((v: { value: any; }) => v.value === arg2.value);
-
-    if (index === -1) {
-      throw "Pull function takes a value that is in the array";
-    }
-
-    return MK_ARRAY(arg1.value.slice(0, index).concat(arg1.value.slice(index + 1)));
-  }
-  // A built in function to get the sum of an array
-  function sumFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
-    if (args.length !== 1) {
-      throw "Sum function takes one argument";
-    }
-
-    const [arg] = args;
-
-    if (arg.type !== "array") {
-      throw "Sum function takes an array";
-    }
-
-    if (arg.value.length === 0) {
-      throw "Sum function takes an array with at least one element";
-    }
-
-    return MK_NUMBER(arg.value.reduce((acc: number, v: { value: number; }) => acc + v.value, 0));
-  }
-  // A built in function to get the date
-  function dateFunction(_args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
-    return MK_NUMBER(new Date().getDate());
-  }
-  // A built in function to get the time
-  function timeFunction(_args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
-    return MK_NUMBER(new Date().getTime());
-  }
-  // A built in function that will handle appending to an array
-  // function appendFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
-  //   if (args.length !== 2) {
-  //     throw "Append function takes two arguments";
-  //   }
-
-  //   const [arg1, arg2] = args;
-
-  //   if (arg1.type !== "array") {
-  //     throw "Append function takes an array and a value";
-  //   }
-
-  //   return MK_ARRAY([...arg1.value, arg2]);
-  // }
-  // A built in break function that will break out of a loop
-  function breakFunction(_args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
-    throw "break";
-  }
-  // a built in function for null values
-  function nullFunction(_args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
-    return MK_NULL();
-  }
-  // A built in function to convert radians to degrees
-  function radToDegFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
-    if (args.length !== 1) {
-      throw "Rad to deg function takes one argument";
-    }
-
-    const [arg] = args;
-
-    if (arg.type !== "number") {
-      throw "Rad to deg function takes a number";
-    }
-
-    return MK_NUMBER(arg.value * (180 / Math.PI));
-  }
-  // A built in function to convert degrees to radians
-  function degToRadFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
-    if (args.length !== 1) {
-      throw "Deg to rad function takes one argument";
-    }
-
-    const [arg] = args;
-
-    if (arg.type !== "number") {
-      throw "Deg to rad function takes a number";
-    }
-
-    return MK_NUMBER(arg.value * (Math.PI / 180));
-  }
-  // A built in function to define a number as a degree
-  function degFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
-    if (args.length !== 1) {
-      throw "Deg function takes one argument";
-    }
-
-    const [arg] = args;
-
-    if (arg.type !== "number") {
-      throw "Deg function takes a number";
-    }
-
-    return MK_NUMBER(arg.value * (Math.PI / 180));
-  }
-  // Pi
-  function piFunction(_args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
-    return MK_NUMBER(Math.PI);
-  }
+  env.declareVar("random", MK_NATIVE_FUNCTION(randomFunction), true);
 
   env.declareVar("add", MK_NATIVE_FUNCTION(addFunction), true);
   env.declareVar("sub", MK_NATIVE_FUNCTION(subFunction), true);
@@ -805,16 +874,6 @@ export function createGlobalENV() {
   env.declareVar("median", MK_NATIVE_FUNCTION(medianFunction), true);
   env.declareVar("mean", MK_NATIVE_FUNCTION(meanFunction), true);
   env.declareVar("mode", MK_NATIVE_FUNCTION(modeFunction), true);
-
-  env.declareVar("push", MK_NATIVE_FUNCTION(pushFunction), true);
-  env.declareVar("pop", MK_NATIVE_FUNCTION(popFunction), true);
-  env.declareVar("pull", MK_NATIVE_FUNCTION(pullFunction), true);
-  env.declareVar("length", MK_NATIVE_FUNCTION(lengthFunction), true);
-  env.declareVar("first", MK_NATIVE_FUNCTION(firstFunction), true);
-  env.declareVar("last", MK_NATIVE_FUNCTION(lastFunction), true);
-  env.declareVar("nth", MK_NATIVE_FUNCTION(nthFunction), true);
-  env.declareVar("indexOf", MK_NATIVE_FUNCTION(indexOfFunction), true);
-  env.declareVar("sumArray", MK_NATIVE_FUNCTION(sumFunction), true);
 
   env.declareVar("floor", MK_NATIVE_FUNCTION(floorFunction), true);
   env.declareVar("ceil", MK_NATIVE_FUNCTION(ceilFunction), true);
@@ -840,47 +899,10 @@ export function createGlobalENV() {
   env.declareVar("log", MK_NATIVE_FUNCTION(logBaseFunction), true); // Custom base log
   env.declareVar("log10", MK_NATIVE_FUNCTION(log10Function), true); // Base 10 log
 
-  env.declareVar("date", MK_NATIVE_FUNCTION(dateFunction), true);
-  env.declareVar("time", MK_NATIVE_FUNCTION(timeFunction), true);
-
-  // env.declareVar("append", MK_NATIVE_FUNCTION(appendFunction), true);
-  env.declareVar("break", MK_NATIVE_FUNCTION(breakFunction), true);
-  env.declareVar("null", MK_NATIVE_FUNCTION(nullFunction), true);
-
   env.declareVar("radToDeg", MK_NATIVE_FUNCTION(radToDegFunction), true);
   env.declareVar("degToRad", MK_NATIVE_FUNCTION(degToRadFunction), true);
   env.declareVar("deg", MK_NATIVE_FUNCTION(degFunction), true);
   env.declareVar("pi", MK_NATIVE_FUNCTION(piFunction), true);
-
-  // A built in function to get the length of a string
-  function lengthOfaString(string: StringVal): RuntimeVal {
-    return MK_NUMBER(string.value.length);
-  }
-  stringLookUpTable.set("len", MK_STATIC_BUILTIN_HANDLER(lengthOfaString));
-  console.log(stringLookUpTable);
-
-  // Picks a random number between two given numbers
-  function randomFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
-    if (args.length !== 2) {
-      throw "Random function takes two arguments";
-    }
-
-    const [min, max] = args;
-
-    if (min.type !== "number" || max.type !== "number") {
-      throw "Random function takes two numbers";
-    }
-
-    return MK_NUMBER(Math.random() * (max.value - min.value) + min.value);
-  }
-  env.declareVar("random", MK_NATIVE_FUNCTION(randomFunction), true);
-
-  // TODO: a built in function that handles graphics
-  // TODO: a built in function that handles sound
-  // TODO: a built in function that handles sockets
-  // TODO: a built in function that handles importing files
-
-  return env;
 }
 
 export default class Enviroment {
