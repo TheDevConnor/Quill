@@ -33,6 +33,7 @@ import {
   StringLiteral,
   ImportStmt,
   TernaryExpr,
+GenericFunctionDeclaration,
 } from "../FrontEnd/ast.ts";
 
 import {
@@ -67,6 +68,7 @@ import {
   eval_else_stmt,
   eval_array_literal,
   eval_import_stmt,
+eval_generic_decl,
 } from "./eval/statements.ts";
 
 import Enviroment from "./enviroment.ts";
@@ -186,6 +188,9 @@ export function evaluate(astNode: Stmt, env: Enviroment): RuntimeVal {
 
     case "TernaryExpr":
       return eval_ternary_expr(astNode as TernaryExpr, env);
+
+    case "GenericFunctionDeclaration":
+      return eval_generic_decl(astNode as GenericFunctionDeclaration, env)
 
     // Handle unimplemented ast nodes
     default:

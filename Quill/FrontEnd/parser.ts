@@ -33,6 +33,7 @@ import {
   StringLiteral,
   ImportStmt,
   TernaryExpr,
+  GenericFunctionDeclaration,
 } from "./ast.ts";
 
 import { Token, tokenize, TokenType } from "./lexer.ts";
@@ -244,6 +245,7 @@ export default class Parser {
   // Handles the import statement
   // import { foo, bar } from "foo.ql";
   private parse_import_stmt(): ImportStmt {
+
     this.eat(); // Eat the 'import' keyword
 
     const name = this.expect(TokenType.Identifier, "Expected import name").value;
@@ -265,6 +267,17 @@ export default class Parser {
   private parse_function_decl(): Stmt {
     this.eat(); // Eat the 'func' keyword
 
+    // Check to see if the function is private or public
+    let isPublic = false;
+    if (this.at().type == TokenType.Public) {
+      isPublic = true;
+      this.eat(); // Eat the 'public' keyword
+    } else if (this.at().type == TokenType.Private) {
+      this.eat(); // Eat the 'private' keyword
+    }
+
+    console.log("Is public", isPublic);
+
     let isAsync = false;
     if (this.at().type == TokenType.ASYNC) {
       isAsync = true;
@@ -275,6 +288,30 @@ export default class Parser {
       TokenType.Identifier,
       "Expected function name"
     ).value;
+
+    let Generic = false;
+    if (this.at().type == TokenType.LT) {
+      Generic = true;
+      this.eat(); // Eat the '<' symbol
+
+      const typeVar = this.expect(
+        TokenType.Identifier,
+        "Expected type variable name"
+      ).value;
+
+      this.expect(TokenType.GT, "Expected '>' after type variable name");
+
+      const generic = {
+        name,
+        typeVar,
+        kind: "GenericFunctionDeclaration",
+      } as unknown as GenericFunctionDeclaration;
+
+      // console.log("Generic function", generic);
+
+      return generic;
+    }
+
     const args = this.parse_args();
     const params: string[] = [];
     for (const arg of args) {
@@ -298,10 +335,12 @@ export default class Parser {
     this.expect(TokenType.CLOSEBRACKET, "Expected '}' after function body");
 
     const func = {
-      body,
       name,
-      parameters: params,
+      access: isPublic,
       async: isAsync,
+      parameters: params,
+      body,
+      generic: Generic,
       kind: "FunctionDeclaration",
     } as unknown as FunctionDeclaration;
 
@@ -728,13 +767,21 @@ export default class Parser {
 
   private parse_args(): Expr[] {
     this.expect(TokenType.OpenParen, "Expected open parenthesis");
-    const args =
-      this.at().type == TokenType.CloseParen ? [] : this.parse_arguments_list();
+    const args = this.at().type == TokenType.CloseParen ? [] : this.parse_arguments_list();
 
     this.expect(
       TokenType.CloseParen,
       "Missing closing parenthesis inside arguments list"
     );
+    return args;
+  }
+
+  private parse_generic_args(): Expr[] {
+    this.expect(TokenType.Equals, "Expected '=' in generic type");
+    this.expect(TokenType.GT, "Expected '>' in generic type");
+
+    const args = this.parse_arguments_list();
+
     return args;
   }
 

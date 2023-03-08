@@ -49,7 +49,9 @@ export type NodeType =
   | "MinusEqualsExpr"
   | "StringLiteral"
   | "CharLiteral"
-  | "TernaryExpr";
+  | "TernaryExpr"
+
+  | "GenericFunctionDeclaration";
 
 export interface Stmt {
   kind: NodeType;
@@ -81,10 +83,12 @@ export interface ImportStmt extends Stmt {
 
 export interface FunctionDeclaration extends Stmt {
   kind: "FunctionDeclaration";
-  parameters: string[];
+  access: string;
   name: string;
+  parameters: string[];
   body: Stmt[] | null;
   async: boolean;
+  generic: boolean;
 }
 
 export interface ArrayLiteral extends Stmt {
@@ -269,4 +273,10 @@ export interface ObjectLiteral extends Expr {
 export interface ReturnStmt extends Expr {
   kind: "ReturnStmt";
   value: Expr;
+}
+
+export interface GenericFunctionDeclaration extends Stmt {
+  kind: "GenericFunctionDeclaration";
+  name: string;
+  typeVar: string;
 }

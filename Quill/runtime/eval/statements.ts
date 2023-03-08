@@ -10,6 +10,7 @@ import {
   ForStmt,
   ElseStmt,
   ImportStmt,
+GenericFunctionDeclaration,
 } from "../../FrontEnd/ast.ts";
 
 import { RuntimeVal, MK_NULL, FunctionVal, ArrayVal, ObjectVal } from "../values.ts";
@@ -139,10 +140,17 @@ export function eval_function_decl(
     parameters: declaration.parameters,
     declarationsENV: env,
     async: declaration.async,
+    access: declaration.access,
     body: declaration.body,
   } as unknown as FunctionVal;
 
-  return env.declareVar(declaration.name, func, true);
+  if(declaration.access === "public") {
+    env.declareVar(declaration.name, func, true);
+  } else {
+    env.declareVar(declaration.name, func, false);
+  }
+
+  return func;
 }
 
 export function eval_while_stmt(stmt: WhileStmt, env: Enviroment): RuntimeVal {
@@ -195,4 +203,12 @@ export function eval_pull_literal(
   } as ArrayVal;
 
   return array;
+}
+
+export function eval_generic_decl(
+  declaration: GenericFunctionDeclaration,
+  env: Enviroment
+): RuntimeVal {
+  console.log("Generic function declaration not implemented yet");
+  return MK_NULL();
 }

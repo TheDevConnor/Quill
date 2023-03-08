@@ -68,10 +68,12 @@ export enum TokenType {
   UNDERSCORE,
   THEN,
   RETURN,
-
+  Generic,
 
   // Special
   EOF,
+  Private,
+  Public,
 }
 
 /**
@@ -91,6 +93,8 @@ const KEYWORDS: Record<string, TokenType> = {
   while: TokenType.WHILE,
   for: TokenType.FOR,
   tern: TokenType.TERNARY,
+  public: TokenType.Public,
+  private: TokenType.Private,
 
   import: TokenType.Import,
   from: TokenType.FROM,
@@ -211,6 +215,9 @@ export function tokenize(sourceCode: string): Token[] {
     } else if (src[0] == "=") {
       if (src[1] == "=") {
         tokens.push(token(src.shift(), TokenType.EQUALTO, Line));
+        src.shift();
+      } else if (src[1] == ">") {
+        tokens.push(token(src.shift(), TokenType.Generic, Line));
         src.shift();
       } else {
         tokens.push(token(src.shift(), TokenType.Equals, Line));
