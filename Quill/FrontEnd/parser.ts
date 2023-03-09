@@ -276,8 +276,6 @@ export default class Parser {
       this.eat(); // Eat the 'private' keyword
     }
 
-    console.log("Is public", isPublic);
-
     let isAsync = false;
     if (this.at().type == TokenType.ASYNC) {
       isAsync = true;
