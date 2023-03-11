@@ -36,7 +36,8 @@ import {
 	ArrayVal,
 	MK_STATIC_BUILTIN_HANDLER,
 	StaticFunctionCall,
-	ModuleVal
+	ModuleVal,
+	MK_ARRAY,
 } from "../values.ts";
 
 import Enviroment from "../enviroment.ts";
@@ -255,9 +256,21 @@ export function enal_identifier(
 }
 
 export const stringLookUpTable = new Map<string, RuntimeVal>();
-export const numberLookUpTable = new Map<number, RuntimeVal>();
+export const numberLookUpTable = new Map<string, RuntimeVal>();
 export const moduleLookUpTable = new Map<string, RuntimeVal>();
-export const booleanLookUpTable = new Map<boolean, RuntimeVal>();
+export const booleanLookUpTable = new Map<string, RuntimeVal>();
+export const arrayLookUpTable = new Map<string, RuntimeVal>();
+export const functionLookUpTable = new Map<string, RuntimeVal>();
+export const nullLookUpTable = new Map<string, RuntimeVal>();
+
+export function eval_identifier(
+	ident: Identifier,
+	env: Enviroment
+): RuntimeVal {
+	const val = env.lookupVar(ident.symbol);
+	console.log("val", val);
+	return val;
+}
 
 export function eval_member_expr(
 	member: MemberExpr,
@@ -315,6 +328,83 @@ export function eval_member_expr(
 			})
 			return clouser;
 
+		case "boolean":
+			const booleanCase = object as BooleanVal;
+			// console.log("boolean", booleanCase)
+
+			const booleanProperty = member.property as Identifier
+			// console.log("property", booleanProperty)
+
+			if (!booleanLookUpTable.has(booleanProperty.symbol)) {
+				throw error(`Connot resolve '${booleanCase.type}' as it does not exist! 2`)
+			}
+
+			const booleanMethod = booleanLookUpTable.get(booleanProperty.symbol) as NativeFunctionVal;
+			// console.log(booleanMethod)
+
+			if (!booleanMethod) {
+				throw error(`Connot resolve '${booleanCase.type}' as it does not exist! 2`)
+			}
+
+			const booleanFn = booleanMethod.call as StaticFunctionCall;
+
+			const booleanClouser = MK_NATIVE_FUNCTION((args: RuntimeVal[], env: Enviroment) => {
+				return booleanFn(booleanCase)
+			})
+
+			return booleanClouser;
+
+		case "number":
+			const numberCase = object as NumberVal;
+			// console.log("number", numberCase)
+
+			const numberProperty = member.property as Identifier
+			// console.log("property", numberProperty)
+
+			if (!numberLookUpTable.has(numberProperty.symbol)) {
+				throw error(`Connot resolve '${numberCase.type}' as it does not exist! 2`)
+			}
+
+			const numberMethod = numberLookUpTable.get(numberProperty.symbol) as NativeFunctionVal;
+			// console.log(numberMethod)
+
+			if (!numberMethod) {
+				throw error(`Connot resolve '${numberCase.type}' as it does not exist! 2`)
+			}
+
+			const numberFn = numberMethod.call as StaticFunctionCall;
+
+			const numberClouser = MK_NATIVE_FUNCTION((args: RuntimeVal[], env: Enviroment) => {
+				return numberFn(numberCase)
+			})
+
+			return numberClouser;
+
+		case "array":
+			const arrayCase = object as ArrayVal;
+			// console.log("array", arrayCase)
+			
+			const arrayProperty = member.property as Identifier
+			// console.log("property", arrayProperty)
+
+			if (!arrayLookUpTable.has(arrayProperty.symbol)) {
+				throw error(`Connot resolve '${arrayCase.type}' as it does not exist! 2`)
+			}
+
+			const arrayMethod = arrayLookUpTable.get(arrayProperty.symbol) as NativeFunctionVal;
+
+			if (!arrayMethod) {
+				throw error(`Connot resolve '${arrayCase.type}' as it does not exist! 2`)
+			}
+
+			const arrayFn = arrayMethod.call as StaticFunctionCall;
+
+			const arrayClouser = MK_NATIVE_FUNCTION((args: RuntimeVal[], env: Enviroment) => {
+				return arrayFn(arrayCase)
+			})
+
+			return arrayClouser;
+
 		case "module":
 			const moduleCase = object as ModuleVal;
 			console.log("module", moduleCase)
@@ -340,6 +430,56 @@ export function eval_member_expr(
 			})
 
 			return moduleClouser;
+
+		case "function":
+			const functionCase = object as FunctionVal;
+			// console.log("function", functionCase)
+
+			const functionProperty = member.property as Identifier
+			// console.log("property", functionProperty)
+
+			if (!functionLookUpTable.has(functionProperty.symbol)) {
+				throw error(`Connot resolve '${functionCase.type}' as it does not exist! 2`)
+			}
+
+			const functionMethod = functionLookUpTable.get(functionProperty.symbol) as NativeFunctionVal;
+
+			if (!functionMethod) {
+				throw error(`Connot resolve '${functionCase.type}' as it does not exist! 2`)
+			}
+
+			const functionFn = functionMethod.call as StaticFunctionCall;
+
+			const functionClouser = MK_NATIVE_FUNCTION((args: RuntimeVal[], env: Enviroment) => {
+				return functionFn(functionCase)
+			})
+
+			return functionClouser;
+
+		case "null":
+			const nullCase = object as NullVal;
+			// console.log("null", nullCase)
+
+			const nullProperty = member.property as Identifier
+			// console.log("property", nullProperty)
+
+			if (!nullLookUpTable.has(nullProperty.symbol)) {
+				throw error(`Connot resolve '${nullCase.type}' as it does not exist! 2`)
+			}
+
+			const nullMethod = nullLookUpTable.get(nullProperty.symbol) as NativeFunctionVal;
+
+			if (!nullMethod) {
+				throw error(`Connot resolve '${nullCase.type}' as it does not exist! 2`)
+			}
+
+			const nullFn = nullMethod.call as StaticFunctionCall;
+
+			const nullClouser = MK_NATIVE_FUNCTION((args: RuntimeVal[], env: Enviroment) => {
+				return nullFn(nullCase)
+			})
+
+			return nullClouser;
 
 		default:
 			throw error(`Cannot resolve '${member.object.kind}' as it does not exist! 3`)

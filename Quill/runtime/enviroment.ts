@@ -22,6 +22,8 @@ import {
 import {
 	stringLookUpTable,
 	numberLookUpTable,
+	arrayLookUpTable,
+	booleanLookUpTable,
 } from "./eval/expressions.ts";
 
 export function createGlobalENV() {
@@ -33,48 +35,47 @@ export function createGlobalENV() {
 
 	// Define a native built in function
 	// A custom print function that only prints the value
-	// @TheDevConnor why was is 'console.log' ?
 	env.declareVar(
 		"info",
 		MK_NATIVE_FUNCTION((args, _scope) => {
-			info(args);
-			return MK_NULL();
+		  console.log(args.map((arg) => arg.value));
+		  return MK_NULL();
 		}),
 		true
-	);
-
-	function formatFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
-		trace(format(true, args.map((arg) => arg.value).join("")));
+	  );
+	
+	  function formatFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+		trace(format(true, "{" + args.map((arg) => arg.value).join("") + "}"));
 		return MK_NULL();
-	}
-	env.declareVar("trace", MK_NATIVE_FUNCTION(formatFunction), true);
-
-	function debugFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+	  }
+	  env.declareVar("trace", MK_NATIVE_FUNCTION(formatFunction), true);
+	
+	  function debugFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
 		debug(format(false, args));
 		return MK_NULL();
-	}
-	env.declareVar("debug", MK_NATIVE_FUNCTION(debugFunction), true);
-
-	function warnFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
-		warn(format(false, "{ " + args.map((arg) => arg.value).join("\n\t") + " }"));
+	  }
+	  env.declareVar("debug", MK_NATIVE_FUNCTION(debugFunction), true);
+	
+	  function warnFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+		warn(format(false, "{ " + args.map((arg) => arg.value).join("") + " }"));
 		return MK_NULL();
-	}
-	env.declareVar("warn", MK_NATIVE_FUNCTION(warnFunction), true);
-
-	function errorFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
+	  }
+	  env.declareVar("warn", MK_NATIVE_FUNCTION(warnFunction), true);
+	
+	  function errorFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
 		error(format(false, args));
 		return MK_NULL();
-	}
-	env.declareVar("error", MK_NATIVE_FUNCTION(errorFunction), true);
-
-	env.declareVar(
+	  }
+	  env.declareVar("error", MK_NATIVE_FUNCTION(errorFunction), true);
+	
+	  env.declareVar(
 		"input",
 		MK_NATIVE_FUNCTION((args, _scope) => {
-			const input = prompt(format(true, args));
-			return input ? MK_NUMBER(Number(input)) : MK_NULL();
+		  const input = prompt(format(true, args));
+		  return input ? MK_NUMBER(Number(input)) : MK_NULL();
 		}),
 		true
-	);
+	  );
 
 	builtInNativeFunctions(env);
 	builtInStringFunctions();
