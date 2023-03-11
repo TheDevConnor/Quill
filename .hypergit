@@ -11,4 +11,4 @@ HEAD="refs/heads/master"
 URL="https://github.com/TheDevConnor/Quill.git"
 FECTH="+refs/heads/*:refs/remotes/upstream/*"
 BARE=false
-LATEST_COMMIT="97c3ebfe1717741207146b76d1bfc1c5cb5d71a6"
+LATEST_COMMIT="de659ee8e1bd3f306cdc3af81f9c7f04053a35aa"
