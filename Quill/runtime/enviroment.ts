@@ -26,6 +26,20 @@ import {
 	booleanLookUpTable,
 } from "./eval/expressions.ts";
 
+function arg_formatter(args: RuntimeVal[]): any[] {
+	let res = [];
+	for(let arg of args) {
+		if(arg.type === "array") {
+			for(let val of arg.value) {
+				res.push(val["value"]);
+			}
+		} else {
+			res.push(arg.value);
+		}
+	}
+	return res;
+}
+
 export function createGlobalENV() {
 	const env = new Enviroment();
 	// Create Default Global Enviroment
@@ -38,44 +52,61 @@ export function createGlobalENV() {
 	env.declareVar(
 		"info",
 		MK_NATIVE_FUNCTION((args, _scope) => {
-		  console.log(args.map((arg) => arg.value));
-		  return MK_NULL();
+			const res = arg_formatter(args);
+			info(format(true, res.join(" ")));
+			return MK_NULL();
 		}),
 		true
-	  );
-	
-	  function formatFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
-		trace(format(true, "{" + args.map((arg) => arg.value).join("") + "}"));
-		return MK_NULL();
-	  }
-	  env.declareVar("trace", MK_NATIVE_FUNCTION(formatFunction), true);
-	
-	  function debugFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
-		debug(format(false, args));
-		return MK_NULL();
-	  }
-	  env.declareVar("debug", MK_NATIVE_FUNCTION(debugFunction), true);
-	
-	  function warnFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
-		warn(format(false, "{ " + args.map((arg) => arg.value).join("") + " }"));
-		return MK_NULL();
-	  }
-	  env.declareVar("warn", MK_NATIVE_FUNCTION(warnFunction), true);
-	
-	  function errorFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
-		error(format(false, args));
-		return MK_NULL();
-	  }
-	  env.declareVar("error", MK_NATIVE_FUNCTION(errorFunction), true);
-	
-	  env.declareVar(
+	);
+
+	env.declareVar(
+		"trace",
+		MK_NATIVE_FUNCTION((args, _scope) => {
+			const res = arg_formatter(args);
+			trace(format(true, res));
+			return MK_NULL();
+		}),
+		true
+	);
+
+	env.declareVar(
+		"debug",
+		MK_NATIVE_FUNCTION((args, _scope) => {
+			const res = arg_formatter(args);
+			debug(format(true, res));
+			return MK_NULL();
+		}),
+		true
+	);
+
+	env.declareVar(
+		"warn",
+		MK_NATIVE_FUNCTION((args, _scope) => {
+			const res = arg_formatter(args);
+			warn(format(true, res.join(" ")));
+			return MK_NULL();
+		}),
+		true
+	);
+
+	env.declareVar(
+		"error",
+		MK_NATIVE_FUNCTION((args, _scope) => {
+			const res = arg_formatter(args);
+			error(format(true, res.join(" ")));
+			return MK_NULL();
+		}),
+		true
+	);
+
+	env.declareVar(
 		"input",
 		MK_NATIVE_FUNCTION((args, _scope) => {
-		  const input = prompt(format(true, args));
-		  return input ? MK_NUMBER(Number(input)) : MK_NULL();
+			const input = prompt(format(true, args));
+			return input ? MK_NUMBER(Number(input)) : MK_NULL();
 		}),
 		true
-	  );
+	);
 
 	builtInNativeFunctions(env);
 	builtInStringFunctions();

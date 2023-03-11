@@ -116,5 +116,9 @@ if ((newVectorX2 < 0) && (newVectorY2 > 0)) || (newVectorX2 < 0) {
 have newBearing2 := 360 - (direction - 90)
 
 //  Now we print out the results
-trace("The speed or magnitude is: ", magnitude2)
-trace("The new bearing is: ", newBearing)
+info("The speed or magnitude is:", magnitude2)
+info("The new bearing is:", newBearing)
+
+array testTheArray [1, 2, 3, 4]
+array testTheArray2 [5, 6, 7, 8]
+trace(testTheArray, "testTheArray", testTheArray2)

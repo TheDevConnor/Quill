@@ -383,7 +383,7 @@ export function eval_member_expr(
 		case "array":
 			const arrayCase = object as ArrayVal;
 			// console.log("array", arrayCase)
-			
+
 			const arrayProperty = member.property as Identifier
 			// console.log("property", arrayProperty)
 
