@@ -5,10 +5,10 @@ HEAD="refs/heads/master"
 URL="https://github.com/AtomicGamer9523/Quill"
 FECTH="+refs/heads/*:refs/remotes/origin/*"
 BARE=false
-LATEST_COMMIT="7ca87e6edb49cb147e335b945471587406ee5e42"
+LATEST_COMMIT="97c3ebfe1717741207146b76d1bfc1c5cb5d71a6"
 [HYPERGIT.UPSTREAM]
 HEAD="refs/heads/master"
 URL="https://github.com/TheDevConnor/Quill.git"
 FECTH="+refs/heads/*:refs/remotes/upstream/*"
 BARE=false
-LATEST_COMMIT="6c66a9f05650cefd1f907fc435f2c3ddf044b627"
+LATEST_COMMIT="97c3ebfe1717741207146b76d1bfc1c5cb5d71a6"
