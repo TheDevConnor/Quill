@@ -3,8 +3,8 @@ import { createGlobalENV } from "./runtime/enviroment.ts";
 import { evaluate } from "./runtime/interpreter.ts";
 import { Parser } from "./frontend/parser.ts";
 
-runTime("./test.ql")
-// rtt();
+// runTime("./test.ql")
+ql();
 
 async function runTime(filename: string) {
     const parser = new Parser();
@@ -17,7 +17,7 @@ async function runTime(filename: string) {
     exit(result.value)
 }
 
-function rtt() {
+function ql() {
     const parser = new Parser();
     const env = createGlobalENV();
 
@@ -25,10 +25,22 @@ function rtt() {
     console.log("Type 'exit' to exit the REPL\n");
     // Continue Repl Until User Stops Or Types `exit`
     while (true) {
-        const input = prompt(">>> ");
+        const input = prompt("$ ");
         // Check for no user or exit keyword
         if (!input || input.includes("exit")) {
             Deno.exit(1);
+        }
+
+        // Clear Screen on clear keyword
+        if (input.includes("clear")) {
+            console.clear();
+            continue;
+        }
+
+        // Print the link to the repo if help keyword is used
+        if (input.includes("help")) {
+            console.log("Here is the link to our website!\nComing Soon!\n")
+            continue;
         }
 
         // Produce AST From sourc-code

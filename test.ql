@@ -122,3 +122,5 @@ info("The new bearing is:", newBearing)
 array testTheArray [1, 2, 3, 4]
 array testTheArray2 [5, 6, 7, 8]
 trace(testTheArray, "testTheArray", testTheArray2)
+
+import test from "math.ql"
