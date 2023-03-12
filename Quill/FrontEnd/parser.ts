@@ -35,20 +35,100 @@ import {
 	TernaryExpr,
 	GenericFunctionDeclaration,
 } from "./ast.ts";
-import { Token, tokenize, TokenType } from "../frontend/lexer.ts";
+import { Token, tokenize, TokenType } from "./lexer.ts";
 // deno-lint-ignore no-unused-vars
 import { error, trace, info, debug } from "../util/tracing.ts";
+
+
+function repeatChar(char: string, count: number) {
+	let str = ""
+	
+	for (let i = 0; i < count; i++) {
+		str += char;
+	}
+
+	return str;
+}
 
 /**
  * Frontend for producing a valid AST from sourcode
  */
 export class Parser {
 	private tokens: Token[] = [];
-	
-	filename: any;
+
+	private ogTokens: Token[] = [];
+
+	private errorPrintLine(lineNumber: number, bold = false) {
+		let line = lineNumber.toString()
+		const lineTokens = this.ogTokens.filter(t => t.line == lineNumber)
+		const BOLD = '\u001b[1m';
+		const RESET = '\u001b[0m'
+		const padding = 1;
+		line += " | " + repeatChar(" ", padding)
+		
+		if (lineNumber <= 0 || lineTokens.length == 0) {
+			return line;
+		}
+		
+
+		if (bold) {
+			line += BOLD
+		}
+		
+		let offset = 0;
+		for (let i = 0; i < lineTokens.length; i++) {
+			const token = lineTokens[i].value
+			line += token
+			offset += token.length
+			const nextToken = lineTokens[i + 1]
+
+			// console.log(lineTokens[i].position, offset, nextToken)
+
+			if(!nextToken) {
+				continue;				
+			}
+
+			if(nextToken.position != offset) {
+				const dif = Math.abs(nextToken.position - offset)
+				line += repeatChar(" ", dif)
+			}
+		}
+
+		if (bold) {
+			line += RESET;
+		}
+
+		return line;
+	}
+
+	public error_Msg(args: string) {
+		const tk = this.at();
+		const lineNumber = this.at().line;
+		let file = "test.ql"
+
+		// [src/test.ql->${lineNumber}:${tk.position}]::InvalidToken(${tk.value})
+		// 1 | have shipSpeedX := 0;
+		//   | 				     ^^^ // this is the position of the token in the line above
+		//   | 					  |
+		//   | 					  in file: 'test.ql'
+		//   | 					  of type: 'IDENTIFIER'
+
+		let msg = `[src/${file}->${lineNumber}:${tk.position}]::${args}\n`;
+		// Print the line before the error
+		msg += this.errorPrintLine(lineNumber - 1) + "\n";
+		msg += this.errorPrintLine(lineNumber, true) + "\n";
+		// Point to where the error is in the line
+		msg += repeatChar(" ", lineNumber.toString().length + 3 + tk.position + 1) + repeatChar("^^^", tk.value.length) + "\n";
+		// Print the line after the error
+		msg += this.errorPrintLine(lineNumber + 1) + "\n";
+
+		console.log(msg)
+
+		return msg;
+	}
 
 	/*
-	 * Determines if the parsing is complete and the END OF FILE Is reached.
+	  Determines if the parsing is complete and the END OF FILE Is reached.
 	 */
 	private not_eof(): boolean {
 		return this.tokens[0].type != TokenType.EOF;
@@ -64,33 +144,14 @@ export class Parser {
 	private next() {
 		return this.tokens[1] as Token;
 	}
-
-	private previous() {
-		// Find the previous line number
-		const currentLine = this.tokens[this.tokens.length - 1].line;
-		const prevLine = currentLine - 1;
 	
-		// Collect all the tokens on the previous line
-		const prevTokens: Token[] = [];
-		for (let i = this.tokens.length - 1; i >= 0; i--) {
-			if (this.tokens[i].line < prevLine) {
-				break;
-			}
-			if (this.tokens[i].line === prevLine) {
-				prevTokens.unshift(this.tokens[i]);
-			}
-		}
-	
-		return prevTokens;
-	}
-	
-	
-
 	/**
 	 * Returns the previous token and then advances the tokens array to the next value.
 	 */
 	private eat() {
 		const prev = this.tokens.shift() as Token;
+		// console.log(this.tokens)
+		// console.log(this.ogTokens)
 		return prev;
 	}															
 
@@ -101,10 +162,7 @@ export class Parser {
 	private expect(type: TokenType, errMessage: any) {
 		const prev = this.tokens.shift() as Token;
 		if (!prev || prev.type != type) {
-			throw new Error(
-				`[Parser] Error: ${errMessage} line: ${this.at().line} - Expecting: ${this.at().value
-				}`
-			);
+			this.error_Msg(errMessage);
 		}
 
 		return prev;
@@ -112,6 +170,12 @@ export class Parser {
 
 	public produceAST(sourceCode: string): Program {
 		this.tokens = tokenize(sourceCode);
+		this.ogTokens = [...this.tokens]
+
+		// for (const tk of this.tokens) {
+		// 	this.ogTokens.push(tk)
+		// }
+
 		const program: Program = {
 			kind: "Program",
 			body: [],
@@ -336,7 +400,7 @@ export class Parser {
 		const params: string[] = [];
 		for (const arg of args) {
 			if (arg.kind !== "Identifier") {
-				throw new Error("Expected Identifier inside function parameters");
+				"Expected Identifier inside function parameters";
 			}
 			params.push((arg as Identifier).symbol);
 		}
@@ -383,7 +447,7 @@ export class Parser {
 	parse_var_decl(): Stmt {
 		const isConstant = this.eat().type == TokenType.Const;
 		const identifier = this.expect(
-			TokenType.Identifier,
+			TokenType.Identifier, 
 			"Expected Identifier name following 'have' or 'const' keywords, or an underscore (_)"
 		).value;
 
@@ -393,10 +457,7 @@ export class Parser {
 		) {
 			this.eat();
 			if (isConstant) {
-				error(
-					"Cannot declare a constant without a value being assigned" +
-					this.at().value
-				);
+				this.error_Msg("Cannot declare a constant without a value.")
 			}
 
 			return {
@@ -407,16 +468,15 @@ export class Parser {
 		}
 
 		//Checks to see if the assignment operator is present and is :=
+		// this.expect(TokenType.WalarsOperation, "Expected ':=' after variable name");
 		if (
 			this.at().type === TokenType.COLON &&
 			this.next().type === TokenType.Equals
 		) {
 			this.eat();
 			this.eat();
-		} else if (this.at().type === TokenType.Equals) {
-			this.eat();
 		} else {
-			error("Expected ':=' after ':'.");
+			this.error_Msg("Expected ':=' after ':'.");
 		}
 
 		const declaration = {
@@ -706,10 +766,7 @@ export class Parser {
 
 			properties.push({ kind: "Property", value, key });
 			if (this.at().type != TokenType.CLOSEBRACKET) {
-				this.expect(
-					TokenType.COMMA,
-					"Expected comma or closing bracket following property",
-				);
+				this.expect(TokenType.COMMA, "Expected comma or closing bracket following property");
 			}
 		}
 
@@ -902,29 +959,7 @@ export class Parser {
 
 			// Unidentified Tokens and Invalid Code Reached
 			default:
-				error(`
-					\n Unexpected token found during parsing:
-					\n ${this.at().line} | 				${this.previous()}
-					\n                   | 				     ^^^
-					\n                   | 					  |
-					\n                   | 					  unexpected token
-					\n                   | 					  in file: '${this.filename}'
-					\n                   | 					  of type: '${this.at().type}'
-					\n                   | 					  error: '${this.at().value}'
-					\n                   | 					  at line: ${this.at().line}
-				`);
 				Deno.exit(1);
 		}
 	}
 }
-
-// TODO: Add in a rust like error msg
-// Unexpected token found during parsing:
-// 1 | have shipSpeedX := 0;
-//   | 				     ^^^
-//   | 					  |
-//   | 					  unexpected token
-//   | 					  in file: 'test.ql'
-//   | 					  of type: 'IDENTIFIER'
-//   | 					  error: ';'
-//   | 					  at line: 1

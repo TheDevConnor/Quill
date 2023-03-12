@@ -43,6 +43,7 @@ export enum TokenType {
 	NULL,
 	PLUSEQUAL,
 	MINUSEQUAL,
+	WalarsOperation,
 
 	OpenParen,
 	CloseParen,
@@ -102,13 +103,14 @@ const KEYWORDS: Record<string, TokenType> = {
 // Reoresents a single token from the source-code.
 export interface Token {
 	line: number; // Line number of the token;
+	position: number; // Position of the token in the line.
 	value: string; // contains the raw value as seen inside the source code.
 	type: TokenType; // tagged structure.
 }
 
 // Returns a token of a given type and value
-function token(value = " ", type: TokenType, line: number): Token {
-	return { value, type, line };
+function token(value = " ", type: TokenType, line: number, position: number): Token {
+	return { value, type, line, position };
 }
 
 /**
@@ -140,9 +142,11 @@ function isint(str: string) {
  *
  * - Returns a array of tokens.
  * - Does not modify the incoming string.
- */
+ */ 
+
 export function tokenize(sourceCode: string): Token[] {
 	let Line = 1;
+	let Position = 0;
 	const tokens = new Array<Token>();
 	const src = sourceCode.split("");
 
@@ -150,23 +154,17 @@ export function tokenize(sourceCode: string): Token[] {
 		// Check if the new line character is present
 		if (src[0] == "\n") {
 			Line++;
+			Position = 0
 		}
 
 		// Skip over any comments in the source code
-		if (src[0] === "/" && src[1] === "*") {
-			while (src.length > 0 && (src[0] !== "*" || src[1] !== "/")) {
-				src.shift();
-			}
-			src.shift();
-			src.shift();
-			continue;
-		} else if (src[0] === "#") {
-			while (src.length > 0 && src[0] !== "\n") {
+		else if (src[0] === "#") {
+			while (src.length > 0) {
 				src.shift();
 			}
 			continue;
 		} else if (src[0] === "/" && src[1] === "/") {
-			while (src.length > 0 && src[0] !== "\n") {
+			while (src.length > 0) {
 				src.shift();
 			}
 			continue;
@@ -174,85 +172,116 @@ export function tokenize(sourceCode: string): Token[] {
 
 		// BEGIN PARSING ONE CHARACTER TOKENS
 		if (src[0] == "(") {
-			tokens.push(token(src.shift(), TokenType.OpenParen, Line));
+			createToken(TokenType.OpenParen, src.shift())
+			// tokens.push(token(src.shift(), TokenType.OpenParen, Line, Position));
 		} else if (src[0] == ")") {
-			tokens.push(token(src.shift(), TokenType.CloseParen, Line));
+			createToken(TokenType.CloseParen, src.shift())
+			// tokens.push(token(src.shift(), TokenType.CloseParen, Line, Position));
 		} else if (src[0] == "[") {
-			tokens.push(token(src.shift(), TokenType.OPENBRACE, Line));
+			createToken(TokenType.OPENBRACE, src.shift())
+			// tokens.push(token(src.shift(), TokenType.OPENBRACE, Line, Position));
 		} else if (src[0] == "]") {
-			tokens.push(token(src.shift(), TokenType.CLOSEBRACE, Line));
+			createToken(TokenType.CLOSEBRACE, src.shift())
+			// tokens.push(token(src.shift(), TokenType.CLOSEBRACE, Line, Position));
 		} else if (src[0] == "{") {
-			tokens.push(token(src.shift(), TokenType.OPENBRACKET, Line));
+			createToken(TokenType.OPENBRACKET, src.shift())
+			// tokens.push(token(src.shift(), TokenType.OPENBRACKET, Line, Position));
 		} else if (src[0] == "}") {
-			tokens.push(token(src.shift(), TokenType.CLOSEBRACKET, Line));
+			createToken(TokenType.CLOSEBRACKET, src.shift())
+			// tokens.push(token(src.shift(), TokenType.CLOSEBRACKET, Line, Position));
 		} else if (src[0] == "_") {
-			tokens.push(token(src.shift(), TokenType.UNDERSCORE, Line));
+			createToken(TokenType.UNDERSCORE, src.shift())
+			// tokens.push(token(src.shift(), TokenType.UNDERSCORE, Line, Position));
 		} else if (src[0] == ".") {
-			tokens.push(token(src.shift(), TokenType.DOT, Line));
+			createToken(TokenType.DOT, src.shift())
+			// tokens.push(token(src.shift(), TokenType.DOT, Line, Position));
 		}
 		// Handle ternary operator
 		else if (src[0] == "?") {
-			tokens.push(token(src.shift(), TokenType.QuestionMark, Line));
+			createToken(TokenType.QuestionMark, src.shift())
+			// tokens.push(token(src.shift(), TokenType.QuestionMark, Line, Position));
 		}
 		// HANDLE MULTICHARACTER KEYWORDS, TOKENS, IDENTIFIERS ETC...
 		else if (src[0] == ";") {
-			tokens.push(token(src.shift(), TokenType.Semicolen, Line));
+			createToken(TokenType.Semicolen, src.shift())
+			// tokens.push(token(src.shift(), TokenType.Semicolen, Line, Position));
 		} else if (src[0] == ":") {
+			// if (src[1] == "=") {
+			// 	createToken(TokenType.WalarsOperation, src.shift())
+			// 	// tokens.push(token(src.shift(), TokenType.WalarsOperation, Line, Position));
+			// 	src.shift();
+			// }
 			if (tokens[tokens.length - 1].type === TokenType.Identifier) {
-				tokens.push(token(src.shift(), TokenType.COLON, Line));
+				createToken(TokenType.COLON, src.shift())
+				// tokens.push(token(src.shift(), TokenType.COLON, Line, Position));
 			} else {
-				tokens.push(token(src.shift(), TokenType.TernaryColon, Line));
+				createToken(TokenType.TernaryColon, src.shift())
+				// tokens.push(token(src.shift(), TokenType.TernaryColon, Line, Position));
 			}
 		} else if (src[0] == "<") {
 			if (src[1] == "=") {
-				tokens.push(token(src.shift(), TokenType.LTE, Line));
+				createToken(TokenType.LTE, src.shift())
+				// tokens.push(token(src.shift(), TokenType.LTE, Line, Position));
 				src.shift();
 			} else {
-				tokens.push(token(src.shift(), TokenType.LT, Line));
+				createToken(TokenType.LT, src.shift())
+				// tokens.push(token(src.shift(), TokenType.LT, Line, Position));
 			}
 		} else if (src[0] == ">") {
 			if (src[1] == "=") {
-				tokens.push(token(src.shift(), TokenType.GTE, Line));
+				createToken(TokenType.GTE, src.shift())
+				// tokens.push(token(src.shift(), TokenType.GTE, Line, Position));
 				src.shift();
 			} else {
-				tokens.push(token(src.shift(), TokenType.GT, Line));
+				createToken(TokenType.GT, src.shift())
+				// tokens.push(token(src.shift(), TokenType.GT, Line, Position));
 			}
 		} else if (src[0] == "=") {
 			if (src[1] == "=") {
-				tokens.push(token(src.shift(), TokenType.EQUALTO, Line));
+				createToken(TokenType.EQUALTO, src.shift())
+				// tokens.push(token(src.shift(), TokenType.EQUALTO, Line, Position));
 				src.shift();
 			} else if (src[1] == ">") {
-				tokens.push(token(src.shift(), TokenType.Generic, Line));
+				createToken(TokenType.Generic, src.shift())
+				// tokens.push(token(src.shift(), TokenType.Generic, Line, Position));
 				src.shift();
 			} else {
-				tokens.push(token(src.shift(), TokenType.Equals, Line));
+				createToken(TokenType.Equals, src.shift())
+				// tokens.push(token(src.shift(), TokenType.Equals, Line, Position));
 			}
 		}
 
 		else if (src[0] == ",") {
-			tokens.push(token(src.shift(), TokenType.COMMA, Line));
+			createToken(TokenType.COMMA, src.shift())
+			// tokens.push(token(src.shift(), TokenType.COMMA, Line, Position));
 		} else if (src[0] == "!" && src[1] == "=") {
-			tokens.push(token(src.shift(), TokenType.NOT, Line));
+			createToken(TokenType.NOT, src.shift())
+			// tokens.push(token(src.shift(), TokenType.NOT, Line, Position));
 			src.shift();
 		} else if (src[0] == "&" && src[1] == "&") {
-			tokens.push(token(src.shift(), TokenType.AND, Line));
+			createToken(TokenType.AND, src.shift())
+			// tokens.push(token(src.shift(), TokenType.AND, Line, Position));
 			src.shift();
 		} else if (src[0] == "|") {
 			if (src[1] == "|") {
-				tokens.push(token(src.shift(), TokenType.OR, Line));
+				createToken(TokenType.OR, src.shift())
+				// tokens.push(token(src.shift(), TokenType.OR, Line, Position));
 				src.shift();
 			}
 		} else if (src[0] == "+" && src[1] == "=") {
-			tokens.push(token(src.shift(), TokenType.PLUSEQUAL, Line));
+			createToken(TokenType.PLUSEQUAL, src.shift())
+			// tokens.push(token(src.shift(), TokenType.PLUSEQUAL, Line, Position));
 			src.shift();
 		} else if (src[0] == "-" && src[1] == "=") {
-			tokens.push(token(src.shift(), TokenType.MINUSEQUAL, Line));
+			// tokens.push(token(src.shift(), TokenType.MINUSEQUAL, Line, Position));
+			createToken(TokenType.MINUSEQUAL, src.shift())
 			src.shift();
 		}
 
 		// HANDLE WHITESPACE
 		else if (isskippable(src[0])) {
 			src.shift();
+			Position++
 		}
 		// HANDLE BINARY OPERATORS
 		else if (
@@ -262,7 +291,8 @@ export function tokenize(sourceCode: string): Token[] {
 			src[0] == "/" ||
 			src[0] == "%"
 		) {
-			tokens.push(token(src.shift(), TokenType.BinaryOperator, Line));
+			// tokens.push(token(src.shift(), TokenType.BinaryOperator, Line, Position));
+			createToken(TokenType.BinaryOperator, src.shift())
 		} // Handle Conditional & Assignment Tokens
 
 		// TODO:: HANDLE CHAR LITERALS
@@ -275,7 +305,8 @@ export function tokenize(sourceCode: string): Token[] {
 				}
 
 				// append new numeric token.
-				tokens.push(token(num, TokenType.Number, Line));
+				// tokens.push(token(num, TokenType.Number, Line, Position));
+				createToken(TokenType.Number, num)
 			}
 
 			// TODO:: HANDLE FLOAT LITERALS
@@ -288,7 +319,8 @@ export function tokenize(sourceCode: string): Token[] {
 
 				console.log(num);
 				// append new numeric token.
-				tokens.push(token(num, TokenType.Number, Line));
+				// tokens.push(token(num, TokenType.Number, Line, Position));
+				createToken(TokenType.Number, num)
 			}
 
 			// TODO:: HANDLE STRING LITERALS
@@ -306,7 +338,8 @@ export function tokenize(sourceCode: string): Token[] {
 					}
 				}
 
-				tokens.push(token(str, TokenType.String, Line));
+				// tokens.push(token(str, TokenType.String, Line, Position));
+				createToken(TokenType.String, str)
 			}
 
 			// Handle Identifier & Keyword Tokens.
@@ -324,10 +357,12 @@ export function tokenize(sourceCode: string): Token[] {
 				// If value is not undefined then the identifier is
 				// reconized keyword
 				if (typeof reserved == "number") {
-					tokens.push(token(ident, reserved, Line));
+					// tokens.push(token(ident, reserved, Line, Position));
+					createToken(reserved, ident)
 				} else {
 					// Unreconized name must mean user defined symbol.
-					tokens.push(token(ident, TokenType.Identifier, Line));
+					// tokens.push(token(ident, TokenType.Identifier, Line, Position));
+					createToken(TokenType.Identifier, ident)
 				}
 			} else if (isskippable(src[0])) {
 				// Skip uneeded chars.
@@ -345,6 +380,15 @@ export function tokenize(sourceCode: string): Token[] {
 		}
 	}
 
-	tokens.push({ type: TokenType.EOF, value: "EndOfFile", line: Line });
+	function createToken(type: TokenType, value = "") {
+		const tk = token(value, type, Line, Position);
+		// console.log(tk, Line, Position)
+		const tkLength = value.length
+
+		Position += tkLength
+		tokens.push(tk)
+	}
+
+	tokens.push({ type: TokenType.EOF, value: "EndOfFile", line: Line, position: Position });
 	return tokens;
 }

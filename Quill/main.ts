@@ -1,7 +1,6 @@
-import { exit } from "https://deno.land/std@0.171.0/node/process.ts";
 import { createGlobalENV } from "./runtime/enviroment.ts";
 import { evaluate } from "./runtime/interpreter.ts";
-import { Parser } from "./frontend/parser.ts";
+import { Parser } from "./FrontEnd/parser.ts";
 
 runTime("./test.ql")
 // ql();
@@ -12,10 +11,10 @@ async function runTime(filename: string) {
 
     const input = await Deno.readTextFile(filename);
     const program = parser.produceAST(input);
-    let result = evaluate(program, env);
+    const result = evaluate(program, env);
 }
 
-function ql() {
+function _ql() {
     const parser = new Parser();
     const env = createGlobalENV();
 

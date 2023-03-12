@@ -1,4 +1,5 @@
-import { Stmt, Expr } from "../frontend/ast.ts";
+// deno-lint-ignore-file
+import { Stmt, Expr } from "../FrontEnd/ast.ts";
 import Enviroment from "./enviroment.ts";
 export type ValueType =
 	| "null"

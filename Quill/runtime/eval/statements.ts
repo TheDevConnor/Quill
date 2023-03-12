@@ -11,14 +11,11 @@ import {
 	ElseStmt,
 	ImportStmt,
 	GenericFunctionDeclaration,
-} from "../../frontend/ast.ts";
+} from "../../FrontEnd/ast.ts";
 
 import { RuntimeVal, MK_NULL, FunctionVal, ArrayVal, ObjectVal } from "../values.ts";
 import Enviroment from "../enviroment.ts";
-import { debug, error } from "../../util/tracing.ts";
-
-import { Parser } from "../../frontend/parser.ts";
-import { createGlobalENV } from "../enviroment.ts";
+import { Parser } from "../../FrontEnd/parser.ts";
 import { evaluate } from "../interpreter.ts";
 import { moduleLookUpTable } from "./expressions.ts"
 
@@ -42,7 +39,7 @@ export async function eval_import_stmt(stmt: ImportStmt, env: Enviroment) {
 	const input = await Deno.readTextFile(stmt.fileName);
 
 	if (!input) {
-		error("File not found! " + stmt.fileName);
+		Error("File not found! " + stmt.fileName);
 	}
 
 	// console.log(input);
@@ -206,8 +203,8 @@ export function eval_pull_literal(
 }
 
 export function eval_generic_decl(
-	declaration: GenericFunctionDeclaration,
-	env: Enviroment
+	_declaration: GenericFunctionDeclaration,
+	_env: Enviroment
 ): RuntimeVal {
 	console.log("Generic function declaration not implemented yet");
 	return MK_NULL();
