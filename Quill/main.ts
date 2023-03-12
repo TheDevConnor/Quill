@@ -3,8 +3,8 @@ import { createGlobalENV } from "./runtime/enviroment.ts";
 import { evaluate } from "./runtime/interpreter.ts";
 import { Parser } from "./frontend/parser.ts";
 
-// runTime("./test.ql")
-ql();
+runTime("./test.ql")
+// ql();
 
 async function runTime(filename: string) {
     const parser = new Parser();
@@ -13,8 +13,6 @@ async function runTime(filename: string) {
     const input = await Deno.readTextFile(filename);
     const program = parser.produceAST(input);
     let result = evaluate(program, env);
-    result = result.type == "null" ? 0 : result.value;
-    exit(result.value)
 }
 
 function ql() {

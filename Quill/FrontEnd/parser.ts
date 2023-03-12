@@ -44,6 +44,8 @@ import { error, trace, info, debug } from "../util/tracing.ts";
  */
 export class Parser {
 	private tokens: Token[] = [];
+	
+	filename: any;
 
 	/*
 	 * Determines if the parsing is complete and the END OF FILE Is reached.
@@ -63,13 +65,34 @@ export class Parser {
 		return this.tokens[1] as Token;
 	}
 
+	private previous() {
+		// Find the previous line number
+		const currentLine = this.tokens[this.tokens.length - 1].line;
+		const prevLine = currentLine - 1;
+	
+		// Collect all the tokens on the previous line
+		const prevTokens: Token[] = [];
+		for (let i = this.tokens.length - 1; i >= 0; i--) {
+			if (this.tokens[i].line < prevLine) {
+				break;
+			}
+			if (this.tokens[i].line === prevLine) {
+				prevTokens.unshift(this.tokens[i]);
+			}
+		}
+	
+		return prevTokens;
+	}
+	
+	
+
 	/**
 	 * Returns the previous token and then advances the tokens array to the next value.
 	 */
 	private eat() {
 		const prev = this.tokens.shift() as Token;
 		return prev;
-	}
+	}															
 
 	/**
 	 * Returns the previous token and then advances the tokens array to the next value.
@@ -879,14 +902,29 @@ export class Parser {
 
 			// Unidentified Tokens and Invalid Code Reached
 			default:
-				error(
-					`\x1b[31m[Parser Error]\x1b[0m Unexpected token found during parsing! On line: '` +
-					`\x1b[31m${this.at().line}\x1b[0m` +
-					"' Of type: '" +
-					`\x1b[31m${this.at().value}\x1b[0m` +
-					"'"
-				);
+				error(`
+					\n Unexpected token found during parsing:
+					\n ${this.at().line} | 				${this.previous()}
+					\n                   | 				     ^^^
+					\n                   | 					  |
+					\n                   | 					  unexpected token
+					\n                   | 					  in file: '${this.filename}'
+					\n                   | 					  of type: '${this.at().type}'
+					\n                   | 					  error: '${this.at().value}'
+					\n                   | 					  at line: ${this.at().line}
+				`);
 				Deno.exit(1);
 		}
 	}
 }
+
+// TODO: Add in a rust like error msg
+// Unexpected token found during parsing:
+// 1 | have shipSpeedX := 0;
+//   | 				     ^^^
+//   | 					  |
+//   | 					  unexpected token
+//   | 					  in file: 'test.ql'
+//   | 					  of type: 'IDENTIFIER'
+//   | 					  error: ';'
+//   | 					  at line: 1

@@ -107,7 +107,7 @@ export interface Token {
 }
 
 // Returns a token of a given type and value
-function token(value = "", type: TokenType, line: number): Token {
+function token(value = " ", type: TokenType, line: number): Token {
 	return { value, type, line };
 }
 
