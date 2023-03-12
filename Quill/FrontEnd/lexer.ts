@@ -206,11 +206,12 @@ export function tokenize(sourceCode: string): Token[] {
 			createToken(TokenType.Semicolen, src.shift())
 			// tokens.push(token(src.shift(), TokenType.Semicolen, Line, Position));
 		} else if (src[0] == ":") {
-			// if (src[1] == "=") {
-			// 	createToken(TokenType.WalarsOperation, src.shift())
-			// 	// tokens.push(token(src.shift(), TokenType.WalarsOperation, Line, Position));
-			// 	src.shift();
-			// }
+			if (src[1] == "=") {
+				createToken(TokenType.WalarsOperation, src.shift())
+				tokens[tokens.length - 1].value + src[1];
+				// tokens.push(token(src.shift(), TokenType.WalarsOperation, Line, Position));
+				src.shift();
+			}
 			if (tokens[tokens.length - 1].type === TokenType.Identifier) {
 				createToken(TokenType.COLON, src.shift())
 				// tokens.push(token(src.shift(), TokenType.COLON, Line, Position));

@@ -36,8 +36,8 @@ import {
 	GenericFunctionDeclaration,
 } from "./ast.ts";
 import { Token, tokenize, TokenType } from "./lexer.ts";
-// deno-lint-ignore no-unused-vars
 import { error, trace, info, debug } from "../util/tracing.ts";
+import { colorize, TerminalColor, bold, italic} from "./terminalColor.ts";
 
 
 function repeatChar(char: string, count: number) {
@@ -104,16 +104,15 @@ export class Parser {
 	public error_Msg(args: string) {
 		const tk = this.at();
 		const lineNumber = this.at().line;
+		const tc = TerminalColor;
 		let file = "test.ql"
 
 		// [src/test.ql->${lineNumber}:${tk.position}]::InvalidToken(${tk.value})
+		// 0 |
 		// 1 | have shipSpeedX := 0;
-		//   | 				     ^^^ // this is the position of the token in the line above
-		//   | 					  |
-		//   | 					  in file: 'test.ql'
-		//   | 					  of type: 'IDENTIFIER'
+		//  				     ^^^ // this is the position of the token in the line above
 
-		let msg = `[src/${file}->${lineNumber}:${tk.position}]::${args}\n`;
+		let msg = `[src/${file}->${colorize(lineNumber, tc.Magenta)}:${colorize(tk.position, tc.Red)}]::${colorize(italic(args), tc.White)}\n`;
 		// Print the line before the error
 		msg += this.errorPrintLine(lineNumber - 1) + "\n";
 		msg += this.errorPrintLine(lineNumber, true) + "\n";
@@ -122,7 +121,7 @@ export class Parser {
 		// Print the line after the error
 		msg += this.errorPrintLine(lineNumber + 1) + "\n";
 
-		console.log(msg)
+		console.error(msg)
 
 		return msg;
 	}
