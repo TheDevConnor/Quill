@@ -206,23 +206,18 @@ export function tokenize(sourceCode: string): Token[] {
 			createToken(TokenType.Semicolen, src.shift())
 			// tokens.push(token(src.shift(), TokenType.Semicolen, Line, Position));
 		} else if (src[0] == ":") {
-			// if (src[1] == "=") {
-			// 	createToken(TokenType.WalarsOperation, src.shift())
-			// 	// tokens.push(token(src.shift(), TokenType.WalarsOperation, Line, Position));
-			// 	src.shift();
-			// }
-			if (tokens[tokens.length - 1].type === TokenType.Identifier) {
-				createToken(TokenType.COLON, src.shift())
-				// tokens.push(token(src.shift(), TokenType.COLON, Line, Position));
+			if (src[1] == "=") {
+				createToken(TokenType.WalarsOperation, src.shift())
+				// tokens.push(token(src.shift(), TokenType.WalarsOperation, Line, Position));
+				tokens[tokens.length - 1].value += src.shift();
 			} else {
-				createToken(TokenType.TernaryColon, src.shift())
-				// tokens.push(token(src.shift(), TokenType.TernaryColon, Line, Position));
+				createToken(TokenType.COLON, src.shift())
 			}
 		} else if (src[0] == "<") {
 			if (src[1] == "=") {
 				createToken(TokenType.LTE, src.shift())
 				// tokens.push(token(src.shift(), TokenType.LTE, Line, Position));
-				src.shift();
+				tokens[tokens.length - 1].value += src.shift();
 			} else {
 				createToken(TokenType.LT, src.shift())
 				// tokens.push(token(src.shift(), TokenType.LT, Line, Position));
@@ -231,7 +226,7 @@ export function tokenize(sourceCode: string): Token[] {
 			if (src[1] == "=") {
 				createToken(TokenType.GTE, src.shift())
 				// tokens.push(token(src.shift(), TokenType.GTE, Line, Position));
-				src.shift();
+				tokens[tokens.length - 1].value += src.shift();
 			} else {
 				createToken(TokenType.GT, src.shift())
 				// tokens.push(token(src.shift(), TokenType.GT, Line, Position));
@@ -240,11 +235,11 @@ export function tokenize(sourceCode: string): Token[] {
 			if (src[1] == "=") {
 				createToken(TokenType.EQUALTO, src.shift())
 				// tokens.push(token(src.shift(), TokenType.EQUALTO, Line, Position));
-				src.shift();
+				tokens[tokens.length - 1].value += src.shift();
 			} else if (src[1] == ">") {
 				createToken(TokenType.Generic, src.shift())
 				// tokens.push(token(src.shift(), TokenType.Generic, Line, Position));
-				src.shift();
+				tokens[tokens.length - 1].value += src.shift();
 			} else {
 				createToken(TokenType.Equals, src.shift())
 				// tokens.push(token(src.shift(), TokenType.Equals, Line, Position));

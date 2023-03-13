@@ -69,17 +69,14 @@ export class Parser {
 	private errorPrintLine(lineNumber: number, bold = false) {
 		let line = lineNumber.toString()
 		const lineTokens = this.ogTokens.filter(t => t.line == lineNumber)
-		const BOLD = '\u001b[1m';
-		const RESET = '\u001b[0m'
 		const padding = 1;
-
 		line += " | " + repeatChar(" ", padding)
 		
 		if (lineNumber <= 0 || lineTokens.length == 0) {
 			return line;
 		}
 		
-
+		const BOLD = '\u001b[1m';
 		if (bold) {
 			line += BOLD
 		}
@@ -101,6 +98,7 @@ export class Parser {
 			}
 		}
 
+		const RESET = '\u001b[0m'
 		if (bold) {
 			line += RESET;
 		}
@@ -124,12 +122,14 @@ export class Parser {
 
 		let msg = `\n[${colorize("src/" + file, tc.Yellow)}->${colorize(lineNumber, tc.Magenta)}:${colorize(tk.position, tc.Red)}]::${colorize(italic(args), tc.White)}\n`;
 		// Print the line before the error
+		msg += this.errorPrintLine(lineNumber - 2) + "\n";
 		msg += this.errorPrintLine(lineNumber - 1) + "\n";
 		msg += this.errorPrintLine(lineNumber, true) + "\n";
 		// Point to where the error is in the line
 		msg += repeatChar(" ", lineNumber.toString().length + 3 + tk.position + 1) + repeatChar("^^^", tk.value.length) + "\n";
 		// Print the line after the error
 		msg += this.errorPrintLine(lineNumber + 1) + "\n";
+		msg += this.errorPrintLine(lineNumber + 2) + "\n";
 
 		error(msg);
 
@@ -477,20 +477,7 @@ export class Parser {
 		}
 
 		//Checks to see if the assignment operator is present and is :=
-		// this.expect(TokenType.WalarsOperation, "Expected ':=' after variable name");
-		if (
-			this.at().type === TokenType.COLON &&
-			this.next().type === TokenType.Equals
-		) {
-			this.eat();
-			this.eat();
-		}
-		else if (this.at().type === TokenType.Equals) {
-			this.error_Msg("Expected  token ':' before '='");
-		}
-		else if (this.at().type === TokenType.COLON) {
-			this.error_Msg("Expected token '=' after ':'");
-		}
+		this.expect(TokenType.WalarsOperation, "Expected ':=' after variable name");
 
 		const declaration = {
 			identifier,
@@ -712,7 +699,7 @@ export class Parser {
 		const thenExpr = this.parse_expr(); // Parse the 'then' expression
 		// console.log(thenExpr);
 
-		this.expect(TokenType.TernaryColon, "Expected ':' in ternary expression");
+		this.expect(TokenType.COLON, "Expected ':' in ternary expression");
 
 		const elseExpr = this.parse_expr(); // Parse the 'else' expression
 		// console.log(elseExpr);
@@ -729,20 +716,35 @@ export class Parser {
 	private parse_assignment_expr(): Expr {
 		const left = this.parse_object_expr();
 
-		if (this.at().type == TokenType.COLON) {
-			this.eat();
-			if (this.at().type == TokenType.Equals) {
-				this.eat(); // advance to the next token
-				const value = this.parse_assignment_expr();
-				return {
-					kind: "AssignmentExpr",
-					assingee: left,
-					value,
-				} as unknown as BinaryExpr;
-			} else {
-				this.error_Msg("Expected '=' after ':'");
-			}
+		if (this.at().type == TokenType.WalarsOperation) {
+			this.eat()
+
+			const value = this.parse_assignment_expr();
+			return {
+				kind: "AssignmentExpr",
+				assingee: left,
+				value,
+			} as unknown as BinaryExpr;
 		}
+
+		if (!TokenType.WalarsOperation) {
+			this.error_Msg("Make sure to assign varuables you use ':=' ");
+		}
+
+		// if (this.at().type == TokenType.COLON) {
+		// 	this.eat();
+		// 	if (this.at().type == TokenType.Equals) {
+		// 		this.eat(); // advance to the next token
+		// 		const value = this.parse_assignment_expr();
+		// 		return {
+		// 			kind: "AssignmentExpr",
+		// 			assingee: left,
+		// 			value,
+		// 		} as unknown as BinaryExpr;
+		// 	} else {
+		// 		this.error_Msg("Expected '=' after ':'");
+		// 	}
+		// }
 		return left;
 	}
 
