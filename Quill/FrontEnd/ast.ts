@@ -188,7 +188,7 @@ export interface EqualsExpr extends Expr {
 	kind: "EqualsExpr";
 	left: Expr;
 	right: Expr;
-	operator: "=";
+	operator: "==";
 }
 
 export interface NotEqualsExpr extends Expr {

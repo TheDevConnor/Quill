@@ -34,7 +34,7 @@ import {
 	ImportStmt,
 	TernaryExpr,
 	GenericFunctionDeclaration,
-} from "../frontend/ast.ts";
+} from "../FrontEnd/ast.ts";
 
 import {
 	enal_identifier,

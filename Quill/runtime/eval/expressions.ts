@@ -18,7 +18,7 @@ import {
 	LessThanOrEqualsExpr,
 	ImportStmt,
 	TernaryExpr,
-} from "../../frontend/ast.ts";
+} from "../../FrontEnd/ast.ts";
 
 import {
 	NumberVal,

@@ -34,13 +34,13 @@ export enum TokenType {
 
 	GT,
 	GTE,
-	EQUALTO,
 	LT,
 	LTE,
 	NOT,
 	AND,
 	OR,
 	NULL,
+	EQUALTO,
 	PLUSEQUAL,
 	MINUSEQUAL,
 	WalarsOperation,
@@ -236,13 +236,8 @@ export function tokenize(sourceCode: string): Token[] {
 				createToken(TokenType.EQUALTO, src.shift())
 				// tokens.push(token(src.shift(), TokenType.EQUALTO, Line, Position));
 				tokens[tokens.length - 1].value += src.shift();
-			} else if (src[1] == ">") {
-				createToken(TokenType.Generic, src.shift())
-				// tokens.push(token(src.shift(), TokenType.Generic, Line, Position));
-				tokens[tokens.length - 1].value += src.shift();
 			} else {
 				createToken(TokenType.Equals, src.shift())
-				// tokens.push(token(src.shift(), TokenType.Equals, Line, Position));
 			}
 		}
 
@@ -252,31 +247,30 @@ export function tokenize(sourceCode: string): Token[] {
 		} else if (src[0] == "!" && src[1] == "=") {
 			createToken(TokenType.NOT, src.shift())
 			// tokens.push(token(src.shift(), TokenType.NOT, Line, Position));
-			src.shift();
+			tokens[tokens.length - 1].value += src.shift();
 		} else if (src[0] == "&" && src[1] == "&") {
 			createToken(TokenType.AND, src.shift())
 			// tokens.push(token(src.shift(), TokenType.AND, Line, Position));
-			src.shift();
+			tokens[tokens.length - 1].value += src.shift();
 		} else if (src[0] == "|") {
 			if (src[1] == "|") {
 				createToken(TokenType.OR, src.shift())
 				// tokens.push(token(src.shift(), TokenType.OR, Line, Position));
-				src.shift();
+				tokens[tokens.length - 1].value += src.shift();
 			}
 		} else if (src[0] == "+" && src[1] == "=") {
 			createToken(TokenType.PLUSEQUAL, src.shift())
 			// tokens.push(token(src.shift(), TokenType.PLUSEQUAL, Line, Position));
-			src.shift();
+			tokens[tokens.length - 1].value += src.shift();
 		} else if (src[0] == "-" && src[1] == "=") {
 			// tokens.push(token(src.shift(), TokenType.MINUSEQUAL, Line, Position));
 			createToken(TokenType.MINUSEQUAL, src.shift())
-			src.shift();
+			tokens[tokens.length - 1].value += src.shift();
 		}
 
 		// HANDLE WHITESPACE
 		else if (isskippable(src[0])) {
 			src.shift();
-			Position++
 		}
 		// HANDLE BINARY OPERATORS
 		else if (

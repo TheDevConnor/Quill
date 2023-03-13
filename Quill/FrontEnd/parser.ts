@@ -70,7 +70,13 @@ export class Parser {
 		let line = lineNumber.toString()
 		const lineTokens = this.ogTokens.filter(t => t.line == lineNumber)
 		const padding = 1;
-		line += " | " + repeatChar(" ", padding)
+
+		// Add a zxero to the line number if it is less than 10
+		if (lineNumber < 10) {
+			line = "0" + line
+		}
+
+		line += "|" + repeatChar(" ", padding)
 		
 		if (lineNumber <= 0 || lineTokens.length == 0) {
 			return line;
@@ -81,7 +87,7 @@ export class Parser {
 			line += BOLD
 		}
 		
-		let offset = 0;
+		let offset = -0.05;
 		for (let i = 0; i < lineTokens.length; i++) {
 			const token = lineTokens[i].value
 			line += token
@@ -103,7 +109,7 @@ export class Parser {
 			line += RESET;
 		}
 
-		return colorize(line, TerminalColor.Black);
+		return line;
 	}
 
 	public error_Msg(args: string) {
@@ -122,14 +128,14 @@ export class Parser {
 
 		let msg = `\n[${colorize("src/" + file, tc.Yellow)}->${colorize(lineNumber, tc.Magenta)}:${colorize(tk.position, tc.Red)}]::${colorize(italic(args), tc.White)}\n`;
 		// Print the line before the error
-		msg += this.errorPrintLine(lineNumber - 2) + "\n";
-		msg += this.errorPrintLine(lineNumber - 1) + "\n";
-		msg += this.errorPrintLine(lineNumber, true) + "\n";
+		msg += colorize(this.errorPrintLine(lineNumber - 2), tc.Black) + "\n";
+		msg += colorize(this.errorPrintLine(lineNumber - 1), tc.Black) + "\n";
+		msg += colorize(this.errorPrintLine(lineNumber, true), tc.Cyan) + "\n";
 		// Point to where the error is in the line
-		msg += repeatChar(" ", lineNumber.toString().length + 3 + tk.position + 1) + repeatChar("^^^", tk.value.length) + "\n";
+		msg += colorize(repeatChar(" ", tk.position + lineNumber), tc.Red) + colorize(repeatChar("^", tk.value.length), tc.Red) + "\n";
 		// Print the line after the error
-		msg += this.errorPrintLine(lineNumber + 1) + "\n";
-		msg += this.errorPrintLine(lineNumber + 2) + "\n";
+		msg += colorize(this.errorPrintLine(lineNumber + 1), tc.Black) + "\n";
+		msg += colorize(this.errorPrintLine(lineNumber + 2), tc.Black) + "\n";
 
 		error(msg);
 
@@ -531,24 +537,31 @@ export class Parser {
 				right,
 				operation: opertation.value,
 			} as unknown as GreaterThanOrEqualsExpr | LessThanOrEqualsExpr;
+
+			if (this.at().type == TokenType.Equals) {
+				this.error_Msg("For GT-LS or equals that you use either '<=' or '>='")
+			}
 		}
 
 		// Check if the current token is either of type Equals or NOT
 		// If it is, eat the token, parse the next expression, and update the expr variable with an EqualsExpr or NotEqualsExpr object
 		while (
 			this.at().type == TokenType.EQUALTO ||
-			this.at().type == TokenType.Equals ||
 			this.at().type == TokenType.NOT
 		) {
 			const opertation = this.eat(); // Eat the operator
 			const right = this.parse_expr();
 			expr = {
 				kind:
-					opertation.type === TokenType.Equals ? "EqualsExpr" : "NotEqualsExpr",
+					opertation.type === TokenType.EQUALTO? "EqualsExpr" : "NotEqualsExpr",
 				left: expr,
 				right,
 				operation: opertation.value,
 			} as unknown as EqualsExpr | NotEqualsExpr;
+
+			if (this.at().type == TokenType.Equals) {
+				this.error_Msg("When comparing varuables use '=='")
+			}
 		}
 
 		// Check if the current token is either of type AND or OR
@@ -727,24 +740,10 @@ export class Parser {
 			} as unknown as BinaryExpr;
 		}
 
-		if (!TokenType.WalarsOperation) {
-			this.error_Msg("Make sure to assign varuables you use ':=' ");
+		if (this.at().type == TokenType.Equals) {
+			this.error_Msg("To assign a varuable use ':=' To compare use '=='")
 		}
 
-		// if (this.at().type == TokenType.COLON) {
-		// 	this.eat();
-		// 	if (this.at().type == TokenType.Equals) {
-		// 		this.eat(); // advance to the next token
-		// 		const value = this.parse_assignment_expr();
-		// 		return {
-		// 			kind: "AssignmentExpr",
-		// 			assingee: left,
-		// 			value,
-		// 		} as unknown as BinaryExpr;
-		// 	} else {
-		// 		this.error_Msg("Expected '=' after ':'");
-		// 	}
-		// }
 		return left;
 	}
 
@@ -865,15 +864,6 @@ export class Parser {
 			TokenType.CloseParen,
 			"Missing closing parenthesis inside arguments list"
 		);
-		return args;
-	}
-
-	private parse_generic_args(): Expr[] {
-		this.expect(TokenType.Equals, "Expected '=' in generic type");
-		this.expect(TokenType.GT, "Expected '>' in generic type");
-
-		const args = this.parse_arguments_list();
-
 		return args;
 	}
 
