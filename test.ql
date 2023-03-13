@@ -1,8 +1,5 @@
-const test := {
-	test: "test",
-
-	runaway: {
-		Path: "test.ql",
-	},
+for have x = 0; x < 1000; {
+	warn(x)
+	x : x + 1
 }
-info(test[runaway].Path)
+info(time())

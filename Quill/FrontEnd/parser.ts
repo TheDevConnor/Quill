@@ -71,13 +71,12 @@ export class Parser {
 		const lineTokens = this.ogTokens.filter(t => t.line == lineNumber)
 		const padding = 1;
 
-		// Add a zxero to the line number if it is less than 10
+		line += "|" + repeatChar(" ", padding)
+
 		if (lineNumber < 10) {
-			line = "0" + line
+			line = "0" + line;
 		}
 
-		line += "|" + repeatChar(" ", padding)
-		
 		if (lineNumber <= 0 || lineTokens.length == 0) {
 			return line;
 		}
@@ -128,18 +127,15 @@ export class Parser {
 
 		let msg = `\n[${colorize("src/" + file, tc.Yellow)}->${colorize(lineNumber, tc.Magenta)}:${colorize(tk.position, tc.Red)}]::${colorize(italic(args), tc.White)}\n`;
 		// Print the line before the error
-		msg += colorize(this.errorPrintLine(lineNumber - 2), tc.Black) + "\n";
 		msg += colorize(this.errorPrintLine(lineNumber - 1), tc.Black) + "\n";
 		msg += colorize(this.errorPrintLine(lineNumber, true), tc.Cyan) + "\n";
 		// Point to where the error is in the line
-		msg += colorize(repeatChar(" ", tk.position + lineNumber), tc.Red) + colorize(repeatChar("^", tk.value.length), tc.Red) + "\n";
+		msg += colorize(repeatChar(" ", tk.position * 1.5), tc.Red) + colorize(repeatChar("^", tk.value.length), tc.Red) + "\n";
 		// Print the line after the error
 		msg += colorize(this.errorPrintLine(lineNumber + 1), tc.Black) + "\n";
 		msg += colorize(this.errorPrintLine(lineNumber + 2), tc.Black) + "\n";
 
 		error(msg);
-
-		Deno.exit(1);
 	}
 
 	/*
