@@ -9,7 +9,6 @@ for have PossablePrimes := 2; PossablePrimes < 10; {
 		if PossablePrimes % num = 0{
 			prime := false
 		}
-
 		num := num + 1
 	}
 

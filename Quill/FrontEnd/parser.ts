@@ -132,6 +132,8 @@ export class Parser {
 		msg += this.errorPrintLine(lineNumber + 1) + "\n";
 
 		error(msg);
+
+		Deno.exit(1);
 	}
 
 	/*
@@ -482,8 +484,12 @@ export class Parser {
 		) {
 			this.eat();
 			this.eat();
-		} else {
-			this.error_Msg("Expected ':=' after ':'.");
+		}
+		else if (this.at().type === TokenType.Equals) {
+			this.error_Msg("Expected  token ':' before '='");
+		}
+		else if (this.at().type === TokenType.COLON) {
+			this.error_Msg("Expected token '=' after ':'");
 		}
 
 		const declaration = {
@@ -734,7 +740,7 @@ export class Parser {
 					value,
 				} as unknown as BinaryExpr;
 			} else {
-				this.error_Msg("Expected ':=' after ':'.");
+				this.error_Msg("Expected '=' after ':'");
 			}
 		}
 		return left;
