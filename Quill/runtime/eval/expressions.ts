@@ -43,6 +43,9 @@ import {
 import Enviroment from "../enviroment.ts";
 import { evaluate } from "../interpreter.ts";
 import { error, info, debug, trace } from "../../util/tracing.ts";
+import { Parser } from "../../FrontEnd/parser.ts";
+
+const parser = new Parser()
 
 function eval_numeric_binary_expr(
 	leftHandSide: NumberVal,
@@ -289,14 +292,14 @@ export function eval_member_expr(
 			// console.log("Computed\n", member.computed)
 
 			if (!objectProperty || objectProperty.kind !== "Identifier") {
-				throw error(`cannot resolve '${member.property.kind}' as it does not exist!`)
+				throw error(`cannot resolve Object of: '${member.property.kind}' as it does not exist!`)
 			}
 
 			const objectValue = objectCase.properties.get(objectProperty.symbol)
 			// console.log("value\n", objectValue)
 
 			if (objectValue === undefined) {
-				throw error(`Cannot resolve '${objectProperty.symbol}' as it does not exist!`)
+				throw error(`Cannot resolve Object of: '${objectProperty.symbol}' as it does not exist!`)
 			}
 
 			return objectValue;
@@ -311,14 +314,14 @@ export function eval_member_expr(
 
 
 			if (!stringLookUpTable.has(stringProperty.symbol)) {
-				throw error(`Connot resolve '${stringCase.type}' as it does not exist! 2`)
+				throw error(`Connot resolve String of: '${stringCase.type}' as it does not exist! 2`)
 			}
 
 			const staticMethod = stringLookUpTable.get(stringProperty.symbol) as NativeFunctionVal;
 			// console.log(staticMethod)
 
 			if (!staticMethod) {
-				throw error(`Connot resolve '${stringCase.type}' as it does not exist! 2`)
+				throw error(`Connot resolve String of: '${stringCase.type}' as it does not exist! 2`)
 			}
 
 			const fn = staticMethod.call as StaticFunctionCall;
@@ -336,14 +339,14 @@ export function eval_member_expr(
 			// console.log("property", booleanProperty)
 
 			if (!booleanLookUpTable.has(booleanProperty.symbol)) {
-				throw error(`Connot resolve '${booleanCase.type}' as it does not exist! 2`)
+				throw error(`Connot resolve Boolean of: '${booleanCase.type}' as it does not exist! 2`)
 			}
 
 			const booleanMethod = booleanLookUpTable.get(booleanProperty.symbol) as NativeFunctionVal;
 			// console.log(booleanMethod)
 
 			if (!booleanMethod) {
-				throw error(`Connot resolve '${booleanCase.type}' as it does not exist! 2`)
+				throw error(`Connot resolve Boolean of: '${booleanCase.type}' as it does not exist! 2`)
 			}
 
 			const booleanFn = booleanMethod.call as StaticFunctionCall;
@@ -362,14 +365,14 @@ export function eval_member_expr(
 			// console.log("property", numberProperty)
 
 			if (!numberLookUpTable.has(numberProperty.symbol)) {
-				throw error(`Connot resolve '${numberCase.type}' as it does not exist! 2`)
+				throw error(`Connot resolve Number of: '${numberCase.type}' as it does not exist! 2`)
 			}
 
 			const numberMethod = numberLookUpTable.get(numberProperty.symbol) as NativeFunctionVal;
 			// console.log(numberMethod)
 
 			if (!numberMethod) {
-				throw error(`Connot resolve '${numberCase.type}' as it does not exist! 2`)
+				throw error(`Connot resolve Number of: '${numberCase.type}' as it does not exist! 2`)
 			}
 
 			const numberFn = numberMethod.call as StaticFunctionCall;
@@ -388,13 +391,13 @@ export function eval_member_expr(
 			// console.log("property", arrayProperty)
 
 			if (!arrayLookUpTable.has(arrayProperty.symbol)) {
-				throw error(`Connot resolve '${arrayCase.type}' as it does not exist! 2`)
+				throw error(`Connot resolve Array of: '${arrayCase.type}' as it does not exist! 2`)
 			}
 
 			const arrayMethod = arrayLookUpTable.get(arrayProperty.symbol) as NativeFunctionVal;
 
 			if (!arrayMethod) {
-				throw error(`Connot resolve '${arrayCase.type}' as it does not exist! 2`)
+				throw error(`Connot resolve Array of: '${arrayCase.type}' as it does not exist! 2`)
 			}
 
 			const arrayFn = arrayMethod.call as StaticFunctionCall;
@@ -439,13 +442,13 @@ export function eval_member_expr(
 			// console.log("property", functionProperty)
 
 			if (!functionLookUpTable.has(functionProperty.symbol)) {
-				throw error(`Connot resolve '${functionCase.type}' as it does not exist! 2`)
+				throw error(`Connot resolve Function of: '${functionCase.type}' as it does not exist! 2`)
 			}
 
 			const functionMethod = functionLookUpTable.get(functionProperty.symbol) as NativeFunctionVal;
 
 			if (!functionMethod) {
-				throw error(`Connot resolve '${functionCase.type}' as it does not exist! 2`)
+				throw error(`Connot resolve Function of: '${functionCase.type}' as it does not exist! 2`)
 			}
 
 			const functionFn = functionMethod.call as StaticFunctionCall;
@@ -464,13 +467,13 @@ export function eval_member_expr(
 			// console.log("property", nullProperty)
 
 			if (!nullLookUpTable.has(nullProperty.symbol)) {
-				throw error(`Connot resolve '${nullCase.type}' as it does not exist! 2`)
+				throw error(`Connot resolve NULL of: '${nullCase.type}' as it does not exist! 2`)
 			}
 
 			const nullMethod = nullLookUpTable.get(nullProperty.symbol) as NativeFunctionVal;
 
 			if (!nullMethod) {
-				throw error(`Connot resolve '${nullCase.type}' as it does not exist! 2`)
+				throw error(`Connot resolve NUll of: '${nullCase.type}' as it does not exist! 2`)
 			}
 
 			const nullFn = nullMethod.call as StaticFunctionCall;
@@ -482,7 +485,7 @@ export function eval_member_expr(
 			return nullClouser;
 
 		default:
-			throw error(`Cannot resolve '${member.object.kind}' as it does not exist! 3`)
+			throw error(`Cannot resolve '${member.object.kind}' as it does not exist!`)
 	}
 }
 

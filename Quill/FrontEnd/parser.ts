@@ -1,3 +1,4 @@
+// deno-lint-ignore-file
 // deno-lint-ignore-file no-explicit-any
 import {
 	BinaryExpr,
@@ -58,12 +59,20 @@ export class Parser {
 
 	private ogTokens: Token[] = [];
 
+	private fileName: string = "";
+	public getFileName(filename: string) {
+		this.fileName = filename;
+		const file = this.fileName.split("./");
+		this.fileName = file[file.length - 1];
+	}
+
 	private errorPrintLine(lineNumber: number, bold = false) {
 		let line = lineNumber.toString()
 		const lineTokens = this.ogTokens.filter(t => t.line == lineNumber)
 		const BOLD = '\u001b[1m';
 		const RESET = '\u001b[0m'
 		const padding = 1;
+
 		line += " | " + repeatChar(" ", padding)
 		
 		if (lineNumber <= 0 || lineTokens.length == 0) {
@@ -82,8 +91,6 @@ export class Parser {
 			offset += token.length
 			const nextToken = lineTokens[i + 1]
 
-			// console.log(lineTokens[i].position, offset, nextToken)
-
 			if(!nextToken) {
 				continue;				
 			}
@@ -98,21 +105,24 @@ export class Parser {
 			line += RESET;
 		}
 
-		return line;
+		return colorize(line, TerminalColor.Black);
 	}
 
 	public error_Msg(args: string) {
 		const tk = this.at();
 		const lineNumber = this.at().line;
 		const tc = TerminalColor;
-		let file = "test.ql"
+		
+		// Get the file name from the first token
+		const file = this.fileName;
 
-		// [src/test.ql->${lineNumber}:${tk.position}]::InvalidToken(${tk.value})
+		// [src/test.ql->1:20::Unexpected token found. of type: ;
 		// 0 |
 		// 1 | have shipSpeedX := 0;
 		//  				     ^^^ // this is the position of the token in the line above
+		// 2 | 
 
-		let msg = `[src/${file}->${colorize(lineNumber, tc.Magenta)}:${colorize(tk.position, tc.Red)}]::${colorize(italic(args), tc.White)}\n`;
+		let msg = `\n[${colorize("src/" + file, tc.Yellow)}->${colorize(lineNumber, tc.Magenta)}:${colorize(tk.position, tc.Red)}]::${colorize(italic(args), tc.White)}\n`;
 		// Print the line before the error
 		msg += this.errorPrintLine(lineNumber - 1) + "\n";
 		msg += this.errorPrintLine(lineNumber, true) + "\n";
@@ -121,9 +131,7 @@ export class Parser {
 		// Print the line after the error
 		msg += this.errorPrintLine(lineNumber + 1) + "\n";
 
-		console.error(msg)
-
-		return msg;
+		error(msg);
 	}
 
 	/*
@@ -726,7 +734,7 @@ export class Parser {
 					value,
 				} as unknown as BinaryExpr;
 			} else {
-				error("Expected ':=' after ':'.");
+				this.error_Msg("Expected ':=' after ':'.");
 			}
 		}
 		return left;
@@ -889,7 +897,7 @@ export class Parser {
 				// get identifier
 				property = this.parse_primary_expr();
 				if (property.kind != "Identifier") {
-					throw `Cannonot use dot operator without right hand side being a identifier`;
+					this.error_Msg(`Cannonot use dot operator without right hand side being a identifier`);
 				}
 			} else {
 				// this allows obj[computedValue]
@@ -958,7 +966,8 @@ export class Parser {
 
 			// Unidentified Tokens and Invalid Code Reached
 			default:
-				Deno.exit(1);
+				this.error_Msg("Unexpected token found. of type: " + colorize(this.at().value, TerminalColor.Red));
+				Deno.exit(1)
 		}
 	}
 }
