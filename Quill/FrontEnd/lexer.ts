@@ -159,13 +159,19 @@ export function tokenize(sourceCode: string): Token[] {
 
 		// Skip over any comments in the source code
 		else if (src[0] === "#") {
-			while (src.length > 0) {
-				src.shift();
+			for (let i = 0; i < src.length; i++) {
+				if (src[i] === "\n") {
+					src.splice(0, i + 1);
+					break;
+				}
 			}
 			continue;
 		} else if (src[0] === "/" && src[1] === "/") {
-			while (src.length > 0) {
-				src.shift();
+			for (let i = 0; i < src.length; i++) {
+				if (src[i] === "\n") {
+					src.splice(0, i + 1);
+					break;
+				}
 			}
 			continue;
 		}

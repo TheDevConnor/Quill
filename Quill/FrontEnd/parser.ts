@@ -113,7 +113,6 @@ export class Parser {
 
 	public error_Msg(args: string) {
 		const tk = this.at();
-		const lineNumber = this.at().line;
 		const tc = TerminalColor;
 		
 		// Get the file name from the first token
@@ -125,17 +124,19 @@ export class Parser {
 		//  				     ^^^ // this is the position of the token in the line above
 		// 2 | 
 
-		let msg = `\n[${colorize("src/" + file, tc.Yellow)}->${colorize(lineNumber, tc.Magenta)}:${colorize(tk.position, tc.Red)}]::${colorize(italic(args), tc.White)}\n`;
+		let msg = `\n[${colorize("src/" + file, tc.Yellow)}->${colorize(tk.line, tc.Magenta)}:${colorize(tk.position, tc.Red)}]::${colorize(italic(args), tc.White)}\n`;
 		// Print the line before the error
-		msg += colorize(this.errorPrintLine(lineNumber - 1), tc.Black) + "\n";
-		msg += colorize(this.errorPrintLine(lineNumber, true), tc.Cyan) + "\n";
+		msg += colorize(this.errorPrintLine(tk.line - 1), tc.Black) + "\n";
+		msg += colorize(this.errorPrintLine(tk.line, true), tc.Cyan) + "\n";
 		// Point to where the error is in the line
 		msg += colorize(repeatChar(" ", tk.position * 1.5), tc.Red) + colorize(repeatChar("^", tk.value.length), tc.Red) + "\n";
 		// Print the line after the error
-		msg += colorize(this.errorPrintLine(lineNumber + 1), tc.Black) + "\n";
-		msg += colorize(this.errorPrintLine(lineNumber + 2), tc.Black) + "\n";
+		msg += colorize(this.errorPrintLine(tk.line + 1), tc.Black) + "\n";
+		msg += colorize(this.errorPrintLine(tk.line + 2), tc.Black) + "\n";
 
 		error(msg);
+
+		Deno.exit(1);
 	}
 
 	/*
