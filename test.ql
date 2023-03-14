@@ -1,16 +1,7 @@
-// func public async calAreaOfTrinangleSSS (a, b, c) {
-// 	have area := sqrt((a + b + c) * (b + c - a) * (c + a - b) * (a + b - c)) / 4
-// 	info("The area of the triangle is: ", area)
-// }
-
-// calAreaOfTrinangleSSS(13, 10, 8)
-
-have a := 13
-have b := 10
-have c := 8
-
-const areaSSS := {
-	area: sqrt((a + b + c) * (b + c - a) * (c + a - b) * (a + b - c)) / 4
+func main() {
+	array running ["game", "tools", "science", "system"]
+	have length_of_array := len(running) - 1
+	have random_number := floor(random(0, length_of_array))
+	info("Hello,",nth(running, random_number),"developer!")
 }
-
-info("The area of the triangle is: ", areaSSS.area)
+main()

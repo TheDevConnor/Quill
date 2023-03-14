@@ -210,6 +210,7 @@ function builtInArrayFunctions(env: Enviroment) {
 
 		return MK_NUMBER(arg.value.length);
 	}
+
 	// A built in function to get the first element of an array
 	function firstFunction(args: RuntimeVal[], _scope: Enviroment): RuntimeVal {
 		if (args.length !== 1) {
@@ -356,7 +357,7 @@ function builtInArrayFunctions(env: Enviroment) {
 	env.declareVar("push", MK_NATIVE_FUNCTION(pushFunction), true);
 	env.declareVar("pop", MK_NATIVE_FUNCTION(popFunction), true);
 	env.declareVar("pull", MK_NATIVE_FUNCTION(pullFunction), true);
-	env.declareVar("length", MK_NATIVE_FUNCTION(lengthFunction), true);
+	env.declareVar("len", MK_NATIVE_FUNCTION(lengthFunction), true);
 	env.declareVar("first", MK_NATIVE_FUNCTION(firstFunction), true);
 	env.declareVar("last", MK_NATIVE_FUNCTION(lastFunction), true);
 	env.declareVar("nth", MK_NATIVE_FUNCTION(nthFunction), true);
